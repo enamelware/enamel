@@ -1,0 +1,1022 @@
+/*
+ * Enamel components, version 0.11.1.
+ * Copyright (c) 2026 Mario Carabotta
+ * SPDX-License-Identifier: MIT
+ * Plain CSS. Link tokens/enamel.css first, then this file.
+ * Colour, type, spacing and radius come from --en- tokens only. Sizes that
+ * have no token are component variables (--en-c-), declared once below.
+ * Which unit, by one question: should this grow when the user makes text
+ * bigger? Yes is rem. No is px: lines, the focus ring, corners, shadows, the
+ * lift, and side padding that would squeeze text if it grew. Enamel never sets
+ * the root font size. Every component is sized by its
+ * content and the space it is given, never by the screen: text wraps, rows
+ * of hints, tabs and buttons wrap, heights are minimums, and tiles take
+ * their width from their shelf (a size container).
+ * State comes from standard attributes: aria-selected, aria-pressed,
+ * aria-current, disabled, open, hidden, plus data-closing="true" while a picker
+ * or toast leaves, and data-pressed="true" while an app holds a button or picker
+ * row down from a controller (a keyboard, mouse or touch press needs no attribute). Every focus style applies on :focus-visible and on
+ * data-focused="true" (for apps that manage focus themselves, and for static
+ * examples), except the tab ring, which is for keyboard use only.
+ * Motion uses the motion tokens only (Group D) and marks focus or a change of
+ * state. Focus motion restarts each time focus arrives. Reduced motion (the
+ * device's prefers-reduced-motion, or data-en-motion="reduced" on <html> or
+ * any element) is at the end of this file; data-en-motion="full" on <html>
+ * keeps full motion whatever the device asks for. data-en-lighter="true" on
+ * <html> or any element is the lighter fallback, for devices that stutter.
+ * The picker dialog and the toast also have a small behaviour script,
+ * components/enamel-components.js. These styles do not need it: a picker or
+ * toast written by hand in HTML looks right without it, stopping one minimum
+ * hint bar height (--en-size-bar) above the bottom. With it, they stop at the
+ * real hint bar's top however tall the bar has grown.
+ */
+:root {
+  --en-c-hint-gap: 1.75rem;            /* space between hints in the hint bar */
+  --en-c-glyph-size: 2rem;             /* round button glyph (A, B, X, Y) */
+  --en-c-glyph-text: 1rem;             /* letter inside a glyph */
+  --en-c-glyph-shoulder-width: 3rem;   /* L1 and R1 glyph */
+  --en-c-glyph-shoulder-height: 2.25rem; /* L1 and R1 glyph */
+  --en-c-glyph-shoulder-radius: 4px; /* L1 and R1 glyph corners */
+  --en-c-tab-padding: 28px;         /* side padding inside a tab (measured) */
+  --en-c-dot-size: 0.75rem;            /* "something new" dot */
+  --en-c-tile-width: clamp(10rem, 40cqi, 16rem);       /* default tile: two and a half to a shelf, between these limits */
+  --en-c-tile-width-large: clamp(12rem, 75cqi, var(--en-c-tile-large-max)); /* large tile: three quarters of its shelf, up to its limit */
+  --en-c-tile-large-max: 28.25rem;     /* the widest a large tile grows (measured) */
+  --en-c-shelf-gap: 1.25rem;           /* between tiles on a shelf (measured) */
+  --en-c-shelf-room: calc((var(--en-focus-ring-offset) + var(--en-focus-ring-start)) * var(--en-focus-scale)
+                     + (var(--en-focus-scale) - 1) * var(--en-c-tile-large-max) / 2); /* room around a shelf's tiles for the ring at its thickest and the growth */
+  --en-c-button-padding: 36px;      /* side padding inside a button */
+  --en-c-toggle-width: 3.75rem;        /* toggle track */
+  --en-c-toggle-height: 2.25rem;       /* toggle track */
+  --en-c-toggle-padding: 0.25rem;      /* between toggle track and thumb */
+  --en-c-toggle-thumb: 1.75rem;        /* toggle thumb */
+  --en-c-progress-height: 12px;        /* progress track, on its own and in toasts */
+  --en-c-progress-thin: 8px;           /* thin progress track, under tiles */
+  --en-c-menu-width: 22.5rem;          /* side menu, the widest it is (measured) */
+  --en-c-menu-item-height: 4.5rem;     /* side menu item, a minimum (measured) */
+  --en-c-menu-bar: 8px;             /* focus bar on a side menu item (measured) */
+  --en-c-icon-size: 1.5rem;            /* a drawn icon, in an icon button or a toast */
+  --en-c-icon-stroke: 2px;             /* line width of a drawn icon */
+  --en-c-picker-row: 4.5rem;           /* picker row with a title only, a minimum (Steam baseline) */
+  --en-c-picker-row-tall: 6rem;        /* picker row with a title and a description, a minimum (measured) */
+  --en-c-picker-inset: 24px;         /* where text starts in a picker row (measured) */
+  --en-c-picker-min: 25cqi;            /* narrowest picker: a quarter of the space its dialog gives it */
+  --en-c-picker-max: 66.667cqi;        /* widest picker: two thirds of that space */
+  --en-c-text-detail: var(--en-text-small); /* picker row description and toast text (measured: the same as the small text) */
+  --en-c-backdrop-strength: 85%;       /* how dark the page goes behind a dialog (Steam's value) */
+  --en-c-backdrop-blur: 3px;           /* how blurred it goes (Steam's value) */
+  --en-c-toast-width: 28rem;           /* widest toast; a shorter message makes it narrower (measured) */
+  --en-c-hintbar-height: var(--en-size-bar); /* where the picker's layer and the toast stop above the hint bar; the behaviour script keeps it at the real bar's height, which grows when its hints wrap */
+  --en-c-statpanel-min: 18rem;         /* the narrowest a stat panel sits beside another; below it a pair stacks */
+  --en-c-note-gap: 0.5rem;             /* between stacked notes */
+  --en-c-tile-glow: 8px;               /* how far a focused tile's soft glow fades out past its ring */
+  --en-c-focus-stroke: 1px;            /* focused text on cream is drawn this much heavier, like semibold, without getting wider */
+  --en-c-speckle-accent: 0.1;          /* how strong the page speckle's accent flecks are */
+  --en-c-rise: var(--en-lift);         /* how far a focused face rises; the lighter fallback sets it to nothing */
+  --en-c-satin-shadow: var(--en-satin-shadow); /* these three soft shadows are dropped by the lighter fallback */
+  --en-c-lift-shadow: var(--en-lift-shadow);
+  --en-c-press-shadow: var(--en-press-shadow);
+}
+
+/* The lighter fallback, for devices that stutter: no soft shadows and no lift
+   or press movement. Colours, cream focus, the coral underside and the speckle
+   all stay. */
+[data-en-lighter="true"] {
+  --en-c-rise: 0px;
+  --en-c-satin-shadow: 0 0 transparent;
+  --en-c-lift-shadow: 0 0 transparent;
+  --en-c-press-shadow: 0 0 transparent;
+}
+
+/* The interface size. Setting --en-root-size on <html> (for example 112.5%)
+   scales everything, pixels included, the way browser zoom does; at 100% it does
+   nothing. It never touches the root font size, which stays the user's own. */
+:root { zoom: var(--en-root-size); }
+
+/* The focus ring's breath: it dims to --en-pulse-min and comes back. */
+@keyframes en-focus-pulse {
+  50% { opacity: var(--en-pulse-min); }
+}
+/* The focus ring's entrance: it starts thick and narrows to its width. */
+@keyframes en-ring-in {
+  from { outline-width: var(--en-focus-ring-start); }
+}
+/* Something new appearing, and leaving. */
+@keyframes en-fade-in {
+  from { opacity: 0; }
+}
+@keyframes en-fade-out {
+  to { opacity: 0; }
+}
+/* A toast arriving from the right edge. It leaves with en-fade-out, in place,
+   as Steam's own toast does. en-slide-out is no longer used by any component
+   and is kept so that nothing apps may use is removed. */
+@keyframes en-slide-in {
+  from { transform: translateX(100%); }
+}
+@keyframes en-slide-out {
+  to { transform: translateX(100%); }
+}
+
+/* Shared reset for components drawn on buttons and links. */
+.en-tab, .en-row, .en-tile, .en-button, .en-toggle, .en-menu__item, .en-picker__row {
+  box-sizing: border-box;
+  margin: 0;
+  border: 0;
+  font: inherit;
+  text-decoration: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* a) Hint bar. At least --en-size-bar tall; hints that do not fit on one
+   line wrap onto another and the bar gets taller, so none is cut off. Its
+   side padding is the gutter, or a twentieth of its width when that is
+   smaller, so two hints still share a line in the smallest supported box. */
+.en-hintbar {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--en-space-tight) var(--en-c-hint-gap);
+  min-height: var(--en-size-bar);
+  padding: var(--en-space-tight) min(var(--en-space-gutter), 5%);
+  background: var(--en-surface-bar);
+}
+.en-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--en-space-icon);
+  font-size: var(--en-text-small);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--en-caps-tracking);
+  color: var(--en-text-strong);
+  white-space: nowrap;
+}
+.en-glyph {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--en-c-glyph-size);
+  height: var(--en-c-glyph-size);
+  border-radius: var(--en-radius-pill);
+  background: var(--en-focus-fill);
+  color: var(--en-focus-fill-ink);
+  font-size: var(--en-c-glyph-text);
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: none;
+  line-height: 1;
+}
+.en-glyph--shoulder {
+  width: var(--en-c-glyph-shoulder-width);
+  height: var(--en-c-glyph-shoulder-height);
+  border-radius: var(--en-c-glyph-shoulder-radius);
+}
+
+/* b) Tabs. On a controller they are switched with L1 and R1 and show no
+   focus; for keyboard use only, :focus-visible shows the accent ring. A set
+   of tabs that does not fit on one line wraps onto another; a single tab
+   wider than its space wraps its label inside itself. */
+.en-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--en-space-tight);
+}
+.en-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--en-space-gap);
+  min-height: var(--en-size-target);
+  padding: 0 var(--en-c-tab-padding);
+  border-radius: var(--en-radius-pill);
+  background: none;
+  color: var(--en-text);
+  font-size: var(--en-text-small);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--en-caps-tracking);
+  overflow-wrap: anywhere;
+  transition: background-color var(--en-motion-medium) var(--en-ease-standard),
+              color var(--en-motion-medium) var(--en-ease-standard);
+}
+.en-tab:focus { outline: none; }
+.en-tab:focus-visible {
+  outline: var(--en-focus-ring-width) solid var(--en-focus-ring);
+  outline-offset: var(--en-focus-ring-offset);
+}
+.en-tab[aria-selected="true"] {
+  background-color: var(--en-surface-control);
+  background-image: var(--en-satin-light);
+  box-shadow: var(--en-satin-edge), var(--en-c-satin-shadow);
+  color: var(--en-text-strong);
+}
+/* One border per element: no rim inside the ring. */
+.en-tab:focus-visible { box-shadow: none; }
+.en-tab__count { color: var(--en-text-muted); }
+.en-tab[aria-selected="true"] .en-tab__count { color: var(--en-text-soft); }
+.en-dot {
+  display: inline-block;
+  flex: none;
+  width: var(--en-c-dot-size);
+  height: var(--en-c-dot-size);
+  border-radius: var(--en-radius-pill);
+  background: var(--en-accent);
+  animation: en-fade-in var(--en-motion-medium) var(--en-ease-enter);
+}
+
+/* c) List row. At least --en-size-row tall, and --en-size-row-control with a
+   toggle or a button at its end; a long title wraps. */
+.en-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--en-space-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.en-row {
+  display: flex;
+  align-items: center;
+  gap: var(--en-space-gap);
+  width: 100%;
+  min-height: var(--en-size-row);
+  padding: 0 var(--en-space-inset);
+  border-radius: var(--en-radius-face);
+  background-color: var(--en-surface-raised);
+  background-image: var(--en-satin-light);
+  box-shadow: var(--en-satin-edge), var(--en-c-satin-shadow);
+  color: var(--en-text);
+  font-size: var(--en-text-body);
+  text-align: left;
+  overflow-wrap: anywhere;
+  transition: background-color var(--en-motion-fast) var(--en-ease-standard),
+              color var(--en-motion-fast) var(--en-ease-standard);
+}
+.en-row__meta {
+  font-size: var(--en-text-small);
+  color: var(--en-text-muted);
+  transition: color var(--en-motion-fast) var(--en-ease-standard);
+}
+.en-row:has(> .en-toggle, > .en-button) { min-height: var(--en-size-row-control); }
+.en-row > .en-toggle, .en-row > .en-button { margin-left: auto; }
+.en-row:is(:focus-visible, [data-focused="true"]) {
+  outline: none;
+  background-color: var(--en-surface-control);
+  color: var(--en-text-strong);
+}
+.en-row:is(:focus-visible, [data-focused="true"]) .en-row__meta { color: var(--en-text-soft); }
+/* A message inside a row: a line of its own under the row's content, in the
+   error style (white text after a red disc with a dark mark, since red text
+   is too faint on the greys). Keep it in the row, empty, so screen readers
+   hear it politely when text is put in; while empty it takes no space. When
+   it shows, the row wraps onto two lines and grows taller, never wider.
+   A row with a badge wraps too, so a badge that doesn't fit beside the title
+   moves under it instead of squeezing it. */
+.en-row:has(> .en-row__message:not(:empty), > .en-badge) {
+  flex-wrap: wrap;
+  padding-block: var(--en-space-gap);
+}
+.en-row__message {
+  display: flex;
+  flex-basis: 100%;
+  align-items: flex-start;
+  gap: var(--en-space-icon);
+  min-width: 0;
+  color: var(--en-text-strong);
+  font-size: var(--en-text-small);
+  font-weight: 700;
+  animation: en-fade-in var(--en-motion-fast) var(--en-ease-enter);
+}
+.en-row__message:empty { display: none; }
+.en-row__message .en-icon {
+  color: var(--en-danger);
+  stroke: var(--en-focus-fill-ink);
+}
+
+/* d) Tile. The ring is drawn by ::after, which spans the frame and track.
+   On focus the tile grows to --en-focus-scale over --en-motion-slow without
+   moving its neighbours; the ring appears thick and narrows over
+   --en-motion-ring, then breathes --en-pulse-count times and rests. When
+   focus leaves, the tile and ring return over --en-motion-fast.
+   A tile's width comes from its shelf, which is a size container: a default
+   tile is two fifths of the shelf and a large one three quarters, each
+   between a narrowest and a widest size. Outside a shelf, a tile takes the
+   same limits from the nearest size container or the page. */
+.en-tile {
+  display: grid;
+  grid-template-columns: 100%;
+  flex: none;
+  width: var(--en-c-tile-width);
+  color: inherit;
+  transition: transform var(--en-motion-fast) var(--en-ease-standard);
+}
+.en-tile--large { width: var(--en-c-tile-width-large); }
+.en-tile::after {
+  content: "";
+  grid-row: 1 / 3;
+  grid-column: 1;
+  pointer-events: none;
+  border-radius: var(--en-radius-face);
+  outline: var(--en-focus-ring-width) solid transparent;
+  outline-offset: var(--en-focus-ring-offset);
+  transition: outline-color var(--en-motion-fast) var(--en-ease-standard);
+}
+.en-tile__frame {
+  grid-row: 1;
+  grid-column: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--en-radius-face);
+  background-color: var(--en-surface-raised);
+  background-image: var(--en-satin-light);
+  box-shadow: var(--en-satin-edge), var(--en-c-satin-shadow);
+  color: var(--en-text-muted);
+  font-size: var(--en-text-caps);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--en-caps-tracking);
+}
+.en-tile__frame:has(+ .en-progress) { border-radius: var(--en-radius-face) var(--en-radius-face) 0 0; }
+.en-tile > .en-progress {
+  grid-row: 2;
+  grid-column: 1;
+  border-radius: 0 0 var(--en-radius-face) var(--en-radius-face);
+}
+.en-tile__title {
+  grid-row: 3;
+  grid-column: 1;
+  padding-top: var(--en-space-gap);
+  font-size: var(--en-text-small);
+  color: var(--en-text-soft);
+  overflow-wrap: anywhere;
+}
+.en-tile:is(:focus-visible, [data-focused="true"]) {
+  outline: none;
+  transform: scale(var(--en-focus-scale));
+  transition-duration: var(--en-motion-slow);
+}
+/* One border per element: the ring is the tile's only edge while it shows. */
+.en-tile:is(:focus-visible, [data-focused="true"]) .en-tile__frame { box-shadow: none; }
+.en-tile:is(:focus-visible, [data-focused="true"])::after {
+  outline-color: var(--en-focus-ring);
+  box-shadow: 0 0 var(--en-c-tile-glow) calc(var(--en-focus-ring-offset) + var(--en-focus-ring-width)) var(--en-accent-glow);
+  transition: none;
+  animation: en-ring-in var(--en-motion-ring) var(--en-ease-standard),
+             en-focus-pulse var(--en-pulse-duration) var(--en-ease-pulse)
+             var(--en-motion-ring) var(--en-pulse-count);
+}
+/* The shelf's padding leaves room for the ring at its thickest plus the
+   growth of the widest large tile, so a focused tile is never cut off at the
+   shelf's edge at any size; the same scroll padding keeps that room when a
+   tile is scrolled into view. */
+.en-shelf {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--en-c-shelf-gap);
+  padding: var(--en-c-shelf-room);
+  scroll-padding: var(--en-c-shelf-room);
+  overflow-x: auto;
+  container-type: inline-size;
+}
+
+/* e) Button. At least --en-size-button tall, and never below the touch target.
+   Focus: the face rises --en-lift over --en-motion-medium as its accent underside
+   appears, in cream with dark text, and settles back over --en-motion-fast.
+   Pressed: it drops onto its underside over --en-motion-fast and darkens; release
+   springs it back over --en-motion-medium. A press from a controller needs
+   data-pressed="true" from the app; without it only that movement is missing. */
+.en-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--en-space-icon);
+  min-height: max(var(--en-size-target), var(--en-size-button));
+  padding: 0 var(--en-c-button-padding);
+  border-radius: var(--en-radius-face);
+  background-color: var(--en-surface-control);
+  background-image: var(--en-satin-light);
+  box-shadow: var(--en-satin-edge), var(--en-c-satin-shadow);
+  color: var(--en-text);
+  font-size: var(--en-text-body);
+  transition: transform var(--en-motion-fast) var(--en-ease-standard),
+              box-shadow var(--en-motion-fast) var(--en-ease-standard);
+}
+.en-button--primary:not(:disabled) {
+  background-color: var(--en-accent);
+  color: var(--en-accent-ink);
+}
+/* Square, as tall as a button and never below the touch target; larger text
+   makes it bigger, never smaller. */
+.en-button--icon {
+  min-width: max(var(--en-size-target), var(--en-size-button));
+  min-height: max(var(--en-size-target), var(--en-size-button));
+  padding: var(--en-space-tight);
+}
+.en-button:not(:disabled):is(:focus-visible, [data-focused="true"]) {
+  outline: none;
+  background-color: var(--en-focus-fill);
+  background-image: none;
+  color: var(--en-focus-fill-ink);
+  -webkit-text-stroke-width: var(--en-c-focus-stroke); /* in the text's own colour: semibold in look, never wider */
+  box-shadow: 0 var(--en-focus-underside) 0 var(--en-focus-ring), var(--en-c-lift-shadow);
+  transform: translateY(calc(-1 * var(--en-c-rise)));
+  transition-duration: var(--en-motion-medium);
+}
+.en-button:not(:disabled):is(:active, [data-pressed="true"]) {
+  background-color: var(--en-cream-pressed);
+  background-image: none;
+  color: var(--en-focus-fill-ink);
+  box-shadow: var(--en-c-press-shadow);
+  transform: translateY(0);
+  transition-duration: var(--en-motion-fast);
+}
+.en-button:disabled { color: var(--en-text-muted); }
+
+/* f) Toggle: a button with aria-pressed. The thumb is ::before. */
+.en-toggle {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: flex-start;
+  width: var(--en-c-toggle-width);
+  height: var(--en-c-toggle-height);
+  padding: var(--en-c-toggle-padding);
+  border-radius: var(--en-radius-pill);
+  background: var(--en-surface-control);
+  transition: background-color var(--en-motion-medium) var(--en-ease-standard);
+}
+.en-toggle::before {
+  content: "";
+  flex: none;
+  width: var(--en-c-toggle-thumb);
+  height: var(--en-c-toggle-thumb);
+  margin-left: 0;
+  border-radius: var(--en-radius-pill);
+  background: var(--en-cream);
+  transition: margin-left var(--en-motion-medium) var(--en-ease-standard),
+              background-color var(--en-motion-medium) var(--en-ease-standard);
+}
+.en-toggle[aria-pressed="true"] { background: var(--en-accent); }
+.en-toggle[aria-pressed="true"]::before {
+  margin-left: calc(var(--en-c-toggle-width) - var(--en-c-toggle-thumb) - 2 * var(--en-c-toggle-padding));
+  background: var(--en-accent-ink);
+}
+.en-toggle:is(:focus-visible, [data-focused="true"]) {
+  outline: var(--en-focus-ring-width) solid var(--en-focus-ring);
+  outline-offset: var(--en-focus-ring-offset);
+}
+
+/* g) Progress. Set --value (a percentage) on .en-progress. A sunken dark track
+   with a hairline edge, and an accent fill speckled in cream. */
+.en-progress {
+  height: var(--en-c-progress-height);
+  border-radius: var(--en-radius-pill);
+  background: var(--en-surface-bar);
+  box-shadow: var(--en-sunken);
+  overflow: hidden;
+}
+.en-progress__fill {
+  display: block;
+  width: var(--value, 0%);
+  height: 100%;
+  border-radius: inherit;
+  background-color: var(--en-accent);
+  background-image: var(--en-speckle-fill);
+  transition: width var(--en-motion-slow) var(--en-ease-standard);
+}
+.en-progress--thin { height: var(--en-c-progress-thin); }
+.en-progress__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--en-space-gap);
+  margin-bottom: var(--en-space-tight);
+}
+.en-progress__head > :first-child {
+  font-size: var(--en-text-small);
+  font-weight: 700;
+  color: var(--en-text-strong);
+}
+.en-progress__head > :last-child:not(:first-child) {
+  font-size: var(--en-text-caps);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--en-caps-tracking);
+  color: var(--en-accent);
+}
+
+/* h) Side menu: as wide as --en-c-menu-width, or its space if that is narrower. */
+.en-menu {
+  display: flex;
+  flex-direction: column;
+  width: min(var(--en-c-menu-width), 100%);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* The current item's glow is ::after, so it can fade; the focus bar is
+   ::before, and grows from the centre. An item is at least
+   --en-c-menu-item-height tall; a long label wraps and makes it taller. */
+.en-menu__item {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: var(--en-c-menu-item-height);
+  padding: var(--en-space-tight) var(--en-space-inset) var(--en-space-tight) var(--en-space-gutter);
+  background: none;
+  color: var(--en-text-soft);
+  font-size: var(--en-text-body);
+  text-align: left;
+  overflow-wrap: anywhere;
+  transition: background-color var(--en-motion-medium) var(--en-ease-standard),
+              color var(--en-motion-medium) var(--en-ease-standard);
+}
+.en-menu__item::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(to right, var(--en-accent-glow), transparent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--en-motion-medium) var(--en-ease-standard);
+}
+.en-menu__item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  inset-block: 50%;
+  width: var(--en-c-menu-bar);
+  background: var(--en-accent);
+  pointer-events: none;
+  transition: inset-block var(--en-motion-medium) var(--en-ease-standard);
+}
+.en-menu__item[aria-current]:not([aria-current="false"]) { color: var(--en-text-strong); }
+.en-menu__item[aria-current]:not([aria-current="false"])::after { opacity: 1; }
+.en-menu__item:is(:focus-visible, [data-focused="true"]) {
+  outline: none;
+  background: var(--en-surface-control);
+  color: var(--en-text-strong);
+}
+.en-menu__item:is(:focus-visible, [data-focused="true"])::after { opacity: 0; }
+.en-menu__item:is(:focus-visible, [data-focused="true"])::before { inset-block: 0; }
+
+/* i) Action bar: docked across the top, opaque, buttons to the right. Content
+   scrolls underneath it. It has no motion of its own. When its buttons do
+   not fit on one line they wrap onto another and the bar gets taller, so a
+   label is never cut short; a single button wider than the bar wraps its
+   label inside itself. On one line it is as tall as a button and its
+   padding. */
+.en-actionbar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--en-space-gap);
+  min-height: calc(max(var(--en-size-target), var(--en-size-button)) + 2 * var(--en-space-tight));
+  padding: var(--en-space-tight) var(--en-space-gutter);
+  background: var(--en-surface-bar);
+  overflow-wrap: anywhere;
+}
+/* A drawn icon: an inline SVG with stroke="currentColor", so it takes the
+   text colour of its button (dark on the cream focus fill). */
+.en-icon {
+  flex: none;
+  width: var(--en-c-icon-size);
+  height: var(--en-c-icon-size);
+  fill: none;
+  stroke-width: var(--en-c-icon-stroke);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* j) Picker dialog. .en-dialog is the layer over the page: almost black and
+   blurred, stopping at the top of the hint bar (--en-c-hintbar-height, which
+   the behaviour script keeps in step with the bar's real height). .en-picker is the panel in its
+   middle; it is as wide as its longest row, between a quarter and two thirds
+   of the space the dialog gives it (the dialog is a size container, so the
+   picker follows its own box, not the screen), and its rows are as wide as
+   it is; longer text wraps. Inside a picker the focused row behaves like a button:
+   cream, rising onto its accent underside. Rows are --en-lift apart, so a row that
+   has risen covers no neighbour, and the panel's padding keeps it inside. */
+.en-dialog {
+  position: fixed;
+  inset: 0 0 var(--en-c-hintbar-height) 0;
+  z-index: 2;
+  box-sizing: border-box;
+  width: auto;
+  height: auto;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: var(--en-space-gutter);
+  border: 0;
+  overflow: auto;
+  container-type: inline-size;
+  place-items: center;
+  background: color-mix(in srgb, var(--en-surface-bar) var(--en-c-backdrop-strength), transparent);
+  backdrop-filter: blur(var(--en-c-backdrop-blur));
+  color: var(--en-text);
+  font-family: var(--en-font);
+  line-height: var(--en-line-height);
+}
+.en-dialog[open] { display: grid; }
+.en-dialog::backdrop { background: transparent; }
+.en-picker {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  min-width: var(--en-c-picker-min);
+  max-width: var(--en-c-picker-max);
+  padding: var(--en-lift);
+  border-radius: var(--en-radius-panel);
+  background-color: var(--en-surface-raised);
+  background-image: var(--en-satin-light);
+  box-shadow: var(--en-satin-edge), var(--en-c-satin-shadow);
+}
+.en-dialog[open] .en-picker { animation: en-fade-in var(--en-motion-dialog) var(--en-ease-standard); }
+.en-dialog[data-closing="true"] .en-picker {
+  animation: en-fade-out var(--en-motion-dialog) var(--en-ease-standard) forwards;
+}
+.en-picker__title {
+  margin: 0;
+  padding: var(--en-space-gap) var(--en-c-picker-inset);
+  color: var(--en-text-strong);
+  font-size: var(--en-text-heading);
+  font-weight: 700;
+}
+.en-picker__rows { display: flex; flex-direction: column; gap: var(--en-lift); }
+.en-picker__row {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  min-height: var(--en-c-picker-row);
+  padding: var(--en-space-gap) var(--en-c-picker-inset);
+  border-radius: var(--en-radius-face);
+  background: var(--en-surface-raised);
+  color: var(--en-text);
+  font-size: var(--en-text-heading);
+  text-align: left;
+  overflow-wrap: anywhere;
+  transition: transform var(--en-motion-fast) var(--en-ease-standard),
+              box-shadow var(--en-motion-fast) var(--en-ease-standard);
+}
+.en-picker__row:has(.en-picker__desc) { min-height: var(--en-c-picker-row-tall); }
+.en-picker__desc {
+  font-size: var(--en-c-text-detail);
+  color: var(--en-text-muted);
+}
+.en-picker__cancel { margin-top: var(--en-space-tight); }
+.en-picker__row[aria-current="true"] {
+  background: var(--en-surface-control);
+  color: var(--en-text-strong);
+}
+.en-picker__row[aria-current="true"] .en-picker__desc { color: var(--en-text-soft); }
+.en-picker__row:is(:focus-visible, [data-focused="true"]) {
+  outline: none;
+  background: var(--en-focus-fill);
+  color: var(--en-focus-fill-ink);
+  -webkit-text-stroke-width: var(--en-c-focus-stroke); /* in the text's own colour: semibold in look, never wider */
+  box-shadow: 0 var(--en-focus-underside) 0 var(--en-focus-ring), var(--en-c-lift-shadow);
+  transform: translateY(calc(-1 * var(--en-c-rise)));
+  transition-duration: var(--en-motion-medium);
+}
+.en-picker__row:is(:focus-visible, [data-focused="true"]) .en-picker__desc,
+.en-picker__row:is(:focus-visible, [data-focused="true"]) .en-row__message { color: var(--en-focus-fill-ink); }
+.en-picker__row:is(:active, [data-pressed="true"]) {
+  background: var(--en-cream-pressed);
+  color: var(--en-focus-fill-ink);
+  box-shadow: var(--en-c-press-shadow);
+  transform: translateY(0);
+  transition-duration: var(--en-motion-fast);
+}
+.en-picker__row:is(:active, [data-pressed="true"]) .en-picker__desc { color: var(--en-focus-fill-ink); }
+
+/* k) Toast: bottom right, flush with the right edge, just above the hint bar
+   (--en-c-hintbar-height, as for the picker's layer).
+   It is as wide as its text, up to --en-c-toast-width and never wider than
+   the space it sits in less a gutter; longer text wraps. It never takes
+   focus and never blocks what is under it. A progress bar inside it goes on a
+   line of its own. Its right edge meets the side of the space, so only its left
+   corners are rounded. */
+.en-toast {
+  position: fixed;
+  right: 0;
+  bottom: var(--en-c-hintbar-height);
+  z-index: 3;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--en-space-icon);
+  width: fit-content;
+  max-width: min(var(--en-c-toast-width), 100% - var(--en-space-gutter));
+  min-height: var(--en-size-bar);
+  padding: var(--en-space-tight) var(--en-space-inset);
+  border-radius: var(--en-radius-panel) 0 0 var(--en-radius-panel);
+  background-color: var(--en-surface-page);
+  background-image: var(--en-satin-light);
+  box-shadow: var(--en-satin-edge), var(--en-c-satin-shadow);
+  color: var(--en-text-strong);
+  font-family: var(--en-font);
+  font-size: var(--en-c-text-detail);
+  line-height: var(--en-line-height);
+  overflow-wrap: anywhere;
+  pointer-events: none;
+  animation: en-slide-in var(--en-motion-slow) var(--en-ease-enter);
+}
+.en-toast[hidden] { display: none; }
+.en-toast[data-closing="true"] {
+  animation: en-fade-out var(--en-motion-slow) var(--en-ease-enter) forwards;
+}
+.en-toast:has(> .en-progress) {
+  flex-wrap: wrap;
+  padding-block: var(--en-space-gap);
+}
+.en-toast > .en-progress { flex: 1 0 100%; }
+.en-toast__icon { display: flex; flex: none; }
+.en-toast__icon[hidden] { display: none; }
+
+/* l) Step label: a small, muted line above a page title, inside the title's
+   heading element, so screen readers read the two together as one heading. */
+.en-steplabel {
+  display: block;
+  margin-bottom: var(--en-space-tight);
+  color: var(--en-text-muted);
+  font-size: var(--en-text-small);
+  font-weight: 400;
+}
+
+/* m) Group band: the header of a group of list rows, with an icon, a name in
+   capitals and a count on the right. The icon sits inside the name, so the
+   two stay together. It never takes focus. The two kinds
+   differ by fill and by icon, not by colour alone: the default band is
+   filled, the outlined one is drawn with a line as thick as its icon's. When
+   the name and count don't fit side by side, the count moves onto a line of
+   its own, still on the right. */
+.en-band {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--en-space-tight) var(--en-space-icon);
+  margin: 0 0 var(--en-space-gap);
+  padding: var(--en-space-gap) var(--en-space-inset);
+  border-radius: var(--en-radius-face);
+  background-color: var(--en-surface-control);
+  background-image: var(--en-satin-light);
+  box-shadow: var(--en-satin-edge), var(--en-c-satin-shadow);
+  color: var(--en-text-strong);
+  font-size: var(--en-text-caps);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.en-band--outline {
+  background: none;
+  box-shadow: inset 0 0 0 var(--en-c-icon-stroke) var(--en-text-muted);
+}
+.en-band__name {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--en-space-icon);
+  min-width: 0;
+  text-transform: uppercase;
+  letter-spacing: var(--en-caps-tracking);
+}
+.en-band__count {
+  margin-left: auto;
+  color: var(--en-text-soft);
+  font-size: var(--en-text-small);
+  font-weight: 400;
+}
+
+/* n) Badge: a small tag on a row ("Movies") or after a tab's label ("Beta").
+   Muted: soft text on the control grey. On a focused row or a selected tab,
+   which are that grey themselves, and on a picker row's cream focus fill, it
+   turns to the page colour. Only its
+   colours change, so its row or tab never changes size. Its text is part of
+   the row's or tab's accessible name. */
+.en-badge {
+  display: inline-block;
+  flex: none;
+  max-width: 100%;
+  padding: 0 var(--en-space-gap);
+  border-radius: var(--en-radius-face);
+  background: var(--en-surface-control);
+  color: var(--en-text-soft);
+  font-size: var(--en-text-caps);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--en-caps-tracking);
+  overflow-wrap: anywhere;
+  transition: background-color var(--en-motion-fast) var(--en-ease-standard),
+              color var(--en-motion-fast) var(--en-ease-standard);
+}
+.en-row:is(:focus-visible, [data-focused="true"]) .en-badge,
+.en-picker__row:is(:focus-visible, [data-focused="true"]) .en-badge,
+.en-tab[aria-selected="true"] .en-badge { background: var(--en-surface-page); }
+/* A tab whose label and badge don't fit side by side puts the badge under
+   its label, inside the pill. */
+.en-tab:has(> .en-badge) {
+  flex-wrap: wrap;
+  justify-content: center;
+  row-gap: var(--en-space-tight);
+  padding-block: var(--en-space-tight);
+}
+
+/* o) Numbered steps: an ordered list of two to five short steps. Each number
+   sits in a round mark as big as a button glyph, and each step's text lines
+   up after its number when it wraps. */
+.en-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--en-space-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: en-step;
+  color: var(--en-text);
+  font-size: var(--en-text-body);
+}
+.en-steps > li {
+  display: grid;
+  grid-template-columns: var(--en-c-glyph-size) minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--en-space-icon);
+  overflow-wrap: anywhere;
+  counter-increment: en-step;
+}
+.en-steps > li::before {
+  content: counter(en-step);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--en-c-glyph-size);
+  height: var(--en-c-glyph-size);
+  border-radius: var(--en-radius-pill);
+  background-color: var(--en-surface-control);
+  background-image: var(--en-satin-light);
+  box-shadow: var(--en-satin-edge);
+  color: var(--en-text-strong);
+  font-size: var(--en-c-glyph-text);
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* p) Stat panel: one or two counts, each a large number with its word, and the
+   folder they refer to under them; or "Not set" in place of the counts. It
+   never takes focus and has no hover or focus state. A stat pair is a container
+   that wraps: two panels sit side by side, and stack when they cannot both fit
+   at --en-c-statpanel-min. A panel outside a pair takes the width of its space. */
+.en-statpair {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--en-space-gap);
+}
+.en-statpair > .en-statpanel { flex: 1 1 var(--en-c-statpanel-min); }
+.en-statpanel {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--en-space-tight);
+  min-width: 0;
+  padding: var(--en-space-inset);
+  border-radius: var(--en-radius-panel);
+  background-color: var(--en-surface-raised);
+  background-image: var(--en-satin-light);
+  box-shadow: var(--en-satin-edge), var(--en-c-satin-shadow);
+  color: var(--en-text);
+  font-size: var(--en-text-body);
+  overflow-wrap: anywhere;
+}
+.en-statpanel__counts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: var(--en-space-inset);
+}
+.en-statpanel__count { min-width: 0; }
+.en-statpanel__number {
+  color: var(--en-text-strong);
+  font-size: var(--en-text-title);
+  font-weight: 700;
+}
+.en-statpanel__path {
+  color: var(--en-text-soft);
+  font-size: var(--en-text-small);
+}
+.en-statpanel__notset { color: var(--en-text-muted); }
+
+/* q) Note: a plain line of neutral information under other content, with an
+   optional icon before it. It never takes focus and never sits inside a row.
+   Notes that follow each other stack --en-c-note-gap apart. */
+.en-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--en-space-icon);
+  margin: 0;
+  color: var(--en-text-soft);
+  font-size: var(--en-text-small);
+  overflow-wrap: anywhere;
+}
+.en-note + .en-note { margin-top: var(--en-c-note-gap); }
+
+/* r) Page speckle: very faint flecks on the page ground. It goes on an empty
+   area of the page, never behind list text. Only this and a progress fill are
+   ever patterned; nothing you can select is. The cream flecks are the element's
+   background; the occasional accent fleck is ::before, a mask filled with the
+   active accent. Nothing animates. */
+.en-speckle {
+  position: relative;
+  isolation: isolate;
+  background-image: var(--en-speckle-page);
+}
+.en-speckle::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--en-accent);
+  mask-image: var(--en-speckle-page-accent);
+  opacity: var(--en-c-speckle-accent);
+  pointer-events: none;
+}
+
+/*
+ * Reduced motion. No pulse, no scale, no sliding or growing: those changes
+ * are instant. A face never rises or drops: focus switches to cream at once and
+ * a press only darkens. Colour fades stay, at --en-motion-fast. Focus looks
+ * exactly as it does in full motion once it has arrived.
+ * The two blocks below must stay identical apart from their first line;
+ * tools/check_guide.py checks that they do.
+ */
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-en-motion="full"]) .en-tile { transform: none; }
+  :root:not([data-en-motion="full"]) .en-tile::after { animation: none; }
+  :root:not([data-en-motion="full"]) .en-dot { animation: none; }
+  :root:not([data-en-motion="full"]) .en-button {
+    transform: none;
+    transition: none;
+  }
+  :root:not([data-en-motion="full"]) .en-button:not(:disabled):is(:focus-visible, [data-focused="true"]) { transform: none; }
+  :root:not([data-en-motion="full"]) .en-button:not(:disabled):is(:active, [data-pressed="true"]) { transform: none; }
+  :root:not([data-en-motion="full"]) .en-picker__row {
+    transform: none;
+    transition: none;
+  }
+  :root:not([data-en-motion="full"]) .en-tab { transition-duration: var(--en-motion-fast); }
+  :root:not([data-en-motion="full"]) .en-toggle { transition-duration: var(--en-motion-fast); }
+  :root:not([data-en-motion="full"]) .en-toggle::before {
+    transition-property: background-color;
+    transition-duration: var(--en-motion-fast);
+  }
+  :root:not([data-en-motion="full"]) .en-progress__fill { transition: none; }
+  :root:not([data-en-motion="full"]) .en-menu__item { transition-duration: var(--en-motion-fast); }
+  :root:not([data-en-motion="full"]) .en-menu__item::after { transition-duration: var(--en-motion-fast); }
+  :root:not([data-en-motion="full"]) .en-menu__item::before { transition: none; }
+  :root:not([data-en-motion="full"]) .en-dialog .en-picker { animation: none; }
+  :root:not([data-en-motion="full"]) .en-toast { animation: none; }
+  :root:not([data-en-motion="full"]) .en-row__message { animation: none; }
+}
+[data-en-motion="reduced"] .en-tile { transform: none; }
+[data-en-motion="reduced"] .en-tile::after { animation: none; }
+[data-en-motion="reduced"] .en-dot { animation: none; }
+[data-en-motion="reduced"] .en-button {
+  transform: none;
+  transition: none;
+}
+[data-en-motion="reduced"] .en-button:not(:disabled):is(:focus-visible, [data-focused="true"]) { transform: none; }
+[data-en-motion="reduced"] .en-button:not(:disabled):is(:active, [data-pressed="true"]) { transform: none; }
+[data-en-motion="reduced"] .en-picker__row {
+  transform: none;
+  transition: none;
+}
+[data-en-motion="reduced"] .en-tab { transition-duration: var(--en-motion-fast); }
+[data-en-motion="reduced"] .en-toggle { transition-duration: var(--en-motion-fast); }
+[data-en-motion="reduced"] .en-toggle::before {
+  transition-property: background-color;
+  transition-duration: var(--en-motion-fast);
+}
+[data-en-motion="reduced"] .en-progress__fill { transition: none; }
+[data-en-motion="reduced"] .en-menu__item { transition-duration: var(--en-motion-fast); }
+[data-en-motion="reduced"] .en-menu__item::after { transition-duration: var(--en-motion-fast); }
+[data-en-motion="reduced"] .en-menu__item::before { transition: none; }
+[data-en-motion="reduced"] .en-dialog .en-picker { animation: none; }
+[data-en-motion="reduced"] .en-toast { animation: none; }
+[data-en-motion="reduced"] .en-row__message { animation: none; }

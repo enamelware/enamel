@@ -1,0 +1,137 @@
+/*
+ * Enamel design tokens, version 0.11.1.
+ * Copyright (c) 2026 Mario Carabotta
+ * SPDX-License-Identifier: MIT
+ * One :root block in four groups. Apps use Group C (semantic) and Group D
+ * (motion) only.
+ * After it, the accent selection rules: data-en-accent="<name>" on <html> or
+ * on any element switches the active accent for everything inside it.
+ * Which unit, by one question: should this grow when the user makes text
+ * bigger? Yes is rem (text and what holds text), no is px (lines, the focus
+ * ring, corners, shadows, the lift, the touch target). Enamel never sets the
+ * root font size, so 1rem stays the user's own. --en-root-size scales
+ * everything, pixels included, through zoom (components/enamel-components.css).
+ * Every size is a multiple of 4 in its own unit, unless DESIGN.md lists it as an
+ * exception. The growing ones are written as clamp(base, ..., base x 1.2): their
+ * base size up to a page 100rem wide, growing evenly to a fifth bigger at 160rem.
+ * After any change here, re-run tools/build_design_md.py and
+ * tools/build_styleguide.py. The speckle images are written here by
+ * tools/build_speckle.py.
+ */
+:root {
+  /* Group A: Steam baseline (matched to Steam's Gaming Mode) */
+  --en-grey-1: #DCDEDF;
+  --en-grey-2: #B8BCBF;
+  --en-grey-3: #8B929A;
+  --en-grey-4: #67707B;
+  --en-grey-5: #3D4450;
+  --en-grey-6: #23262E;
+  --en-grey-7: #0E141B;
+  --en-green: #59BF40;
+  --en-yellow: #FFC82C;
+  --en-red: #D94126;
+  --en-shadow-1: 0px 2px 2px 0px #0000003D;
+  --en-shadow-2: 0px 3px 6px 0px #0000003D;
+  --en-shadow-3: 0px 12px 16px 0px #0000003D;
+  --en-shadow-4: 0px 24px 32px 0px #0000003D;
+  --en-radius: 2px;
+  --en-space-gap: 0.75rem; /* Steam's 12px, in rem; does not grow */
+  --en-focus-affordance: 10px;
+  --en-line-height: 1.4;
+
+  /* Group B: Enamel brand */
+  --en-accent-coral: #EE8A72; /* named accent; the default */
+  --en-accent-coral-ink: #0E141B;
+  --en-accent-sage: #B7CC94; /* named accent; an example alternate */
+  --en-accent-sage-ink: #0E141B;
+  --en-accent: var(--en-accent-coral); /* the active accent */
+  --en-accent-ink: var(--en-accent-coral-ink);
+  --en-accent-glow: color-mix(in srgb, var(--en-accent) 42%, transparent);
+  --en-radius-pill: 999px; /* not part of the Steam baseline, whose corners are 1px, 2px and 3px only */
+  --en-radius-face: 8px; /* corners of rows, buttons and tiles */
+  --en-radius-panel: 12px; /* corners of panels, pickers and toasts */
+  --en-cream: #F2EBDA; /* Enamel's white; a neutral, not a second accent */
+  --en-cream-pressed: #E6DDC8; /* cream while it is pressed */
+  --en-satin-light: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0) 60%); /* the very faint light along a raised surface's top */
+  --en-satin-edge: inset 0 0 0 1px rgba(255, 255, 255, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 1px 0 #05080B; /* a raised surface's 1px soft rim, the light on its top edge, and its 1px dark lip */
+  --en-satin-shadow: 0 4px 8px rgba(0, 0, 0, 0.22); /* a raised surface's short soft shadow */
+  --en-lift-shadow: 0 12px 16px rgba(0, 0, 0, 0.32); /* the soft shadow under a face that has risen */
+  --en-press-shadow: 0 1px 4px rgba(0, 0, 0, 0.3); /* the soft shadow under a face pressed onto its underside */
+  --en-sunken: inset 0 1px 4px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.08); /* a sunken track: dark inside, with a hairline edge */
+  --en-focus-underside: 4px; /* the accent-coloured underside a focused face sits on */
+  --en-lift: 4px; /* how far a face rises when focus arrives */
+  --en-speckle-fill: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='32'%3E%3Cg fill='none' stroke='%23F2EBDA' stroke-linecap='round'%3E%3Cpath stroke-width='1' stroke-opacity='0.9' d='M46.4 21.2h0M85.6 6.3h0M125.3 15.8h0M122.8 14.7h0M67.7 8.1h0M177.1 10.4h0M172.8 25.2h0M221.7 30.2h0M60.0 7.6h0M188.1 18.4h0M51.7 21.7h0M223.6 26.7h0M55.3 9.6h0M1.7 31.2h0M1.7 -0.8h0M56.4 23.3h0M137.7 19.0h0M134.8 26.4h0M153.6 9.7h0M29.4 15.3h0M236.3 4.6h0M175.1 20.2h0M41.0 6.6h0M175.7 14.0h0M104.2 15.4h0M25.9 22.5h0M150.6 17.1h0M86.9 26.0h0M210.9 17.4h0M22.7 4.7h0M39.0 2.5h0M166.0 17.4h0M52.2 29.1h0M161.2 25.3h0M209.4 21.8h0M134.9 31.5h0M134.9 -0.5h0M34.0 22.1h0M226.4 15.3h0M209.2 5.8h0M106.6 8.7h0M101.6 22.5h0M36.7 10.8h0M216.6 9.6h0M32.3 31.8h0M32.3 -0.2h0M138.5 0.6h0M138.5 32.6h0'/%3E%3Cpath stroke-width='1.5' stroke-opacity='0.9' d='M146.3 4.7h0M41.7 23.6h0M167.0 13.6h0M131.7 17.9h0M117.5 3.2h0M196.8 24.7h0M108.0 12.9h0M156.3 15.1h0M106.3 28.0h0M231.7 4.8h0M44.1 25.1h0M245.2 23.4h0M76.0 1.9h0M211.8 29.8h0M194.2 23.6h0M249.0 16.8h0M238.1 8.4h0M19.6 26.9h0M178.9 25.5h0M33.4 9.6h0M150.3 2.1h0M84.1 19.3h0M239.8 23.0h0M101.5 13.1h0M131.3 23.7h0M254.9 0.4h0M254.9 32.4h0M-1.1 0.4h0M-1.1 32.4h0'/%3E%3Cpath stroke-width='2' stroke-opacity='0.9' d='M236.9 25.7h0M11.7 8.2h0M70.0 6.9h0M41.6 4.4h0M173.0 14.0h0M27.4 27.0h0M213.8 8.3h0M212.4 24.8h0'/%3E%3C/g%3E%3C/svg%3E");
+  --en-speckle-page: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='640'%3E%3Cg fill='none' stroke='%23F2EBDA' stroke-linecap='round'%3E%3Cpath stroke-width='1' stroke-opacity='0.06' d='M92.3 431.6h0M395.8 78.1h0M324.0 157.9h0M23.5 76.7h0M416.6 86.2h0M71.1 116.8h0M260.2 303.4h0M417.2 486.3h0M76.7 213.2h0M500.8 38.4h0M19.5 396.0h0M568.5 504.9h0M323.4 360.5h0M274.3 192.9h0M51.3 231.3h0M140.9 222.6h0M513.5 448.5h0M151.8 621.5h0M20.6 443.2h0M429.5 584.6h0M254.1 135.3h0M240.0 197.9h0M203.4 308.6h0M574.2 575.3h0M351.0 187.0h0M462.2 624.2h0M172.3 64.1h0M307.7 622.7h0M452.1 223.6h0M199.2 469.7h0M126.5 554.1h0M21.4 416.4h0M477.3 403.7h0M571.1 49.3h0M568.1 41.4h0M559.2 538.9h0M43.7 600.7h0M302.3 266.0h0M345.3 48.0h0M583.0 519.2h0M533.6 29.3h0M178.6 338.8h0M255.9 215.6h0M372.7 260.9h0M148.7 66.5h0M150.1 427.2h0M188.2 603.9h0M226.0 562.7h0M385.3 224.1h0M475.7 219.1h0M177.5 540.8h0M25.1 605.3h0M311.3 331.8h0M416.4 326.6h0M17.0 104.6h0M552.7 347.0h0M494.8 606.6h0M226.1 338.2h0M368.0 478.8h0M9.0 519.5h0M317.6 290.8h0M65.5 411.1h0M35.8 245.5h0M111.0 265.2h0M268.6 0.5h0M268.6 640.5h0M217.4 388.5h0M548.6 322.2h0M459.7 255.7h0M370.8 62.1h0M55.1 604.8h0'/%3E%3Cpath stroke-width='1.5' stroke-opacity='0.08' d='M334.7 114.8h0M374.3 177.4h0M608.7 578.3h0M469.7 218.7h0M542.7 218.2h0M30.9 407.8h0M399.5 564.4h0M288.7 268.4h0M444.7 355.9h0M154.1 166.8h0M346.8 183.8h0M57.3 310.5h0M306.6 110.7h0M512.6 391.1h0M358.7 581.3h0M551.6 428.8h0M65.2 247.5h0M245.5 380.1h0M231.8 584.0h0M280.7 273.5h0M181.3 324.4h0M497.0 490.4h0M270.3 604.0h0M200.6 585.9h0M202.8 423.4h0M117.9 89.8h0M414.7 248.2h0M578.2 353.6h0M575.5 189.1h0M453.9 204.0h0M348.8 6.8h0M138.1 364.3h0M366.1 631.0h0M563.7 538.1h0M323.2 604.3h0M258.3 297.6h0M38.4 100.7h0M23.9 172.1h0M526.5 109.6h0M453.6 65.5h0M21.9 583.5h0M48.8 338.0h0M332.7 163.9h0M363.7 288.6h0'/%3E%3Cpath stroke-width='2.5' stroke-opacity='0.1' d='M214.8 78.3h0M2.1 287.9h0M642.1 287.9h0M574.8 599.3h0M533.0 536.3h0M419.9 587.4h0M93.8 201.3h0M487.9 220.6h0M41.0 515.3h0M145.8 463.8h0M195.8 565.8h0M383.6 529.9h0M340.0 266.5h0M549.6 611.3h0M402.7 267.0h0'/%3E%3C/g%3E%3C/svg%3E");
+  --en-speckle-page-accent: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='704' height='704'%3E%3Cg fill='none' stroke='%23000000' stroke-linecap='round'%3E%3Cpath stroke-width='1.5' stroke-opacity='1' d='M255.2 35.3h0M231.3 428.3h0M648.9 316.2h0M93.3 298.8h0M499.7 361.5h0M564.8 173.4h0M28.7 461.8h0M703.7 694.0h0M-0.3 694.0h0M11.9 681.8h0M225.7 336.4h0M440.0 22.8h0M2.9 451.0h0M436.3 127.4h0M48.2 479.7h0'/%3E%3Cpath stroke-width='2.5' stroke-opacity='1' d='M608.2 324.7h0M411.1 489.4h0M352.8 16.9h0M302.9 169.1h0M109.9 333.1h0M342.5 236.1h0'/%3E%3C/g%3E%3C/svg%3E");
+
+  /* Group C: Semantic (what apps actually use) */
+  --en-surface-page: var(--en-grey-7);
+  --en-surface-raised: var(--en-grey-6);
+  --en-surface-control: var(--en-grey-5);
+  --en-surface-bar: #000000;
+  --en-text-strong: #FFFFFF;
+  --en-text: var(--en-grey-1);
+  --en-text-soft: var(--en-grey-2);
+  --en-text-muted: var(--en-grey-3);
+  --en-focus-ring: var(--en-accent);
+  --en-focus-ring-width: 4px;
+  --en-focus-ring-offset: 4px;
+  --en-focus-fill: var(--en-cream);
+  --en-focus-fill-ink: var(--en-grey-7);
+  --en-success: var(--en-green);
+  --en-warning: var(--en-yellow);
+  --en-danger: var(--en-red);
+  --en-font: system-ui, sans-serif;
+  --en-text-title: clamp(2.0625rem, 1.375rem + 0.6875vw, 2.475rem); /* steam baseline: grows by at most a fifth on pages wider than 100rem */
+  --en-text-heading: clamp(1.5rem, 1rem + 0.5vw, 1.8rem); /* steam baseline: grows by at most a fifth on pages wider than 100rem */
+  --en-text-body: clamp(1.5rem, 1rem + 0.5vw, 1.8rem); /* steam baseline: grows by at most a fifth on pages wider than 100rem */
+  --en-text-small: clamp(1.16667rem, 0.77778rem + 0.38889vw, 1.4rem); /* steam baseline: grows by at most a fifth on pages wider than 100rem */
+  --en-text-caps: clamp(1.0625rem, 0.70833rem + 0.35417vw, 1.275rem); /* steam baseline: grows by at most a fifth on pages wider than 100rem */
+  --en-caps-tracking: 0.06em;
+  --en-space-gutter: clamp(2.25rem, 1.5rem + 0.75vw, 2.7rem); /* steam baseline: the side gutter of lists; grows by at most a fifth on pages wider than 100rem */
+  --en-space-gutter-grid: clamp(3rem, 2rem + 1vw, 3.6rem); /* steam baseline: the side gutter of grids and shelves; grows by at most a fifth on pages wider than 100rem */
+  --en-space-inset: clamp(1.25rem, 0.83333rem + 0.41667vw, 1.5rem); /* steam baseline: grows by at most a fifth on pages wider than 100rem */
+  --en-space-tight: 0.25rem; /* does not grow */
+  --en-space-icon: 1rem; /* steam baseline: between an icon or a button glyph and its text; does not grow */
+  --en-size-row: 4rem; /* steam baseline: a minimum, so taller text still fits */
+  --en-size-row-control: 6rem; /* steam baseline: a row with a toggle or a button, a minimum */
+  --en-size-bar: 3.75rem; /* steam baseline: a minimum, so taller text still fits */
+  --en-size-target: 44px; /* steam baseline: a floor in px, never smaller with the text */
+  --en-size-button: 3.75rem; /* steam baseline: a button's height, a minimum, never below the touch target */
+  --en-size-tile-portrait: 12.5rem; /* steam baseline: a portrait cover's width; its height is one and a half times it */
+  --en-root-size: 100%; /* the interface size: set it on <html> to scale everything, pixels included, through zoom; at 100% it does nothing */
+
+  /* Group D: Motion */
+  --en-motion-fast: 100ms; /* steam baseline: a focused Gaming Mode tile moves back over 100ms when it loses focus */
+  --en-motion-medium: 200ms; /* steam baseline: Gaming Mode's toggle thumb and slider handle move over 200ms */
+  --en-motion-slow: 300ms; /* steam baseline: a tile moving towards you on focus */
+  --en-ease-standard: cubic-bezier(0.16, 0.86, 0.43, 0.99); /* steam baseline: a Gaming Mode tile gaining or losing focus */
+  --en-ease-enter: cubic-bezier(0, 0.73, 0.48, 1); /* steam baseline: a Gaming Mode toast sliding in */
+  --en-ease-pulse: ease-in-out; /* steam baseline: each breath of Gaming Mode's tile focus ring */
+  --en-focus-scale: 1.024; /* steam baseline: measured on a focused landscape tile in Big Picture Mode */
+  --en-focus-ring-start: 12px; /* steam baseline: Gaming Mode's focus ring starts 12px thick, then narrows */
+  --en-motion-ring: 400ms; /* steam baseline: Gaming Mode's focus ring narrows over 400ms */
+  --en-motion-dialog: 500ms; /* steam baseline: a Gaming Mode dialog or menu fading in */
+  --en-pulse-duration: 1.2s; /* steam baseline: one breath of Gaming Mode's tile focus ring */
+  --en-pulse-count: 4; /* enamel: the pulse stops after about five seconds and the ring rests fully visible */
+  --en-pulse-min: 0.4; /* steam baseline: Gaming Mode's ring dims from 60% to 24% white, 0.4 of its resting strength */
+}
+
+/*
+ * Accent selection. Each named accent gets one rule that points the active
+ * pair at it. Tokens calculated from the accent are declared again on every
+ * [data-en-accent] element, with the same values as above, so they
+ * recalculate there instead of inheriting the value worked out on :root.
+ */
+[data-en-accent="coral"] {
+  --en-accent: var(--en-accent-coral);
+  --en-accent-ink: var(--en-accent-coral-ink);
+}
+[data-en-accent="sage"] {
+  --en-accent: var(--en-accent-sage);
+  --en-accent-ink: var(--en-accent-sage-ink);
+}
+[data-en-accent] {
+  --en-accent-glow: color-mix(in srgb, var(--en-accent) 42%, transparent);
+  --en-focus-ring: var(--en-accent);
+}

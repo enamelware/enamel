@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Enamel design system: overview</title>
+<link rel="stylesheet" href="../tokens/enamel.css">
+<style>
+* { box-sizing: border-box; }
+html { background: var(--en-surface-page); }
+body { margin: 0; background: var(--en-surface-page); color: var(--en-text);
+  font-family: var(--en-font); font-size: var(--en-text-body); line-height: 1.5; }
+a { color: var(--en-text-strong); text-underline-offset: 4px; }
+a:focus-visible { outline: var(--en-focus-ring-width) solid var(--en-focus-ring);
+  outline-offset: var(--en-focus-ring-offset); border-radius: var(--en-radius); }
+code { font-family: inherit; font-size: var(--en-text-small); color: var(--en-text-muted); overflow-wrap: anywhere; }
+
+.page { max-width: 1112px; margin: 0 auto; padding: 0 var(--en-space-gutter) 96px; }
+.intro { padding: 72px 0 40px; }
+.intro h1 { margin: 0 0 16px; font-size: 44px; line-height: 1.15; color: var(--en-text-strong); }
+.intro p { margin: 0; max-width: 62ch; color: var(--en-text-soft); }
+.part { padding-top: 88px; }
+.part > h2 { margin: 0 0 12px; font-size: var(--en-text-title); line-height: 1.25; color: var(--en-text-strong); }
+.part > p { margin: 0 0 32px; max-width: 62ch; color: var(--en-text-soft); }
+.name { color: var(--en-text-strong); font-weight: 700; }
+.plain { color: var(--en-text-soft); font-size: 17px; }
+
+/* The screen specimen */
+.screen { background: var(--en-surface-page); outline: 1px solid var(--en-surface-control);
+  border-radius: var(--en-radius); box-shadow: var(--en-shadow-4); overflow: hidden; }
+.screen-body { padding: 28px var(--en-space-gutter) 32px; display: flex; flex-direction: column; gap: 14px; }
+.now { color: var(--en-text-strong); font-size: var(--en-text-heading); font-weight: 700; line-height: 1.3; }
+.status { display: flex; align-items: center; gap: 8px; color: var(--en-text-soft);
+  font-size: var(--en-text-caps); font-weight: 700; letter-spacing: var(--en-caps-tracking); }
+.play { width: 0; height: 0; border-left: 11px solid var(--en-accent);
+  border-top: 6px solid transparent; border-bottom: 6px solid transparent; }
+.shelf { display: flex; align-items: flex-start; gap: var(--en-space-gap); padding: 7px; overflow: hidden; }
+.tile { flex: none; display: flex; flex-direction: column; }
+.frame { background: var(--en-surface-raised); display: flex; align-items: center; justify-content: center;
+  color: var(--en-text-muted); font-size: var(--en-text-caps); font-weight: 700; letter-spacing: var(--en-caps-tracking); }
+.track { height: 4px; background: var(--en-surface-control); }
+.fill { height: 4px; background: var(--en-accent); }
+.tile.big { width: 352px; margin-right: 10px; outline: var(--en-focus-ring-width) solid var(--en-focus-ring);
+  outline-offset: var(--en-focus-ring-offset); }
+.tile.big .frame { height: 198px; }
+.tile.small { width: 208px; }
+.tile.small .frame { height: 117px; }
+.tile .title { padding-top: 8px; color: var(--en-text-soft); font-size: var(--en-text-small); }
+.tabs { display: flex; justify-content: center; gap: var(--en-space-tight); padding-top: 10px; }
+.tab { height: 44px; padding: 0 22px; border-radius: var(--en-radius-pill); display: flex; align-items: center; gap: 10px;
+  font-size: var(--en-text-small); font-weight: 700; letter-spacing: var(--en-caps-tracking); color: var(--en-text); }
+.tab.on { background: var(--en-surface-control); color: var(--en-text-strong); }
+.tab span { color: var(--en-text-soft); }
+.dot { width: 10px; height: 10px; border-radius: var(--en-radius-pill); background: var(--en-accent); }
+.rows { display: flex; flex-direction: column; gap: var(--en-space-tight); }
+.row { min-height: var(--en-size-row); padding: 0 var(--en-space-inset); background: var(--en-surface-raised);
+  border-radius: var(--en-radius); display: flex; align-items: center; gap: 14px; }
+.row small { color: var(--en-text-muted); font-size: 16px; }
+.hints { min-height: var(--en-size-bar); background: var(--en-surface-bar); padding: 0 var(--en-space-gutter);
+  display: flex; align-items: center; justify-content: flex-end; gap: 28px;
+  color: var(--en-text-strong); font-size: var(--en-text-small); font-weight: 700; letter-spacing: var(--en-caps-tracking); }
+.hint { display: flex; align-items: center; gap: 10px; }
+.glyph { width: 30px; height: 30px; border-radius: var(--en-radius-pill); background: var(--en-focus-fill);
+  color: var(--en-focus-fill-ink); display: flex; align-items: center; justify-content: center; letter-spacing: 0; font-size: 16px; }
+
+/* Colour */
+.ramp { display: flex; border-radius: var(--en-radius); overflow: hidden; outline: 1px solid var(--en-surface-control); }
+.ramp div { flex: 1; height: 112px; }
+.ramp-key { display: flex; margin-top: 14px; }
+.ramp-key div { flex: 1; padding-right: 12px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.coral { margin-top: 48px; display: flex; flex-wrap: wrap; gap: 40px; align-items: stretch; }
+.coral-block { flex: 1 1 320px; min-height: 220px; background: var(--en-accent); color: var(--en-accent-ink);
+  border-radius: var(--en-radius); padding: 28px; display: flex; flex-direction: column; justify-content: flex-end; gap: 4px; }
+.coral-block b { font-size: 44px; line-height: 1.1; }
+.coral-block span { font-size: 17px; }
+.uses { flex: 1 1 420px; margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 28px; align-content: center; }
+.uses li { display: flex; align-items: center; gap: 14px; min-height: 44px; }
+.uses .eg { flex: none; width: 64px; display: flex; justify-content: center; }
+.sw { width: 54px; height: 30px; padding: 3px; border-radius: var(--en-radius-pill); background: var(--en-accent); display: flex; justify-content: flex-end; }
+.sw i { width: 24px; height: 24px; border-radius: var(--en-radius-pill); background: var(--en-accent-ink); }
+.bar6 { width: 64px; height: 6px; border-radius: 3px; background: var(--en-surface-control); }
+.bar6 i { display: block; width: 60%; height: 6px; border-radius: 3px; background: var(--en-accent); }
+.btn { padding: 4px 12px; border-radius: var(--en-radius); background: var(--en-accent); color: var(--en-accent-ink); font-size: var(--en-text-small); }
+.edge { width: 64px; height: 30px; border-left: 4px solid var(--en-accent);
+  background: linear-gradient(90deg, var(--en-accent-glow), transparent); }
+.word { color: var(--en-accent); font-size: var(--en-text-caps); font-weight: 700; letter-spacing: var(--en-caps-tracking); }
+.signals { margin-top: 48px; display: flex; flex-wrap: wrap; gap: 16px 48px; }
+.signal { display: flex; align-items: center; gap: 12px; }
+.signal i { width: 18px; height: 18px; border-radius: var(--en-radius-pill); }
+
+/* Focus */
+.pair { display: flex; flex-wrap: wrap; gap: 40px; }
+.pair > div { flex: 1 1 300px; display: flex; flex-direction: column; gap: 18px; }
+.stage { min-height: 168px; padding: 24px; background: var(--en-surface-raised); border-radius: var(--en-radius);
+  display: flex; align-items: center; justify-content: center; }
+.f-tile { width: 200px; height: 112px; background: var(--en-surface-control);
+  outline: var(--en-focus-ring-width) solid var(--en-focus-ring); outline-offset: var(--en-focus-ring-offset); }
+.f-btn { padding: 14px 36px; border-radius: var(--en-radius); background: var(--en-focus-fill); color: var(--en-focus-fill-ink); box-shadow: var(--en-shadow-2); }
+.f-rows { width: 100%; display: flex; flex-direction: column; gap: var(--en-space-tight); }
+.f-rows div { min-height: 44px; padding: 0 var(--en-space-inset); display: flex; align-items: center;
+  background: var(--en-surface-page); border-radius: var(--en-radius); font-size: 17px; }
+.f-rows .lift { background: var(--en-surface-control); color: var(--en-text-strong); }
+
+/* Type */
+.spec { display: flex; flex-direction: column; }
+.spec > div { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; padding: 18px 0;
+  border-top: 1px solid var(--en-surface-control); }
+.spec .what { flex: none; text-align: right; }
+.t-title { font-size: var(--en-text-title); font-weight: 700; color: var(--en-text-strong); line-height: var(--en-line-height); }
+.t-heading { font-size: var(--en-text-heading); font-weight: 700; color: var(--en-text-strong); line-height: var(--en-line-height); }
+.t-body { font-size: var(--en-text-body); line-height: var(--en-line-height); }
+.t-small { font-size: var(--en-text-small); color: var(--en-text-soft); line-height: var(--en-line-height); }
+.t-caps { font-size: var(--en-text-caps); font-weight: 700; letter-spacing: var(--en-caps-tracking); color: var(--en-text-soft); }
+
+/* Space and shape */
+.measures { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 48px 64px; }
+.measures h3 { margin: 0 0 18px; font-size: var(--en-text-heading); color: var(--en-text-strong); }
+.m { display: flex; align-items: center; gap: 18px; min-height: 64px; }
+.m .draw { flex: none; width: 76px; display: flex; align-items: center; }
+.m .draw i { display: block; background: var(--en-accent); height: 12px; }
+.m .tall i { width: 12px; background: var(--en-surface-control); }
+.m .txt { display: flex; flex-direction: column; }
+.shape { width: 72px; height: 44px; background: var(--en-surface-control); }
+
+/* Rules */
+.rules { margin: 0; padding: 0; list-style: none; columns: 2 380px; column-gap: 64px; }
+.rules li { break-inside: avoid; padding: 16px 0; border-top: 1px solid var(--en-surface-control); }
+.care { margin-top: 48px; padding: 24px 28px; background: var(--en-surface-raised); border-radius: var(--en-radius); max-width: 74ch; }
+.care h3 { margin: 0 0 10px; font-size: var(--en-text-heading); color: var(--en-text-strong); }
+.care ul { margin: 0; padding-left: 22px; }
+.care li { margin-bottom: 8px; }
+.part h3.sub { margin: 40px 0 12px; font-size: var(--en-text-heading); color: var(--en-text-strong); }
+.end { margin-top: 88px; padding-top: 24px; border-top: 1px solid var(--en-surface-control);
+  color: var(--en-text-muted); font-size: var(--en-text-small); }
+</style>
+<link rel="stylesheet" href="../components/enamel-components.css">
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+<!-- enamel-menu:start (generated by tools/build_styleguide.py, do not edit by hand) -->
+<nav class="site-menu" aria-label="Style guide">
+<div class="site-menu__brand"><strong>Enamel</strong><span>Version 0.11.1</span></div>
+<ul class="en-menu">
+<li><a class="en-menu__item" href="overview.html" aria-current="page">Overview</a>
+<ul class="en-menu site-menu__sub">
+<li><a class="en-menu__item" href="#colour">Colour</a></li>
+<li><a class="en-menu__item" href="#focus">Focus</a></li>
+<li><a class="en-menu__item" href="#type">Type</a></li>
+<li><a class="en-menu__item" href="#space">Space and shape</a></li>
+<li><a class="en-menu__item" href="#rules">Rules</a></li>
+</ul></li>
+<li><a class="en-menu__item" href="index.html">Token reference</a></li>
+<li><a class="en-menu__item" href="components.html">Components</a></li>
+<li><a class="en-menu__item" href="motion.html">Motion</a></li>
+<li><a class="en-menu__item" href="resize.html">Resize</a></li>
+</ul>
+<div class="site-switch site-accent" hidden>
+<p class="site-switch__label">Accent</p>
+<div class="en-tabs" role="tablist" aria-label="Accent">
+<button class="en-tab" role="tab" aria-selected="true" data-accent="coral">Coral</button>
+<button class="en-tab" role="tab" aria-selected="false" data-accent="sage">Sage</button>
+</div>
+</div>
+<div class="site-switch site-motion" hidden>
+<p class="site-switch__label">Motion</p>
+<div class="en-tabs" role="tablist" aria-label="Motion">
+<button class="en-tab" role="tab" aria-selected="true" data-motion="full">Full</button>
+<button class="en-tab" role="tab" aria-selected="false" data-motion="reduced">Reduced</button>
+</div>
+</div>
+<div class="site-switch site-look" hidden>
+<p class="site-switch__label">Look</p>
+<div class="en-tabs" role="tablist" aria-label="Look">
+<button class="en-tab" role="tab" aria-selected="true" data-look="false">Full</button>
+<button class="en-tab" role="tab" aria-selected="false" data-look="true">Lighter</button>
+</div>
+</div>
+</nav>
+<script src="site.js"></script>
+<!-- enamel-menu:end -->
+<div class="page">
+
+<header class="intro">
+<h1>Enamel design system</h1>
+<p>One look for every app built on Enamel. It follows SteamOS Gaming Mode closely, so moving from Steam into an Enamel app feels familiar, with a single accent colour that says which app you are in. This page is the short version. The <a href="index.html">token reference</a> lists every value.</p>
+</header>
+
+<div class="screen" role="img" aria-label="Example Kettle Video home screen: a focused video tile with a coral ring, three smaller tiles, two tabs, three list rows and a button hint bar.">
+<div class="screen-body">
+<div>
+<div class="now">Lighthouse Keepers of the Long Winter</div>
+<div class="status"><i class="play"></i>RESUME AT 19:15</div>
+</div>
+<div class="shelf">
+<div class="tile big"><div class="frame">PAUSED FRAME</div><div class="track"><div class="fill" style="width: 34%"></div></div></div>
+<div class="tile small"><div class="frame">PAUSED FRAME</div><div class="track"><div class="fill" style="width: 3%"></div></div><div class="title">Copper Tide Rising</div></div>
+<div class="tile small"><div class="frame">PAUSED FRAME</div><div class="track"><div class="fill" style="width: 18%"></div></div><div class="title">Driftwood · Episode 5</div></div>
+<div class="tile small"><div class="frame">PAUSED FRAME</div><div class="track"><div class="fill" style="width: 11%"></div></div><div class="title">Orchard Weather · Part 1</div></div>
+</div>
+<div class="tabs">
+<div class="tab on">MOVIES <span>3</span></div>
+<div class="tab">TV SHOWS <span>1</span><i class="dot"></i></div>
+</div>
+<div class="rows">
+<div class="row">Orchard Weather <small>2 parts</small></div>
+<div class="row">Copper Tide Rising <small>1995</small></div>
+<div class="row">Lighthouse Keepers of the Long Winter <small>1989</small></div>
+</div>
+</div>
+<div class="hints">
+<div class="hint"><span class="glyph">A</span>RESUME</div>
+<div class="hint"><span class="glyph">X</span>REMOVE</div>
+<div class="hint"><span class="glyph">B</span>QUIT</div>
+</div>
+</div>
+
+<section class="part" id="colour">
+<h2>Colour</h2>
+<p>Seven greys, matched to Steam's Gaming Mode, do almost all the work. Each one has a job.</p>
+<div class="ramp" aria-hidden="true">
+<div style="background: var(--en-grey-1)"></div><div style="background: var(--en-grey-2)"></div><div style="background: var(--en-grey-3)"></div><div style="background: var(--en-grey-4)"></div><div style="background: var(--en-grey-5)"></div><div style="background: var(--en-grey-6)"></div><div style="background: var(--en-grey-7)"></div>
+</div>
+<div class="ramp-key">
+<div><span class="name">Text</span><code>grey-1</code></div>
+<div><span class="name">Soft text</span><code>grey-2</code></div>
+<div><span class="name">Muted text</span><code>grey-3</code></div>
+<div><span class="name">Spare</span><code>grey-4</code></div>
+<div><span class="name">Controls</span><code>grey-5</code></div>
+<div><span class="name">Rows</span><code>grey-6</code></div>
+<div><span class="name">Page</span><code>grey-7</code></div>
+</div>
+
+<div class="coral">
+<div class="coral-block"><b>Accent</b><span>Default: Coral #EE8A72. Labels on top use the accent ink.</span></div>
+<ul class="uses">
+<li><span class="eg"><span class="f-tile" style="width: 44px; height: 26px"></span></span>Focus ring</li>
+<li><span class="eg"><span class="sw"><i></i></span></span>Toggle on</li>
+<li><span class="eg"><span class="bar6"><i></i></span></span>Progress and sliders</li>
+<li><span class="eg"><span class="btn">Scan</span></span>Main button</li>
+<li><span class="eg"><span class="edge"></span></span>Selected menu item</li>
+<li><span class="eg"><span class="word">40%</span></span>Status text</li>
+<li><span class="eg"><i class="dot"></i></span>Something new</li>
+</ul>
+</div>
+
+<div class="signals">
+<div class="signal"><i style="background: var(--en-success)"></i>Green means it worked</div>
+<div class="signal"><i style="background: var(--en-warning)"></i>Yellow means take care</div>
+<div class="signal"><i style="background: var(--en-danger)"></i>Red means it failed</div>
+</div>
+</section>
+
+<section class="part" id="focus">
+<h2>Focus</h2>
+<p>A controller has no pointer, so the screen must always show where you are. Only one thing shows focus at a time.</p>
+<div class="pair">
+<div><div class="stage"><div class="f-tile"></div></div><div><div class="name">Accent ring</div><div class="plain">For tiles and toggles. 4px wide, 4px away from the edge.</div></div></div>
+<div><div class="stage"><div class="f-btn">Scan my folders</div></div><div><div class="name">Cream fill</div><div class="plain">For buttons, fields and picker rows, with dark text, on a coral underside.</div></div></div>
+<div><div class="stage"><div class="f-rows"><div>Playback</div><div class="lift">Keep screen awake</div><div>Appearance</div></div></div><div><div class="name">Lifted row</div><div class="plain">A focused row steps up to the control grey.</div></div></div>
+</div>
+</section>
+
+<section class="part" id="type">
+<h2>Type</h2>
+<p>Enamel uses the system font of whatever device it runs on and ships no font of its own. Letter shapes differ a little between devices; sizes and weights do not.</p>
+<div class="spec">
+<div><span class="t-title">Continue watching</span><span class="what"><span class="name">Title</span> <code>1.875rem bold</code></span></div>
+<div><span class="t-heading">Copper Tide Rising</span><span class="what"><span class="name">Heading</span> <code>1.5rem bold</code></span></div>
+<div><span class="t-body">Keep screen awake</span><span class="what"><span class="name">Body</span> <code>1.25rem</code></span></div>
+<div><span class="t-small">Last scanned yesterday</span><span class="what"><span class="name">Small</span> <code>0.9375rem</code></span></div>
+<div><span class="t-caps">RESUME AT 19:15</span><span class="what"><span class="name">Caps</span> <code>0.8125rem bold, spaced</code></span></div>
+</div>
+</section>
+
+<section class="part" id="space">
+<h2>Space and shape</h2>
+<p>A small set of measurements.</p>
+<div class="measures">
+<div>
+<h3>Spacing</h3>
+<div class="m"><span class="draw"><i style="width: 36px"></i></span><span class="txt"><span class="name">Gutter, 2.25rem</span><span class="plain">Screen edge to content</span></span></div>
+<div class="m"><span class="draw"><i style="width: 18px"></i></span><span class="txt"><span class="name">Inset, 1.125rem</span><span class="plain">Padding inside a row</span></span></div>
+<div class="m"><span class="draw"><i style="width: 12px"></i></span><span class="txt"><span class="name">Gap, 0.75rem</span><span class="plain">Between tiles</span></span></div>
+<div class="m"><span class="draw"><i style="width: 4px"></i></span><span class="txt"><span class="name">Tight, 0.25rem</span><span class="plain">Between list rows</span></span></div>
+</div>
+<div>
+<h3>Heights</h3>
+<div class="m"><span class="draw tall"><i style="height: 60px"></i></span><span class="txt"><span class="name">Hint bar, at least 3.75rem</span><span class="plain">The button bar at the bottom</span></span></div>
+<div class="m"><span class="draw tall"><i style="height: 56px"></i></span><span class="txt"><span class="name">Row, at least 3.5rem</span><span class="plain">One list row</span></span></div>
+<div class="m"><span class="draw tall"><i style="height: 44px"></i></span><span class="txt"><span class="name">Touch target, 44px</span><span class="plain">Smallest tappable thing</span></span></div>
+</div>
+<div>
+<h3>Corners</h3>
+<div class="m"><span class="draw"><span class="shape" style="border-radius: var(--en-radius)"></span></span><span class="txt"><span class="name">Standard, 2px</span><span class="plain">Steam's own corner</span></span></div>
+<div class="m"><span class="draw"><span class="shape" style="border-radius: var(--en-radius-pill)"></span></span><span class="txt"><span class="name">Pill</span><span class="plain">Tabs, toggles, button glyphs</span></span></div>
+</div>
+</div>
+</section>
+
+<section class="part" id="rules">
+<h2>Rules</h2>
+<p>The rules Claude Code reads in DESIGN.md, in plain words.</p>
+<ul class="rules">
+<li>Use the system's values only. Never type in a colour, size or corner by hand.</li>
+<li>Apps use the named roles (page, row, control, text), not the grey ramp directly.</li>
+<li>The accent appears only in the seven places shown above, and as the focus ring, the focus underside and the speckle's coloured flecks.</li>
+<li>Focus is an accent ring on tiles and toggles, a cream fill with dark text on a coral underside on buttons, fields and picker rows, and a lifted row in lists.</li>
+<li>Only one thing shows focus at a time.</li>
+<li>Labels on the accent use its ink colour.</li>
+<li>Green, yellow and red are for success, warning and error only.</li>
+<li>System font only. Never add a web font.</li>
+<li>Layouts adapt to the space they are given, never to a screen size, a device or an aspect ratio.</li>
+<li>Nothing of Valve's is copied: no icons, logos, fonts or class names.</li>
+<li>Build screens from the components before writing any new CSS.</li>
+<li>Movement only marks focus or a change. The focus pulse stops after about five seconds. Everything works with reduced motion.</li>
+</ul>
+
+<div class="care">
+<h3>Two things to watch</h3>
+<ul>
+<li>Accent text is not readable enough on the control grey (with the default accent, 3.98:1, and text needs 4.5:1). Keep accent status text on the page or on a row, not on a focused row.</li>
+<li>Muted text has the same problem on the control grey (3.12:1). When a row is focused, its muted text should step up to soft text.</li>
+</ul>
+</div>
+
+<h3 class="sub">The guidelines</h3>
+<ul class="rules">
+<li>Satin, never gloss.</li>
+<li>Patterns live on the page ground and in progress fills only. Nothing you can select is ever patterned.</li>
+<li>One border per element: no rims inside rings, no lips inside outlines.</li>
+<li>One focus style per kind of element: cream on a coral underside for things you press, a coral ring for tiles, a lift for rows.</li>
+<li>Cream is a neutral; the accent stays the only colour.</li>
+<li>Only things you press move physically.</li>
+<li>Every size is a multiple of 4 in its own unit (0.25rem if it grows with text, 4px if it does not) unless a listed exception applies.</li>
+<li>Ask of every size: should it grow when the user makes text bigger? Yes is rem, no is px. Never set the root font size.</li>
+</ul>
+</section>
+
+<footer class="end">Enamel is not affiliated with Valve. Steam and Steam Deck are trademarks of Valve Corporation.</footer>
+
+</div>
+</body>
+</html>

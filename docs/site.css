@@ -1,0 +1,245 @@
+/*
+ * Enamel style guide: the left menu and the Components, Motion and Resize page layout.
+ * Tokens only, except the layout widths below (layout widths are the
+ * style guide's one exception, as on the token reference).
+ * Link after tokens/enamel.css and components/enamel-components.css.
+ */
+:root {
+  --site-menu-width: 17.5rem;      /* left menu column */
+  --site-content-width: 73.75rem;  /* page content, same as the token reference */
+  --site-state-width: 15rem;       /* smallest example box on the Components page */
+  --site-screen-height: 27.5rem;   /* an example drawn as a whole screen (picker, toast) */
+  --site-scroller-height: 18.75rem; /* the scrolling list under the action bar demo */
+  --site-resize-width: 45rem;      /* a resizable frame on the Resize page, before it is dragged */
+}
+
+/* Left menu: fixed, full height, scrolls on its own. */
+body { padding-left: var(--site-menu-width); }
+.site-menu {
+  box-sizing: border-box;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  width: var(--site-menu-width);
+  overflow-y: auto;
+  padding-bottom: var(--en-space-gutter);
+  background: var(--en-surface-raised);
+  scrollbar-color: var(--en-surface-control) var(--en-surface-raised);
+  font-family: var(--en-font);
+  line-height: var(--en-line-height);
+}
+.site-menu > * { flex: none; }
+.site-menu__brand {
+  display: flex;
+  align-items: baseline;
+  gap: var(--en-space-gap);
+  padding: var(--en-space-gutter) var(--en-space-inset) var(--en-space-inset) var(--en-space-gutter);
+}
+.site-menu__brand strong { color: var(--en-text-strong); font-size: var(--en-text-heading); }
+.site-menu__brand span { color: var(--en-text-muted); font-size: var(--en-text-small); }
+.site-menu__sub .en-menu__item {
+  min-height: var(--en-size-target);
+  padding-left: calc(var(--en-space-gutter) + var(--en-space-inset));
+  font-size: var(--en-text-small);
+}
+
+/* Accent, motion and lighter fallback switches, at the bottom of the menu. */
+.site-switch { padding: var(--en-space-inset) var(--en-space-inset) 0; }
+.site-accent { margin-top: auto; padding-top: var(--en-space-gutter); }
+.site-switch[hidden] { display: none; }
+.site-switch__label {
+  margin: 0 0 var(--en-space-tight) var(--en-space-inset);
+  color: var(--en-text-muted);
+  font-size: var(--en-text-caps);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--en-caps-tracking);
+}
+.site-switch .en-tabs { justify-content: flex-start; }
+
+/* The menu moves above the page when the menu and the narrowest readable
+   page cannot sit side by side: the menu's 17.5rem plus 38.75rem of page.
+   (A media query cannot read the variables, so the sum is written out.) */
+@media (width < 56.25rem) {
+  body { padding-left: 0; }
+  .site-menu { position: static; width: auto; overflow-y: visible; }
+}
+
+/* Components page */
+/* A static drawing of a tab's keyboard focus ring. The real rule is
+   .en-tab:focus-visible in the components file; a static example cannot
+   have :focus-visible, so it is marked data-demo="focus-visible". */
+.en-tab[data-demo="focus-visible"] {
+  outline: var(--en-focus-ring-width) solid var(--en-focus-ring);
+  outline-offset: var(--en-focus-ring-offset);
+  box-shadow: none;
+}
+.site-main {
+  max-width: var(--site-content-width);
+  margin: 0 auto;
+  padding: 0 var(--en-space-gutter) var(--en-space-gutter);
+}
+.site-main h1 {
+  margin: var(--en-space-gutter) 0 var(--en-space-tight);
+  color: var(--en-text-strong);
+  font-size: var(--en-text-title);
+}
+.site-main h2:not([class]) {
+  margin: var(--en-space-gutter) 0 var(--en-space-tight);
+  padding-top: var(--en-space-gap);
+  color: var(--en-text-strong);
+  font-size: var(--en-text-heading);
+}
+.site-main p:not(.en-note) { margin: 0 0 var(--en-space-gap); color: var(--en-text-soft); }
+.site-main code { font-family: inherit; color: var(--en-text); }
+.site-main a { color: var(--en-text-strong); }
+.site-note { font-size: var(--en-text-small); }
+/* A page title inside an example (the step label sits above one). */
+.site-stage h1, .site-resize h1 { margin: 0; }
+.site-states {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--site-state-width), 1fr));
+  gap: var(--en-space-gap);
+  margin: var(--en-space-inset) 0 var(--en-space-gap);
+}
+.site-state { display: flex; flex-direction: column; gap: var(--en-space-tight); margin: 0; min-width: 0; }
+.site-state--wide { grid-column: 1 / -1; }
+.site-state figcaption {
+  font-size: var(--en-text-caps);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--en-caps-tracking);
+  color: var(--en-text-muted);
+}
+.site-stage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--en-space-gap);
+  min-height: calc(var(--en-size-bar) * 2);
+  padding: var(--en-space-inset);
+  border-radius: var(--en-radius);
+  background: var(--en-surface-page);
+  box-shadow: inset 0 0 0 var(--en-space-tight) var(--en-surface-raised);
+  overflow: hidden;
+}
+.site-stage--raised { background: var(--en-surface-raised); box-shadow: none; }
+.site-stage--flush { min-height: 0; padding: 0; box-shadow: none; }
+.site-stage--center { align-items: center; }
+.site-stage--start { align-items: flex-start; }
+.site-code {
+  margin: 0;
+  padding: var(--en-space-inset);
+  border-radius: var(--en-radius);
+  background: var(--en-surface-raised);
+  color: var(--en-text-soft);
+  font-family: var(--en-font);
+  font-size: var(--en-text-small);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.site-footer {
+  max-width: var(--site-content-width);
+  margin: 0 auto;
+  padding: var(--en-space-gutter);
+  color: var(--en-text-muted);
+  font-size: var(--en-text-small);
+}
+
+/* Motion page demos. The tracks, boxes and rings are moved by docs/site.js. */
+.site-token figcaption { text-transform: none; letter-spacing: 0; font-weight: 400; color: var(--en-text-soft);
+  font-size: var(--en-text-small); }
+.site-token__name { color: var(--en-text-strong); font-weight: 700; }
+.site-label {
+  font-size: var(--en-text-caps);
+  letter-spacing: var(--en-caps-tracking);
+  text-transform: uppercase;
+  color: var(--en-text);
+  background: var(--en-surface-control);
+  border-radius: var(--en-radius-pill);
+  padding: 0 var(--en-space-gap);
+}
+.site-actions { display: flex; flex-wrap: wrap; gap: var(--en-space-gap); }
+.site-track {
+  position: relative;
+  align-self: stretch;
+  height: var(--en-space-gap);
+  border-radius: var(--en-radius-pill);
+  background: var(--en-surface-control);
+}
+.site-track__dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--en-space-gap);
+  height: var(--en-space-gap);
+  border-radius: var(--en-radius-pill);
+  background: var(--en-accent);
+}
+.site-curve { align-self: stretch; height: var(--en-size-target); overflow: visible; }
+.site-curve path { fill: none; stroke: var(--en-accent); stroke-width: var(--en-focus-ring-width);
+  vector-effect: non-scaling-stroke; }
+.site-grow, .site-ring {
+  width: var(--en-size-bar);
+  height: var(--en-size-target);
+  border-radius: var(--en-radius);
+  background: var(--en-surface-raised);
+}
+.site-ring {
+  outline: var(--en-focus-ring-width) solid var(--en-focus-ring);
+  outline-offset: var(--en-focus-ring-offset);
+}
+
+/* An example drawn as a whole screen: fixed-position components (the picker
+   dialog, the toast) are placed inside it instead of over the guide. The
+   stripes stand in for a page of tiles behind them. */
+.site-stage--screen, .site-resize--screen, .site-fixed--screen {
+  position: relative;
+  contain: layout paint;
+  justify-content: flex-end;
+  min-height: var(--site-screen-height);
+  background: repeating-linear-gradient(90deg, var(--en-surface-raised) 0 22%, var(--en-surface-page) 22% 25%);
+}
+.site-scroller { height: var(--site-scroller-height); overflow-y: auto; }
+.site-scroller .en-rows { padding: var(--en-space-gap); }
+
+/* Resize page. Each frame is its components' whole space: fixed-position
+   components (the picker dialog, the toast) stay inside it, and nothing
+   inside reaches past it. A resizable frame is the browser's own resizable
+   box, dragged by its corner; the fixed frames' widths are set on the page.
+   The frame's edge is an outline, so the components get the whole width. */
+.site-resize, .site-fixed {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--en-space-gap);
+  contain: layout paint;
+  overflow: auto;
+  outline: var(--en-space-tight) solid var(--en-surface-raised);
+  border-radius: var(--en-radius);
+  background: var(--en-surface-page);
+}
+.site-resize {
+  resize: both;
+  width: min(100%, var(--site-resize-width));
+  max-width: 100%;
+  padding: var(--en-space-inset);
+}
+.site-resize--flush, .site-resize--screen { padding: 0; }
+.site-resize--screen { min-height: 0; height: var(--site-screen-height); }
+.site-fixed { flex: none; gap: 0; }
+.site-fixed__body { display: flex; flex-direction: column; gap: var(--en-space-gap); padding: var(--en-space-gutter); }
+.site-fixed--toast { justify-content: flex-end; min-height: calc(var(--en-size-bar) * 4); }
+.site-frames {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--en-space-gutter);
+  overflow-x: auto;
+  padding: var(--en-space-tight) var(--en-space-tight) var(--en-space-gap);
+  scrollbar-color: var(--en-surface-control) var(--en-surface-page);
+}
+.site-frame { flex: none; gap: var(--en-space-gap); }
