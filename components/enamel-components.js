@@ -1,5 +1,5 @@
 /*
- * Enamel components behaviour, version 0.11.1.
+ * Enamel components behaviour, version 0.12.0.
  * Copyright (c) 2026 Mario Carabotta
  * SPDX-License-Identifier: MIT
  * Plain JavaScript, no dependencies, no build step. Load it after the two

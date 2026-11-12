@@ -2,6 +2,16 @@
 
 A dated log of design decisions for the Enamel design system. Newest first.
 
+## 2026-11-12, the destructive row (#21)
+
+**A red face with white text, not red text.** Red text fails on every Enamel grey, and a red light enough to pass on the dark rows turns into a salmon next to the coral accent. The owner chose the error red as the row's face with Enamel's white for the text and icon, so there is still one red and one accent.
+
+**One text pair is judged by APCA.** White on the error red is 4.44:1, just under the 4.5:1 every other text pair needs. Under APCA it is Lc 75, and its text is large (the row's own size) or bold (its meta or description), so the contrast check holds this pair, and only this pair, to APCA's Lc 60 for large or bold text. The owner chose to keep today's red rather than add a slightly darker one.
+
+**Focus is a rise onto the underside.** A face that stays red can't show focus by turning grey or cream, so a focused destructive row rises onto the coral underside and drops when pressed, as a picker row does, in a plain list too. Reduced motion keeps the underside without the movement. There is no darker red for a press: the drop is the press.
+
+**It is a modifier, one per kind of row.** `.en-row--destructive` and `.en-picker__row--destructive`, like `.en-button--primary`: a kind of row, not a state. In a picker an icon sits in front of the title and its description.
+
 ## 2026-11-11, Enamel goes public with only its own work
 
 **Sources are "Steam baseline" or "Enamel".** Values chosen to sit naturally beside Steam's Gaming Mode are labelled Steam baseline and recorded under Enamel's own names only; everything else is Enamel's choice. Nothing taken from the Steam client's files is kept, so the reference folder and the tools that read the Steam client are gone, and a release check keeps it that way (#19).

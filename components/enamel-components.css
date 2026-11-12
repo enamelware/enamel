@@ -1,5 +1,5 @@
 /*
- * Enamel components, version 0.11.1.
+ * Enamel components, version 0.12.0.
  * Copyright (c) 2026 Mario Carabotta
  * SPDX-License-Identifier: MIT
  * Plain CSS. Link tokens/enamel.css first, then this file.
@@ -709,6 +709,66 @@
 }
 .en-picker__row:is(:active, [data-pressed="true"]) .en-picker__desc { color: var(--en-focus-fill-ink); }
 
+/* Destructive row: a list row or picker row for an action that closes,
+   removes or deletes (Quit, Remove). Its face is the error red in every
+   state, with white text and an optional white icon in front. Red is a
+   status colour like error, never a second accent. Focus can't turn it grey
+   or cream, so it rises onto the accent underside, as a picker row does, and
+   drops when pressed. White on the red is 4.44:1, the one text pair below
+   4.5:1, allowed because it reaches APCA Lc 75 and the text is large or bold:
+   a row's own text, and its meta or description drawn bold. */
+.en-row--destructive,
+.en-picker__row--destructive {
+  background-color: var(--en-danger);
+  color: var(--en-text-strong);
+  transition: transform var(--en-motion-fast) var(--en-ease-standard),
+              box-shadow var(--en-motion-fast) var(--en-ease-standard);
+}
+.en-row--destructive:is(:focus-visible, [data-focused="true"]),
+.en-picker__row--destructive:is(:focus-visible, [data-focused="true"]) {
+  outline: none;
+  background-color: var(--en-danger);
+  color: var(--en-text-strong);
+  -webkit-text-stroke-width: 0;
+  box-shadow: 0 var(--en-focus-underside) 0 var(--en-focus-ring), var(--en-c-lift-shadow);
+  transform: translateY(calc(-1 * var(--en-c-rise)));
+  transition-duration: var(--en-motion-medium);
+}
+.en-row--destructive:is(:active, [data-pressed="true"]),
+.en-picker__row--destructive:is(:active, [data-pressed="true"]) {
+  background-color: var(--en-danger);
+  color: var(--en-text-strong);
+  box-shadow: var(--en-c-press-shadow);
+  transform: translateY(0);
+  transition-duration: var(--en-motion-fast);
+}
+.en-row--destructive .en-row__meta,
+.en-row--destructive:is(:focus-visible, [data-focused="true"]) .en-row__meta,
+.en-picker__row--destructive .en-picker__desc,
+.en-picker__row--destructive:is(:focus-visible, [data-focused="true"]) .en-picker__desc,
+.en-picker__row--destructive:is(:active, [data-pressed="true"]) .en-picker__desc,
+.en-picker__row--destructive:is(:focus-visible, [data-focused="true"]) .en-row__message {
+  color: var(--en-text-strong);
+  font-weight: 700;
+}
+/* A message inside a destructive row: its error disc would vanish on the red
+   face, so the disc turns white and its mark red. */
+.en-row--destructive .en-row__message .en-icon,
+.en-picker__row--destructive .en-row__message .en-icon {
+  color: var(--en-text-strong);
+  stroke: var(--en-danger);
+}
+/* An icon in a destructive picker row sits in front of the title and its
+   description, which stay one under the other. */
+.en-picker__row--destructive:has(> .en-icon) {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-content: center;
+  align-items: center;
+  column-gap: var(--en-space-icon);
+}
+.en-picker__row--destructive > .en-icon { grid-row: span 2; }
+
 /* k) Toast: bottom right, flush with the right edge, just above the hint bar
    (--en-c-hintbar-height, as for the picker's layer).
    It is as wide as its text, up to --en-c-toast-width and never wider than
@@ -980,6 +1040,14 @@
     transform: none;
     transition: none;
   }
+  :root:not([data-en-motion="full"]) .en-row--destructive {
+    transform: none;
+    transition: none;
+  }
+  :root:not([data-en-motion="full"]) .en-picker__row--destructive {
+    transform: none;
+    transition: none;
+  }
   :root:not([data-en-motion="full"]) .en-tab { transition-duration: var(--en-motion-fast); }
   :root:not([data-en-motion="full"]) .en-toggle { transition-duration: var(--en-motion-fast); }
   :root:not([data-en-motion="full"]) .en-toggle::before {
@@ -1004,6 +1072,14 @@
 [data-en-motion="reduced"] .en-button:not(:disabled):is(:focus-visible, [data-focused="true"]) { transform: none; }
 [data-en-motion="reduced"] .en-button:not(:disabled):is(:active, [data-pressed="true"]) { transform: none; }
 [data-en-motion="reduced"] .en-picker__row {
+  transform: none;
+  transition: none;
+}
+[data-en-motion="reduced"] .en-row--destructive {
+  transform: none;
+  transition: none;
+}
+[data-en-motion="reduced"] .en-picker__row--destructive {
   transform: none;
   transition: none;
 }

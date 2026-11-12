@@ -141,7 +141,8 @@ A size in rem grows with the user's text size and a size in px does not (see "Sc
 - Ask of every size: should it grow when the user makes text bigger? Yes is rem, no is px. Never set the root font size.
 - Only one element shows focus at a time.
 - Labels on the accent use `--en-accent-ink`, never white.
-- Green, yellow and red are for success, warning and error only.
+- Green, yellow and red are for success, warning and error only. Red is a status colour like error, never a second accent: besides errors it is used only for actions that close, remove or delete, as the destructive row, whose red face stays red on focus and rises onto the coral underside.
+- Text needs 4.5:1 against its background, with one exception: white on the error red in a destructive row is 4.44:1, allowed because it reaches APCA Lc 75 and its text is large or bold. Red text is never used: it is too faint on the greys.
 - System font only. Never add a web font.
 - No layout is tied to a screen size, a device or an aspect ratio. Nothing in tokens, components, examples or docs names one as a layout target.
 - Layouts adapt to the space they are given: relative units, min(), max() and clamp(), intrinsic sizing, wrapping, and container queries, so a component responds to its own box rather than to the whole screen.
@@ -187,6 +188,12 @@ Link `tokens/enamel.css`, then `components/enamel-components.css`. For the picke
 - State: empty while there is nothing to say; the icon and text inside it while it shows.
 - Use it to say, inside the row itself, why a row can't be chosen. Keep the element in the row, empty, and put the icon and text in it when it should show, so screen readers read it politely when it appears; while it is empty it takes no space. It is in the error style: white text after a red disc with a dark mark, readable whether the row is focused or not (red text is too faint on the greys). Inside a picker, on the cream fill of a focused row, its text turns dark like the row's own description. It sits on a line of its own under the row's content, so the row grows taller, never wider; a long message wraps.
 - Motion: it fades in over `--en-motion-fast` when it appears. In reduced motion it simply appears.
+
+### Destructive row
+- Classes: `.en-row--destructive` on a `.en-row`, or `.en-picker__row--destructive` on a `.en-picker__row`, with an optional `.en-icon` (`aria-hidden="true"`) in front of the text.
+- State: focus (`:focus-visible` or `data-focused="true"`) raises the red face onto its accent underside; `data-pressed="true"` (or a press) drops it.
+- Use it only for an action that closes, removes or deletes, such as Quit or Remove: red is a status colour like error, never a second accent. The face is the error red (`--en-danger`) in every state, with white text and icon, so it reads as red whether it has focus or not. Because the face can't turn grey or cream, focus shows as the row rising onto the coral underside, in a list as in a picker. White on the red is 4.44:1, allowed only here because it reaches APCA Lc 75 and the text is large or bold: the row's own text keeps its size, and its meta or description is drawn bold. Everything else about the row is unchanged: its size, spacing and wrapping. In a picker, an icon sits in front of the title and its description. A message inside it (`.en-row__message`) stays white, with its disc turned white and its mark red so it still shows on the face. Draw icons as on the Components page; they are Enamel's own.
+- Motion: when focus arrives the face rises `--en-lift` over `--en-motion-medium` as the underside appears, and settles back over `--en-motion-fast` when focus leaves. Pressed, it drops onto its underside over `--en-motion-fast`. In reduced motion focus and presses show at once, without the movement.
 
 ### Badge
 - Classes: `.en-badge`, inside a `.en-row` or after a `.en-tab`'s label.

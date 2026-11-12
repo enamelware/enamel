@@ -2,6 +2,27 @@
 
 Each version of Enamel, newest first. Apps copy a version and re-sync after a new one; check the entry before updating. A version is released only once its entry is written and its git tag (for example `v0.6.0`) is pushed; each entry says which apps should adopt it and when. "Visual" means things look or move differently; no existing name changed unless the entry says so.
 
+## 0.12.0, 2026-11-12 (visual)
+
+A destructive row (#21), found by Kettle Video for the Quit row in its Home menu (enamelware/media-player#98, listed in Enamel's "Gaps found by the apps", #7). Everything that was there before looks the same.
+
+**Renamed or removed: none.** No token, component class, state attribute, component variable, or script function or event was renamed or removed. No token or component variable was added: the new row uses the error red and the white that were there.
+
+**Who should adopt it, and when:** Kettle Video, through its own "Bring in Enamel 0.12.0" issue, before it builds its Home polish (its #98 waits for this). Apps that don't need it can adopt it whenever they next re-sync; nothing they use changes.
+
+**What each app must do to pick it up:**
+- Re-sync the three main files.
+- Add the destructive class to the row of an action that closes, removes or deletes, such as Quit: `.en-picker__row--destructive` on a picker row, `.en-row--destructive` on a list row. Use it for nothing else.
+- For an icon, put it in front of the row's text, hidden from screen readers, drawn as on the Components page.
+- `data-pressed="true"` works on a destructive list row too, as on buttons and picker rows.
+
+Added (classes, new):
+- `.en-row--destructive` and `.en-picker__row--destructive`, new: a list row or picker row with a red face and white text and icon in every state. Focus raises it onto the accent underside instead of turning it grey or cream, and a press drops it. Its meta or description is drawn bold. A message inside it keeps showing: its error disc turns white with a red mark.
+
+Rules (DESIGN.md, Part 2):
+- Red is a status colour like error, never a second accent, and besides errors is used only for actions that close, remove or delete.
+- Text needs 4.5:1, with one exception: white on the error red in a destructive row is 4.44:1, allowed because it reaches APCA Lc 75 and its text is large or bold. The guide's contrast check holds this one pair to APCA instead.
+
 ## 0.11.1, 2026-11-11
 
 Ready to go public (#19). Only wording, comments and the repo's own tools changed: nothing looks or moves differently, and every token keeps its value.

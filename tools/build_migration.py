@@ -60,6 +60,7 @@ ADDED_SINCE = {
                "--en-focus-underside", "--en-lift", "--en-speckle-fill", "--en-speckle-page", "--en-speckle-page-accent",
                "--en-c-tile-glow", "--en-c-speckle-accent", "--en-c-rise", "--en-c-satin-shadow", "--en-c-lift-shadow",
                "--en-c-press-shadow", "--en-c-focus-stroke", "en-speckle", "data-en-lighter"],
+    "0.12.0": ["en-row--destructive", "en-picker__row--destructive"],
 }
 ADDED = {name for names in ADDED_SINCE.values() for name in names}
 

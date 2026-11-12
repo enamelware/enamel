@@ -55,6 +55,11 @@ CARD_ICON = ('<svg class="en-icon" viewBox="0 0 24 24" fill="none" stroke="curre
              '<path d="M9 3h8a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7z"/><path d="M10 7v3M13 7v3M16 7v3"/></svg>')
 ERROR_ICON = ('<svg class="en-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">'
               '<circle cx="12" cy="12" r="10" fill="currentColor" stroke="none"/><path d="M12 7v6"/><path d="M12 16.5v.5"/></svg>')
+# Leaving: a door with an arrow going out through it. Removing: a cross.
+QUIT_ICON = ('<svg class="en-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">'
+             '<path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4"/><path d="M14 8l4 4-4 4"/><path d="M18 12H9"/></svg>')
+REMOVE_ICON = ('<svg class="en-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">'
+               '<path d="M6 6l12 12"/><path d="M18 6 6 18"/></svg>')
 
 
 def steplabel(step, title):
@@ -82,6 +87,22 @@ def message_row(title, meta, message=None, focused=False):
     inner = f"{ERROR_ICON}{html.escape(message)}" if message else ""
     return (f'<button class="en-row"{f}>{html.escape(title)} <span class="en-row__meta">{html.escape(meta)}</span>'
             f'<span class="en-row__message" role="status" aria-live="polite">{inner}</span></button>')
+
+
+def destructive_row(title, meta=None, icon="", focused=False, pressed=False):
+    attrs = (' data-focused="true"' if focused else "") + (' data-pressed="true"' if pressed else "")
+    meta = f' <span class="en-row__meta">{html.escape(meta)}</span>' if meta else ""
+    return f'<button class="en-row en-row--destructive"{attrs}>{icon}{html.escape(title)}{meta}</button>'
+
+
+def destructive_picker(focus):
+    """A Home-style menu: two ordinary actions, Quit in red, then Cancel."""
+    rows = [picker_row("Rescan my folders", focused=(focus == 0)),
+            picker_row("Settings", focused=(focus == 1)),
+            picker_row("Quit", "Closes the app", focused=(focus == 2), destructive=True, icon=QUIT_ICON)]
+    return ('<div class="en-picker">\n  <div class="en-picker__rows">\n'
+            + "\n".join("    " + r for r in rows)
+            + '\n  </div>\n  ' + picker_row("Cancel", cancel=True, focused=(focus == 3)) + '\n</div>')
 
 
 def steps(*items):
@@ -130,11 +151,15 @@ def actionbar(focus=None):
             '</header>')
 
 
-def picker_row(label, desc=None, focused=False, current=False, cancel=False, first=False, value=None):
+def picker_row(label, desc=None, focused=False, current=False, cancel=False, first=False, value=None,
+               destructive=False, icon="", pressed=False):
     cls = "en-picker__row en-picker__cancel" if cancel else "en-picker__row"
+    if destructive:
+        cls += " en-picker__row--destructive"
     attrs = (f' value="{value}"' if value else "") + (' aria-current="true"' if current else "") \
-        + (" autofocus" if first else "") + (' data-focused="true"' if focused else "")
-    inner = f'<span>{html.escape(label)}</span>'
+        + (" autofocus" if first else "") + (' data-focused="true"' if focused else "") \
+        + (' data-pressed="true"' if pressed else "")
+    inner = icon + f'<span>{html.escape(label)}</span>'
     if desc:
         inner += f'<span class="en-picker__desc">{html.escape(desc)}</span>'
     return f'<button class="{cls}"{attrs}>{inner}</button>'
@@ -220,6 +245,7 @@ MOTION = {
     'band': 'Motion: none. A band never takes focus.',
     'badge': 'Motion: none of its own. On a row it changes colour with the row, over --en-motion-fast.',
     'message': 'Motion: it fades in over --en-motion-fast when it appears. In reduced motion it simply appears.',
+    'destructive': "Motion: when focus arrives the red face rises --en-lift over --en-motion-medium as its accent underside appears, and settles back over --en-motion-fast when focus leaves. Pressed, it drops onto its underside over --en-motion-fast. In reduced motion focus and presses show at once, without the movement.",
     'steps': 'Motion: none.',
     'stat': 'Motion: none. A stat panel never takes focus.',
     'note': 'Motion: none. A note never takes focus.',
@@ -417,6 +443,46 @@ SECTIONS = [
         ex("Long text, narrow box", '<div class="en-rows">' + message_row(
             "SD card › Films › Old", "4 videos",
             "This folder is inside your movies folder, so pick a different one.", focused=True) + '</div>'),
+     ]),
+    ("destructive", "Destructive row",
+     "A list row or picker row for an action that closes, removes or deletes, such as Quit or Remove: a red face "
+     "with white text, and an optional white icon in front.",
+     "Add the destructive class to the row; nothing else about the row changes. Use it for those actions only: red "
+     "is a status colour like error, never a second accent. The face stays red in every state, so focus shows as the "
+     "row rising onto its accent underside, in a list as in a picker, and a press drops it. Its meta or "
+     "description is drawn bold, since white on red is just under 4.5:1 and reads well only large or bold.", [
+        ex("List row", '<div class="en-rows">' + destructive_row("Remove from Continue watching") + '</div>',
+           copy=True),
+        ex("List row, focused", '<div class="en-rows">'
+           + destructive_row("Remove from Continue watching", focused=True) + '</div>'),
+        ex("List row, icon and meta", '<div class="en-rows">'
+           + destructive_row("Remove this folder", "62 videos", icon=REMOVE_ICON) + '</div>', wide=True, copy=True),
+        ex("List row, icon and meta, focused", '<div class="en-rows">'
+           + destructive_row("Remove this folder", "62 videos", icon=REMOVE_ICON, focused=True) + '</div>', wide=True),
+        ex("List row, pressed", '<div class="en-rows">'
+           + destructive_row("Remove this folder", "62 videos", icon=REMOVE_ICON, focused=True, pressed=True)
+           + '</div>', wide=True),
+        ex("List row, with a message, focused", '<div class="en-rows">'
+           + destructive_row("Remove this folder", "62 videos", icon=REMOVE_ICON, focused=True)
+           .replace("</button>", '<span class="en-row__message" role="status" aria-live="polite">'
+                    + ERROR_ICON + "It is in use. Close it first.</span></button>") + '</div>', wide=True),
+        ex("Picker row", '<div class="en-picker__rows">'
+           + picker_row("Quit", "Closes the app", destructive=True, icon=QUIT_ICON) + '</div>', "start"),
+        ex("Picker row, focused", '<div class="en-picker__rows">'
+           + picker_row("Quit", "Closes the app", destructive=True, icon=QUIT_ICON, focused=True) + '</div>', "start"),
+        ex("Picker row, pressed", '<div class="en-picker__rows">'
+           + picker_row("Quit", "Closes the app", destructive=True, icon=QUIT_ICON, focused=True, pressed=True)
+           + '</div>', "start"),
+        ex("Picker row, text only", '<div class="en-picker__rows">'
+           + picker_row("Yes, remove", destructive=True) + '</div>', "start"),
+        ex("In a menu, not focused", destructive_picker(focus=0), "center", wide=True),
+        ex("In a menu, focused", destructive_picker(focus=2), "center", wide=True, copy=True),
+        ex("Long text, narrow box", '<div class="en-rows">'
+           + destructive_row("Remove this folder and everything Kettle remembers about it", "1,204 videos",
+                             icon=REMOVE_ICON, focused=True) + '</div>'),
+        ex("Picker row, long text, narrow box", '<div class="en-picker__rows">'
+           + picker_row("Remove 2 missing items from the library", "Only the list changes. Your files are never "
+                        "touched.", destructive=True, icon=REMOVE_ICON, focused=True) + '</div>', "start"),
      ]),
     ("steps", "Numbered steps",
      "A short list of two to five steps, each with its number in a round mark.",

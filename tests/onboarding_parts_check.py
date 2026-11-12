@@ -110,7 +110,9 @@ async (args) => {
   }
 
   // Message in a row
-  const messages = [...document.querySelectorAll(`${R} .en-row__message`)];
+  // A message in a destructive row (#21) has its own colours, checked by destructive_row_check.
+  const DESTRUCTIVE = '.en-row--destructive, .en-picker__row--destructive';
+  const messages = [...document.querySelectorAll(`${R} .en-row__message`)].filter(m => !m.closest(DESTRUCTIVE));
   seen.messages = messages.length;
   seen.showing = 0;
   for (const m of messages) {
@@ -255,7 +257,9 @@ async (args) => {
     seen.pairs++;
     if (r < 4.5) errors.push(`${where}: the ${el.className.split(' ')[0]} "${name(el)}" is ${fg} on ${bg}, ${r.toFixed(2)}:1, below 4.5:1`);
   };
-  for (const el of document.querySelectorAll('main .en-badge, main .en-row__message:not(:empty)')) {
+  // A message in a destructive row (#21) is checked by destructive_row_check.
+  for (const el of [...document.querySelectorAll('main .en-badge, main .en-row__message:not(:empty)')]
+      .filter(e => !e.closest('.en-row--destructive, .en-picker__row--destructive'))) {
     const host = el.closest('.en-row, .en-tab, .en-picker__row');
     const where = host.classList.contains('en-picker__row') ? `inside a picker, on a ${host.dataset.what} row`
       : `on a ${host.className.split(' ')[0]}${host.matches('[data-focused="true"], [aria-selected="true"]') ? ', focused or selected' : ''}`;

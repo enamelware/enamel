@@ -127,7 +127,9 @@ class Satin(unittest.TestCase):
 
 class OneFocusStyle(unittest.TestCase):
     """Items 4, 7 and 8: one focus style per kind of element, and only things
-    you press move physically."""
+    you press move physically. Since #21 a destructive list row is pressed too:
+    its red face can't turn grey, so it rises onto the underside like a picker
+    row. It is allowed by name, and no other row."""
 
     def test_only_things_you_press_rise_or_drop(self):
         moving = []
@@ -135,20 +137,21 @@ class OneFocusStyle(unittest.TestCase):
             if "translateY" in decls.get("transform", "") or "--en-c-rise" in decls.get("transform", ""):
                 moving.append(selector)
                 for part in selectors(selector):
-                    self.assertRegex(part, r"\.en-(button|picker__row)\b", selector)
+                    self.assertRegex(part, r"\.en-(button|picker__row|row--destructive)\b", selector)
         self.assertTrue(any(".en-button" in s for s in moving))
         self.assertTrue(any(".en-picker__row" in s for s in moving))
 
     def test_rows_tabs_toggles_and_the_menu_never_move(self):
         for selector, decls in css_rules(BARE):
-            if re.match(r"\.en-(row|tab|toggle|menu__item)\b", selector) and not selector.startswith(".en-row > "):
+            if re.match(r"\.en-(row|tab|toggle|menu__item)\b", selector) and not selector.startswith(
+                    (".en-row > ", ".en-row--destructive")):
                 self.assertNotIn("transform", decls, selector)
 
     def test_the_underside_is_only_on_things_you_press(self):
         for selector, decls in css_rules(BARE):
             if "--en-focus-underside" in decls.get("box-shadow", ""):
                 for part in selectors(selector):
-                    self.assertRegex(part, r"\.en-(button|picker__row)\b", selector)
+                    self.assertRegex(part, r"\.en-(button|picker__row|row--destructive)\b", selector)
 
     def test_no_rim_inside_a_tabs_ring(self):
         self.assertRegex(BARE, r"\.en-tab:focus-visible\s*\{\s*box-shadow:\s*none;\s*\}")

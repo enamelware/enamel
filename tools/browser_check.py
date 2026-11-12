@@ -143,7 +143,7 @@ async (args) => {
   const out = { reducedMatch: matchMedia('(prefers-reduced-motion: reduce)').matches, items: [], during: [],
                 pulse: [], restart: [] };
   // An example held pressed is left out: pressed rightly wins over focus.
-  const sel = '.en-tile, .en-row, .en-toggle, .en-button:not(:disabled, [data-pressed="true"]), .en-menu__item';
+  const sel = '.en-tile, .en-row:not([data-pressed="true"]), .en-toggle, .en-button:not(:disabled, [data-pressed="true"]), .en-menu__item';
   const all = [...document.querySelectorAll(sel)].filter(el => !el.closest('[data-en-motion]:not(html)'));
   const was = all.map(el => el.getAttribute('data-focused'));
   all.forEach(el => el.removeAttribute('data-focused'));

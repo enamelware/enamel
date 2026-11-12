@@ -117,8 +117,18 @@ STATES = [
     ("en-note", None, "note"),
     ("en-button", 'data-pressed="true"', "button, pressed"),
     ("en-picker__row", 'data-pressed="true"', "picker row, pressed"),
+    ("en-row--destructive", None, "destructive list row"),
+    ("en-row--destructive", 'data-focused="true"', "destructive list row, focused"),
+    ("en-row--destructive", 'data-pressed="true"', "destructive list row, pressed"),
+    ("en-picker__row--destructive", None, "destructive picker row"),
+    ("en-picker__row--destructive", 'data-focused="true"', "destructive picker row, focused"),
+    ("en-picker__row--destructive", 'data-pressed="true"', "destructive picker row, pressed"),
     ("en-speckle", None, "page speckle"),
 ]
+
+# APCA's level for text at least 24px, or bold at 16px (Lc 60), which the
+# one "apca" pair below is held to instead of 4.5:1.
+APCA_LARGE_OR_BOLD = 60
 
 # Text (or graphic) on background, for every pair the components use.
 # A background of ("glow", base) is --en-accent-glow laid over base; one of
@@ -187,6 +197,15 @@ PAIRS = [
     ("Row message", "mark on its red disc", "--en-focus-fill-ink", "--en-danger", "graphic"),
     ("Row message", "text, focused picker row", "--en-focus-fill-ink", "--en-focus-fill", "text"),
     ("Row message", "red disc, focused picker row", "--en-danger", "--en-focus-fill", "graphic"),
+    # White on the error red is 4.44:1: the one text pair allowed below 4.5:1,
+    # judged by APCA instead, because a destructive row's text is large or bold.
+    ("Destructive row", "text, and bold meta or description", "--en-text-strong", "--en-danger", "apca"),
+    ("Destructive row", "icon", "--en-text-strong", "--en-danger", "graphic"),
+    ("Destructive row", "red face, in a list on the page", "--en-danger", "--en-surface-page", "graphic"),
+    ("Destructive row", "red face, in a picker", "--en-danger", "--en-surface-raised", "graphic"),
+    ("Destructive row", "focus underside, on the page", "--en-focus-ring", "--en-surface-page", "graphic"),
+    ("Destructive row", "message's white disc", "--en-text-strong", "--en-danger", "graphic"),
+    ("Destructive row", "message's red mark on its disc", "--en-danger", "--en-text-strong", "graphic"),
     ("Steps", "step", "--en-text", "--en-surface-page", "text"),
     ("Steps", "number", "--en-text-strong", "--en-surface-control", "text"),
     ("Stat panel", "number", "--en-text-strong", "--en-surface-raised", "text"),
@@ -508,7 +527,7 @@ def check_contrast():
                   "--en-accent-ink": base(a["ink"])}
         colour = lambda n: active.get(n) or base(n)
         print(f"\nContrast with the {a['name']} accent (text needs 4.5:1, graphics 3:1, "
-              "disabled controls have no minimum):")
+              "disabled controls have no minimum, white on the destructive red needs APCA Lc 60):")
         for comp, what, fg, bg, kind in PAIRS:
             if isinstance(bg, tuple) and bg[0] == "fleck":
                 alpha = speckle.ACCENT_STRONGEST if bg[1] == "--en-accent" else speckle.PAGE_STRONGEST
@@ -520,8 +539,18 @@ def check_contrast():
             else:
                 b, bg_name = colour(bg), bg
             r = en.contrast(colour(fg), b)
-            need = {"text": 4.5, "graphic": 3.0, "disabled": None}[kind]
-            if need is None:
+            need = {"text": 4.5, "graphic": 3.0, "disabled": None, "apca": None}[kind]
+            if kind == "apca":
+                lc = en.apca(colour(fg), b)
+                verdict = f"APCA Lc {lc:.0f}" + (", pass" if lc >= APCA_LARGE_OR_BOLD else ", FAIL")
+                if lc < APCA_LARGE_OR_BOLD:
+                    fail(f"contrast with {a['name']}: {comp}, {what}: APCA Lc {lc:.1f} "
+                         f"(needs Lc {APCA_LARGE_OR_BOLD} for large or bold text)")
+                note = (f"{comp}, {what}: {r:.2f}:1, below 4.5:1 but allowed: APCA Lc {lc:.0f}, "
+                        "and the text is large or bold (DESIGN.md, Part 2)")
+                if note not in notes:
+                    notes.append(note)
+            elif need is None:
                 verdict = "below 4.5, allowed (disabled)" if r < 4.5 else "pass"
                 note = f"{comp}, {what}: {r:.2f}:1, below 4.5:1 but disabled controls are exempt"
                 if r < 4.5 and note not in notes:

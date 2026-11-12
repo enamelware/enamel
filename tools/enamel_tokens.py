@@ -194,6 +194,21 @@ def contrast(a, b):
     return (la + 0.05) / (lb + 0.05)
 
 
+def apca(text, background):
+    """APCA lightness contrast (Lc, APCA-W3 0.0.98G) of text on a background,
+    both hex colours, as a positive number. Used only for the one text pair
+    allowed below 4.5:1 (DESIGN.md, Part 2)."""
+    def y(rgb):
+        r, g, b = (c / 255 for c in rgb)
+        v = 0.2126729 * r ** 2.4 + 0.7151522 * g ** 2.4 + 0.0721750 * b ** 2.4
+        return v if v > 0.022 else v + (0.022 - v) ** 1.414
+    t, b = y(hex_rgb(text)), y(hex_rgb(background))
+    if abs(b - t) < 0.0005:
+        return 0.0
+    s = (b ** 0.56 - t ** 0.57) * 1.14 if b > t else (b ** 0.65 - t ** 0.62) * 1.14
+    return 0.0 if abs(s) < 0.1 else (abs(s) - 0.027) * 100
+
+
 def read_rules(design_md):
     """Return the bullet list under '## Part 2: Rules' in DESIGN.md."""
     with open(design_md, encoding="utf-8") as f:
