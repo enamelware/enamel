@@ -1,5 +1,5 @@
 /*
- * Enamel components, version 0.12.0.
+ * Enamel components, version 0.13.0.
  * Copyright (c) 2026 Mario Carabotta
  * SPDX-License-Identifier: MIT
  * Plain CSS. Link tokens/enamel.css first, then this file.
@@ -710,17 +710,15 @@
 .en-picker__row:is(:active, [data-pressed="true"]) .en-picker__desc { color: var(--en-focus-fill-ink); }
 
 /* Destructive row: a list row or picker row for an action that closes,
-   removes or deletes (Quit, Remove). Its face is the error red in every
-   state, with white text and an optional white icon in front. Red is a
-   status colour like error, never a second accent. Focus can't turn it grey
-   or cream, so it rises onto the accent underside, as a picker row does, and
-   drops when pressed. White on the red is 4.44:1, the one text pair below
-   4.5:1, allowed because it reaches APCA Lc 75 and the text is large or bold:
-   a row's own text, and its meta or description drawn bold. */
+   removes or deletes (Quit, Remove). Unfocused it is a plain row of its kind,
+   with an optional icon in front. Focused or pressed, its face turns the
+   error red with white text and icon, rises onto the accent underside, as a
+   picker row does, and drops when pressed. Red is a status colour like
+   error, never a second accent. White on the red is 4.44:1, the one text
+   pair below 4.5:1, allowed because it reaches APCA Lc 75 and the text is
+   large or bold: a row's own text, and its meta or description drawn bold. */
 .en-row--destructive,
 .en-picker__row--destructive {
-  background-color: var(--en-danger);
-  color: var(--en-text-strong);
   transition: transform var(--en-motion-fast) var(--en-ease-standard),
               box-shadow var(--en-motion-fast) var(--en-ease-standard);
 }
@@ -742,19 +740,22 @@
   transform: translateY(0);
   transition-duration: var(--en-motion-fast);
 }
-.en-row--destructive .en-row__meta,
 .en-row--destructive:is(:focus-visible, [data-focused="true"]) .en-row__meta,
-.en-picker__row--destructive .en-picker__desc,
+.en-row--destructive:is(:active, [data-pressed="true"]) .en-row__meta,
 .en-picker__row--destructive:is(:focus-visible, [data-focused="true"]) .en-picker__desc,
 .en-picker__row--destructive:is(:active, [data-pressed="true"]) .en-picker__desc,
-.en-picker__row--destructive:is(:focus-visible, [data-focused="true"]) .en-row__message {
+.en-picker__row--destructive:is(:focus-visible, [data-focused="true"]) .en-row__message,
+.en-picker__row--destructive:is(:active, [data-pressed="true"]) .en-row__message {
   color: var(--en-text-strong);
   font-weight: 700;
 }
-/* A message inside a destructive row: its error disc would vanish on the red
-   face, so the disc turns white and its mark red. */
-.en-row--destructive .en-row__message .en-icon,
-.en-picker__row--destructive .en-row__message .en-icon {
+/* A message inside a focused or pressed destructive row: its error disc
+   would vanish on the red face, so the disc turns white and its mark red.
+   Unfocused, the message keeps a plain row's error style. */
+.en-row--destructive:is(:focus-visible, [data-focused="true"]) .en-row__message .en-icon,
+.en-row--destructive:is(:active, [data-pressed="true"]) .en-row__message .en-icon,
+.en-picker__row--destructive:is(:focus-visible, [data-focused="true"]) .en-row__message .en-icon,
+.en-picker__row--destructive:is(:active, [data-pressed="true"]) .en-row__message .en-icon {
   color: var(--en-text-strong);
   stroke: var(--en-danger);
 }

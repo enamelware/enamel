@@ -197,15 +197,19 @@ PAIRS = [
     ("Row message", "mark on its red disc", "--en-focus-fill-ink", "--en-danger", "graphic"),
     ("Row message", "text, focused picker row", "--en-focus-fill-ink", "--en-focus-fill", "text"),
     ("Row message", "red disc, focused picker row", "--en-danger", "--en-focus-fill", "graphic"),
+    # Unfocused, a destructive row is a plain row: its text and message are the
+    # plain row's pairs above, and its icon is drawn in the row's text colour.
+    ("Destructive row", "icon, unfocused", "--en-text", "--en-surface-raised", "graphic"),
     # White on the error red is 4.44:1: the one text pair allowed below 4.5:1,
-    # judged by APCA instead, because a destructive row's text is large or bold.
-    ("Destructive row", "text, and bold meta or description", "--en-text-strong", "--en-danger", "apca"),
-    ("Destructive row", "icon", "--en-text-strong", "--en-danger", "graphic"),
+    # judged by APCA instead, because a focused or pressed destructive row's
+    # text is large or bold.
+    ("Destructive row", "text, and bold meta or description, focused or pressed", "--en-text-strong", "--en-danger", "apca"),
+    ("Destructive row", "icon, focused or pressed", "--en-text-strong", "--en-danger", "graphic"),
     ("Destructive row", "red face, in a list on the page", "--en-danger", "--en-surface-page", "graphic"),
     ("Destructive row", "red face, in a picker", "--en-danger", "--en-surface-raised", "graphic"),
     ("Destructive row", "focus underside, on the page", "--en-focus-ring", "--en-surface-page", "graphic"),
-    ("Destructive row", "message's white disc", "--en-text-strong", "--en-danger", "graphic"),
-    ("Destructive row", "message's red mark on its disc", "--en-danger", "--en-text-strong", "graphic"),
+    ("Destructive row", "message's white disc, focused or pressed", "--en-text-strong", "--en-danger", "graphic"),
+    ("Destructive row", "message's red mark on its disc, focused or pressed", "--en-danger", "--en-text-strong", "graphic"),
     ("Steps", "step", "--en-text", "--en-surface-page", "text"),
     ("Steps", "number", "--en-text-strong", "--en-surface-control", "text"),
     ("Stat panel", "number", "--en-text-strong", "--en-surface-raised", "text"),

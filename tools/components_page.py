@@ -245,7 +245,7 @@ MOTION = {
     'band': 'Motion: none. A band never takes focus.',
     'badge': 'Motion: none of its own. On a row it changes colour with the row, over --en-motion-fast.',
     'message': 'Motion: it fades in over --en-motion-fast when it appears. In reduced motion it simply appears.',
-    'destructive': "Motion: when focus arrives the red face rises --en-lift over --en-motion-medium as its accent underside appears, and settles back over --en-motion-fast when focus leaves. Pressed, it drops onto its underside over --en-motion-fast. In reduced motion focus and presses show at once, without the movement.",
+    'destructive': "Motion: when focus arrives the face turns red at once and rises --en-lift over --en-motion-medium as its accent underside appears, and settles back over --en-motion-fast when focus leaves, plain again at once. Pressed, it drops onto its underside over --en-motion-fast. In reduced motion focus and presses show at once, without the movement.",
     'steps': 'Motion: none.',
     'stat': 'Motion: none. A stat panel never takes focus.',
     'note': 'Motion: none. A note never takes focus.',
@@ -445,12 +445,13 @@ SECTIONS = [
             "This folder is inside your movies folder, so pick a different one.", focused=True) + '</div>'),
      ]),
     ("destructive", "Destructive row",
-     "A list row or picker row for an action that closes, removes or deletes, such as Quit or Remove: a red face "
-     "with white text, and an optional white icon in front.",
+     "A list row or picker row for an action that closes, removes or deletes, such as Quit or Remove: a plain row "
+     "until it has the focus, then a red face with white text, and an optional icon in front.",
      "Add the destructive class to the row; nothing else about the row changes. Use it for those actions only: red "
-     "is a status colour like error, never a second accent. The face stays red in every state, so focus shows as the "
-     "row rising onto its accent underside, in a list as in a picker, and a press drops it. Its meta or "
-     "description is drawn bold, since white on red is just under 4.5:1 and reads well only large or bold.", [
+     "is a status colour like error, never a second accent. Unfocused it looks exactly like the rows around it. "
+     "Focused, its face turns red and rises onto its accent underside, in a list as in a picker, and a press drops "
+     "it, still red. Its meta or description is then drawn bold, since white on red is just under 4.5:1 and reads "
+     "well only large or bold.", [
         ex("List row", '<div class="en-rows">' + destructive_row("Remove from Continue watching") + '</div>',
            copy=True),
         ex("List row, focused", '<div class="en-rows">'
@@ -462,6 +463,10 @@ SECTIONS = [
         ex("List row, pressed", '<div class="en-rows">'
            + destructive_row("Remove this folder", "62 videos", icon=REMOVE_ICON, focused=True, pressed=True)
            + '</div>', wide=True),
+        ex("List row, with a message", '<div class="en-rows">'
+           + destructive_row("Remove this folder", "62 videos", icon=REMOVE_ICON)
+           .replace("</button>", '<span class="en-row__message" role="status" aria-live="polite">'
+                    + ERROR_ICON + "It is in use. Close it first.</span></button>") + '</div>', wide=True),
         ex("List row, with a message, focused", '<div class="en-rows">'
            + destructive_row("Remove this folder", "62 videos", icon=REMOVE_ICON, focused=True)
            .replace("</button>", '<span class="en-row__message" role="status" aria-live="polite">'

@@ -1,17 +1,19 @@
 # Copyright (c) 2026 Mario Carabotta
 # SPDX-License-Identifier: MIT
-"""Issue #21: the destructive row. Without a browser:
+"""Issues #21 and #22: the destructive row. Without a browser:
 
-  - both variants exist and take their face, text and icon colours from the
-    error red and the strong white only, in every state, and red is never a
-    text colour anywhere in the components;
+  - both variants exist; unfocused they set no face, text, meta, description
+    or message colour of their own, so they are plain rows (#22); focused and
+    pressed they take the error red face and the strong white text, and red is
+    never a text colour anywhere in the components;
   - focus raises the face onto the accent underside, a press drops it, and the
     two reduced-motion blocks stop the movement;
   - the contrast check holds white on the error red, and only that pair, to
     APCA Lc 60 instead of 4.5:1, fails it when it falls short, and the APCA
     measure gives the published values;
   - the Components page shows every state, DESIGN.md has the rules and the
-    entry, the new names are recorded, and 0.12.0 has its visual entry.
+    entry, the new names are recorded, and 0.12.0 and 0.13.0 have their
+    visual entries.
 
     scripts/test.sh unit tests.test_destructive_row
 """
@@ -58,10 +60,13 @@ def declarations(body):
     return dict((k.strip(), v.strip()) for k, v in re.findall(r"([\w-]+)\s*:\s*([^;]+);", body))
 
 
+FOCUS_OR_PRESS = re.compile(r":focus-visible|data-focused|:active|data-pressed")
+
+
 class Styles(unittest.TestCase):
-    def test_every_state_keeps_the_red_face_and_white_text(self):
+    def test_focus_and_press_take_the_red_face_and_white_text(self):
         for cls in CLASSES:
-            states = {"rest": f".{cls}", "focus": f'.{cls}:is(:focus-visible, [data-focused="true"])',
+            states = {"focus": f'.{cls}:is(:focus-visible, [data-focused="true"])',
                       "press": f'.{cls}:is(:active, [data-pressed="true"])'}
             found = {sel: declarations(body) for sel, body in rules(CSS, cls)}
             for state, sel in states.items():
@@ -70,6 +75,18 @@ class Styles(unittest.TestCase):
                     self.assertIsNotNone(decl, f"no rule for {sel}")
                     self.assertEqual(decl.get("background-color"), "var(--en-danger)")
                     self.assertEqual(decl.get("color"), "var(--en-text-strong)")
+
+    def test_unfocused_it_is_a_plain_row(self):
+        """#22: every colour, weight or face a destructive rule sets applies
+        only while the row is focused or pressed."""
+        looks = {"background", "background-color", "background-image", "color", "stroke", "font-weight"}
+        for cls in CLASSES:
+            for sel, body in rules(CSS, cls):
+                set_here = looks & set(declarations(body))
+                for part in selectors(sel):
+                    if f".{cls}" in part and set_here:
+                        with self.subTest(selector=part):
+                            self.assertRegex(part, FOCUS_OR_PRESS, f"sets {sorted(set_here)} on an unfocused row")
 
     def test_focus_rises_onto_the_underside_and_a_press_drops(self):
         for cls in CLASSES:
@@ -177,8 +194,21 @@ class Docs(unittest.TestCase):
 
     def test_names_recorded_and_version(self):
         self.assertEqual(build_migration.ADDED_SINCE["0.12.0"], list(CLASSES))
-        self.assertEqual(read("VERSION").strip(), "0.12.0")
         self.assertIn("## 0.12.0, 2026-11-12 (visual)", read("CHANGELOG.md"))
+
+    def test_plain_until_focused_is_documented_and_released(self):
+        """#22: DESIGN.md, the Components page and 0.13.0's entry say the row is plain until focused."""
+        entry = read("DESIGN.md").split("### Destructive row", 1)[1].split("\n### ", 1)[0]
+        self.assertIn("unfocused, a plain row of its kind", entry)
+        self.assertNotIn("in every state", entry)
+        page = read("docs/components.html")
+        section = page[page.index('id="destructive"'):page.index("</section>", page.index('id="destructive"'))]
+        self.assertIn("a plain row until it has the focus", section)
+        self.assertIn("List row, with a message<", section)
+        self.assertEqual(read("VERSION").strip(), "0.13.0")
+        changelog = read("CHANGELOG.md")
+        self.assertIn("## 0.13.0, 2026-11-14 (visual)", changelog)
+        self.assertLess(changelog.index("## 0.13.0"), changelog.index("## 0.12.0"))
 
 
 if __name__ == "__main__":

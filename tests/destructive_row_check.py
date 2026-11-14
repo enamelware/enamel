@@ -1,13 +1,16 @@
 # Copyright (c) 2026 Mario Carabotta
 # SPDX-License-Identifier: MIT
-"""Issue #21: the destructive row, measured in the device's Firefox (headless,
-its own temporary profile; Steam is never touched):
+"""Issues #21 and #22: the destructive row, measured in the device's Firefox
+(headless, its own temporary profile; Steam is never touched):
 
-  - every destructive list row and picker row on the Components page has the
-    error red face and white text, meta, description and icon, whether it is
-    focused, pressed or neither, as the page really shows it;
-  - its meta or description is bold, and the row's own text keeps its row's
-    size, so the one text pair below 4.5:1 stays large or bold;
+  - every destructive list row and picker row on the Components page that is
+    neither focused nor pressed looks like a plain row: the raised face, the
+    row's text colour, a muted, regular meta or description, an icon in the
+    text colour, and a message in the usual error style (#22);
+  - focused or pressed, it has the error red face and white text, meta,
+    description and icon, as the page really shows it;
+  - then its meta or description is bold, and the row's own text keeps its
+    row's size, so the one text pair below 4.5:1 stays large or bold;
   - white on its real face passes APCA Lc 60 and is at least 4.4:1;
   - it is the same height and padding as an ordinary row of its kind;
   - focused, it rises by --en-lift onto the accent underside; not focused it
@@ -39,7 +42,7 @@ ROWS = ".en-row--destructive, .en-picker__row--destructive"
 
 MEASURE = r"""
 async (args) => {
-  const errors = [], seen = { rows: 0, focused: 0, pressed: 0, icons: 0, described: 0 };
+  const errors = [], seen = { rows: 0, plain: 0, focused: 0, pressed: 0, icons: 0, described: 0 };
   const fail = m => errors.push(m);
   const cs = el => getComputedStyle(el);
   const probe = (prop, value) => { const p = document.createElement('div'); p.style[prop] = value;
@@ -58,6 +61,11 @@ async (args) => {
   const rise = el => { const t = cs(el).transform; return t === 'none' ? 0 : -new DOMMatrix(t).m42; };
   const red = probe('backgroundColor', 'var(--en-danger)');
   const white = probe('color', 'var(--en-text-strong)');
+  const raised = probe('backgroundColor', 'var(--en-surface-raised)');
+  const text = probe('color', 'var(--en-text)');
+  const muted = probe('color', 'var(--en-text-muted)');
+  const ink = probe('color', 'var(--en-focus-fill-ink)');
+  const redInk = probe('color', 'var(--en-danger)');
   const accent = probe('color', 'var(--en-focus-ring)');
   const lift = parseFloat(probe('width', 'var(--en-lift)'));
   const reduced = document.documentElement.getAttribute('data-en-motion') === 'reduced'
@@ -73,34 +81,46 @@ async (args) => {
     const kind = row.classList.contains('en-row') ? 'en-row' : 'en-picker__row';
     const what = `the destructive ${kind === 'en-row' ? 'list' : 'picker'} row "${name(row)}"`;
     const focused = row.getAttribute('data-focused') === 'true', pressed = row.getAttribute('data-pressed') === 'true';
+    const lit = focused || pressed;
     if (focused) seen.focused++;
     if (pressed) seen.pressed++;
+    if (!lit) seen.plain++;
     const s = cs(row), face = s.backgroundColor;
-    if (face !== red) fail(`${what} has a ${face} face, not the error red`);
-    if (s.color !== white) fail(`${what} has ${s.color} text, not white`);
-    const lc = apca(s.color, face), r = ratio(s.color, face);
-    if (lc < 60) fail(`${what}: white on its face is APCA Lc ${lc.toFixed(1)}, below 60`);
-    if (r < 4.4) fail(`${what}: white on its face is ${r.toFixed(2)}:1`);
+    if (lit) {
+      if (face !== red) fail(`${what} has a ${face} face, not the error red`);
+      if (s.color !== white) fail(`${what} has ${s.color} text, not white`);
+      const lc = apca(s.color, face), r = ratio(s.color, face);
+      if (lc < 60) fail(`${what}: white on its face is APCA Lc ${lc.toFixed(1)}, below 60`);
+      if (r < 4.4) fail(`${what}: white on its face is ${r.toFixed(2)}:1`);
+    } else {
+      if (face !== raised) fail(`${what} is not focused but has a ${face} face, not a plain row's`);
+      if (s.color !== text) fail(`${what} is not focused but has ${s.color} text, not a plain row's`);
+    }
     const size = kind === 'en-row' ? 'var(--en-text-body)' : 'var(--en-text-heading)';
     if (s.fontSize !== probe('fontSize', size)) fail(`${what} is ${s.fontSize}, not its row's text size`);
     for (const small of row.querySelectorAll('.en-row__meta, .en-picker__desc')) {
       seen.described++;
-      if (cs(small).color !== white) fail(`the meta or description in ${what} is ${cs(small).color}, not white`);
-      if (parseFloat(cs(small).fontWeight) < 700) fail(`the meta or description in ${what} is not bold`);
+      const want = lit ? white : muted, weight = parseFloat(cs(small).fontWeight);
+      if (cs(small).color !== want) fail(`the meta or description in ${what} is ${cs(small).color}, not ${want}`);
+      if (lit && weight < 700) fail(`the meta or description in ${what} is not bold`);
+      if (!lit && weight >= 700) fail(`the meta or description in ${what} is bold while the row is not focused`);
     }
     const message = row.querySelector('.en-row__message');
     if (message && message.textContent.trim()) {
       seen.messages = (seen.messages || 0) + 1;
+      if (!lit) seen.plainMessages = (seen.plainMessages || 0) + 1;
       const disc = message.querySelector('.en-icon');
+      const [discColour, mark] = lit ? [white, red] : [redInk, ink];
       if (cs(message).color !== white) fail(`the message in ${what} is ${cs(message).color}, not white`);
-      if (cs(disc).color !== white || cs(disc).stroke !== red)
-        fail(`the message disc in ${what} is ${cs(disc).color} with a ${cs(disc).stroke} mark, not white with a red one`);
+      if (cs(disc).color !== discColour || cs(disc).stroke !== mark)
+        fail(`the message disc in ${what} is ${cs(disc).color} with a ${cs(disc).stroke} mark, not ${discColour} with a ${mark} one`);
     }
     const icon = row.querySelector(':scope > .en-icon');
     if (icon) {
       seen.icons++;
       if (icon.getAttribute('aria-hidden') !== 'true') fail(`the icon in ${what} is not hidden from screen readers`);
-      if (cs(icon).stroke !== white) fail(`the icon in ${what} is drawn in ${cs(icon).stroke}, not white`);
+      if (cs(icon).stroke !== s.color) fail(`the icon in ${what} is drawn in ${cs(icon).stroke}, not its text colour ${s.color}`);
+      if (lit && cs(icon).stroke !== white) fail(`the icon in ${what} is drawn in ${cs(icon).stroke}, not white`);
       const text = [...row.childNodes].find(n => n !== icon && n.textContent.trim());
       const range = document.createRange(); range.selectNodeContents(text);
       if (range.getBoundingClientRect().left < icon.getBoundingClientRect().right - 0.5) fail(`the text of ${what} runs under its icon`);
@@ -215,14 +235,17 @@ class DestructiveRow(unittest.TestCase):
 
     def test_on_the_components_page(self):
         seen = self.measure("full")
-        self.assertGreaterEqual(seen["rows"], 12)
+        self.assertGreaterEqual(seen["rows"], 13)
+        self.assertGreaterEqual(seen["plain"], 5)
         self.assertGreaterEqual(seen["focused"], 6)
         self.assertGreaterEqual(seen["pressed"], 2)
-        self.assertGreaterEqual(seen["icons"], 8)
-        self.assertGreaterEqual(seen["described"], 6)
-        self.assertGreaterEqual(seen.get("messages", 0), 1)
-        print(f"Destructive rows: {seen['rows']} rows ({seen['focused']} focused, {seen['pressed']} pressed) "
-              "red with white text, rising onto the underside on focus")
+        self.assertGreaterEqual(seen["icons"], 9)
+        self.assertGreaterEqual(seen["described"], 7)
+        self.assertGreaterEqual(seen.get("messages", 0), 2)
+        self.assertGreaterEqual(seen.get("plainMessages", 0), 1)
+        print(f"Destructive rows: {seen['rows']} rows, {seen['plain']} plain while unfocused, "
+              f"{seen['focused']} focused and {seen['pressed']} pressed red with white text, "
+              "rising onto the underside on focus")
 
     def test_in_reduced_motion_focus_keeps_the_underside_without_the_rise(self):
         seen = self.measure("reduced")

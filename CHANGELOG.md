@@ -2,6 +2,23 @@
 
 Each version of Enamel, newest first. Apps copy a version and re-sync after a new one; check the entry before updating. A version is released only once its entry is written and its git tag (for example `v0.6.0`) is pushed; each entry says which apps should adopt it and when. "Visual" means things look or move differently; no existing name changed unless the entry says so.
 
+## 0.13.0, 2026-11-14 (visual)
+
+The destructive row is now a plain row until it has the focus (#22), as Kettle Video asked for its Quit row (enamelware/media-player#98, listed in Enamel's "Gaps found by the apps", #7). Everything else looks the same.
+
+**Renamed or removed: none.** No token, component class, state attribute, component variable, or script function or event was renamed, removed or added. Markup doesn't change.
+
+**Who should adopt it, and when:** Kettle Video, through its own "Bring in Enamel 0.13.0" issue, before it puts Quit back on the destructive row (its #98 waits for this). Apps that don't use the destructive row can adopt it whenever they next re-sync; nothing they use changes.
+
+**What each app must do to pick it up:**
+- Re-sync the three main files. Nothing else: a row that already has the destructive class now looks plain until it has the focus.
+
+Changed (visual):
+- `.en-row--destructive` and `.en-picker__row--destructive`: unfocused, the row looks exactly like a plain row of its kind, with its usual face, text, meta or description, icon and message. Focused or pressed, it has the red face, white text and icon and bold meta or description it had in 0.12.0, in place of the grey lift or the cream fill, and still rises onto the accent underside and drops when pressed.
+
+Rules (DESIGN.md, Part 2):
+- The destructive row is a plain row until it has the focus. White on the error red (the one text pair judged by APCA) now applies only while the row is focused or pressed.
+
 ## 0.12.0, 2026-11-12 (visual)
 
 A destructive row (#21), found by Kettle Video for the Quit row in its Home menu (enamelware/media-player#98, listed in Enamel's "Gaps found by the apps", #7). Everything that was there before looks the same.

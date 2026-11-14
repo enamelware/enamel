@@ -16,7 +16,7 @@ All tokens live in [`tokens/enamel.css`](tokens/enamel.css), in one `:root` bloc
 ## Using it in an app
 
 1. Copy `tokens/enamel.css` and `DESIGN.md` into the app.
-2. Note the version you copied (from [`VERSION`](VERSION), currently 0.12.0) next to them, for example in a comment at the top of the copied CSS or in the app's README.
+2. Note the version you copied (from [`VERSION`](VERSION), currently 0.13.0) next to them, for example in a comment at the top of the copied CSS or in the app's README.
 3. Link `enamel.css` before the app's own styles. Use only the Group C tokens, and follow the rules in `DESIGN.md`.
 4. To use the components, also copy [`components/enamel-components.css`](components/enamel-components.css) and link it after `enamel.css`.
 5. For the picker dialog and the toast, also copy [`components/enamel-components.js`](components/enamel-components.js) and load it after the stylesheets. Apps with their own key handling should read the "Behaviour script" part of `DESIGN.md`.

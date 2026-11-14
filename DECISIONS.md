@@ -2,6 +2,12 @@
 
 A dated log of design decisions for the Enamel design system. Newest first.
 
+## 2026-11-14, the destructive row is plain until focused (#22)
+
+**Red only with the focus.** The owner tried the 0.12.0 row on Kettle Video's Quit and wanted it to look like the rows around it, turning red only when it has the focus (enamelware/media-player#98). Unfocused, a destructive row is now a plain row of its kind, message and icon included; focused or pressed it takes the red face, white text, bold meta or description and the rise onto the coral underside it had before. The classes keep their names.
+
+**The red replaces the usual focus look.** A focused destructive row turns red instead of taking a list row's grey lift or a picker row's cream fill, and it still rises onto the underside, so focus reads the same way in a list and in a picker. The face changes colour at once, as a picker row's cream does, while the rise keeps its motion.
+
 ## 2026-11-12, the destructive row (#21)
 
 **A red face with white text, not red text.** Red text fails on every Enamel grey, and a red light enough to pass on the dark rows turns into a salmon next to the coral accent. The owner chose the error red as the row's face with Enamel's white for the text and icon, so there is still one red and one accent.
