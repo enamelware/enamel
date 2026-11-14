@@ -3,7 +3,7 @@
 """Issue #2: the responsive rule. The agreed wording is in CLAUDE.md (Hard
 rules) and DESIGN.md Part 2, replacing "Layouts must work at 16:10 and 4:3";
 the style guide's Rules section shows it; DECISIONS.md records the rule and
-the owner's answers; the two agreed sentences on the Overview page follow it.
+the answers to its questions; the two agreed sentences on the Overview page follow it.
 
 That the style guide was rebuilt from DESIGN.md is also checked by
 tools/check_guide.py (scripts/test.sh). These tests read the files directly.

@@ -7,16 +7,20 @@ addresses only until someone else takes the old name, so no file in the repo
 may use it (in its text or its file name). The one exception is history: an
 entry in DECISIONS.md or CHANGELOG.md dated before the rename stays as it was.
 
-The old name is built from two parts here, so this file doesn't name it.
+The old name comes from the public-text check (tools/release_check.py, #23),
+where it is built from two parts, so neither file names it. That check also
+looks for it in what is published; this test covers every file in the folder.
 
     scripts/test.sh unit tests.test_old_account_name
 """
-import os, re, unittest
+import os, re, sys, unittest
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(ROOT, "tools"))
+import release_check as rc  # noqa: E402
 
-OLD = "steamos" + "tools"
-NEW = "enamelware"
+OLD = rc.OLD_ACCOUNT
+NEW = rc.ACCOUNT
 RENAMED_ON = "2026-10-27"
 HISTORY = ("DECISIONS.md", "CHANGELOG.md")
 SKIP_DIRS = {".git", "__pycache__"}

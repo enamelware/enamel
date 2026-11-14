@@ -9,7 +9,7 @@ what tests/test_release_rules.py does not:
     say nothing about taking values out of Steam, a debug connection or
     Steam's files, and the two old source labels are gone;
   - every example title in a row or tile is one of the made-up titles
-    listed here (the owner's request during the build), so no real film or
+    listed here (a request made during the build), so no real film or
     show title can slip into the examples;
   - the guide check really fails when the release check finds something;
   - the case-study page, where it exists next to this repo, opens on its
@@ -192,7 +192,7 @@ class GuideCheckFails(unittest.TestCase):
 CASE_STUDY = os.path.join(os.path.dirname(ROOT), "enamel-case-study", "index.html")
 
 
-@unittest.skipUnless(os.path.exists(CASE_STUDY), "the case-study page lives only on the owner's device")
+@unittest.skipUnless(os.path.exists(CASE_STUDY), "the case-study page lives outside this repo and is not here")
 class CaseStudy(unittest.TestCase):
     def setUp(self):
         with open(CASE_STUDY, encoding="utf-8") as f:

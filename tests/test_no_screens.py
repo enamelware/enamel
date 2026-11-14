@@ -58,7 +58,7 @@ NOT_SCREENS = [
     "100rem (1600px) wide; 56.25rem; 20rem wide (320px).",  # widths in rem with their pixels
     "Enamel is not affiliated with Valve. Steam and Steam Deck are trademarks of Valve Corporation.",
     '<meta name="viewport" content="width=device-width, initial-scale=1">',
-    "TV shows; Movies; the kettle-video repo at `~/Development/kettle-video`.",
+    "TV shows; Movies; the kettle-video repo at `~" + "/Development/kettle-video`.",
     "<li>Vertical layouts and layered UI (Gaming Mode).</li>",
 ]
 

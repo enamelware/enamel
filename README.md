@@ -4,6 +4,8 @@ Enamel is a design system for controller-first apps that feel at home in Steam's
 
 It holds design tokens (CSS custom properties), the rules for using them, and the first components.
 
+Enamel is built with Claude Code from a designer's specs and decisions. [How this repo is built](docs/how-this-repo-is-built.md) explains how the work moves from an idea to a tested release: the planning board, the commands and helper agents, the issue sizes and their checks, and the decision log.
+
 ## The four token groups
 
 All tokens live in [`tokens/enamel.css`](tokens/enamel.css), in one `:root` block, and start with `--en-`.
@@ -65,13 +67,14 @@ Each page's menu is written with that page already marked, so it works without s
 
 - `DESIGN.md`: tokens and rules for people and AI coding tools.
 - `DECISIONS.md`: why things are the way they are.
+- `docs/how-this-repo-is-built.md`: how the work is planned, built and checked.
 - `CHANGELOG.md`: what changed in each version.
 - `LICENSE` and `NOTICE.md`: the licence and the notice that goes with it.
 - `tools/`: scripts (system Python, standard library only).
   - `build_design_md.py` regenerates the token tables in `DESIGN.md`.
   - `build_styleguide.py` regenerates `docs/index.html`, `docs/components.html` (whose examples live in `components_page.py`), `docs/motion.html` (from `motion_page.py`) and `docs/resize.html` (from `resize_page.py`), writes the left menu into `docs/overview.html` between its menu markers, and writes the version from `VERSION` into the header comments of the two stylesheets.
   - `check_guide.py` checks the style guide and components: pages, menu, colours, sizes, contrast and motion, and that nothing in the tokens, components, style guide, `DESIGN.md` or this README names a device, an aspect ratio or a screen size. With `browser_check.py` it also loads every page in the device's Firefox, in full and in reduced motion.
-  - `release_check.py`, run by `check_guide.py`, fails if anything that would be published holds Steam's own names or anything personal (personal paths, email addresses other than the GitHub noreply address, Steam IDs, secrets).
+  - `release_check.py`, run by `check_guide.py`, fails if anything that would be published holds Steam's own names or anything personal (personal paths, email addresses other than the GitHub noreply address, Steam IDs, secrets). Its public-text check also fails on what the "Public writing" rule in `CLAUDE.md` rules out and a pattern can find: home folder paths, "owner" wording, the old account name, commit email addresses, claude.ai links, and links to private repos or the private planning board.
   - `serve.py` serves the repo locally and opens the style guide (used by the launcher).
 
 ## Licence

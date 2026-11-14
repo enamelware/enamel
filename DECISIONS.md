@@ -2,6 +2,16 @@
 
 A dated log of design decisions for the Enamel design system. Newest first.
 
+## 2026-11-14, public writing and the public-text check (#23)
+
+**One scan, two lists.** The public-text check lives in the release check and reads the same list of published files, with its own list of what counts as a finding: home folder paths written with a tilde, "owner" wording, the old account name, the commit email address, claude.ai links, and links to private repos or the private planning board. The release check still fails on full home paths and every other email address, so nothing is searched for twice. The old-name test takes the old account name from the check, so it is written down once.
+
+**Every published file counts, with two explained exceptions.** CLAUDE.md and `.claude/` are covered like everything else. Only two lines of the workflow need a flagged text to work, and each is listed in the check with the reason: the deny rules in `.claude/settings.json`, which name secret folders in the home folder of whoever runs Claude Code, and the board's own address in `.claude/board.json`. Tests that name what is searched for build those words from parts instead of needing an exception.
+
+**Today's findings are a known list, not a warning.** Chosen because it blocks new private text from the first day while letting this issue merge: each file may keep at most its current number of each kind of finding, one more fails the quick checks, and the known ones are listed in the check's output. The rewrite (#24) brings the list to zero.
+
+**Issues from /draft use the public ticket headings.** Problem, Why it matters, Proposal (with what to watch for), Done when, and Manual checks on the reference devices. Issues the workflow files by itself (a tests run, refactor proposals, a series follow-up) keep the headings their later steps read, so nothing the workflow does changes.
+
 ## 2026-11-14, the destructive row is plain until focused (#22)
 
 **Red only with the focus.** The owner tried the 0.12.0 row on Kettle Video's Quit and wanted it to look like the rows around it, turning red only when it has the focus (enamelware/media-player#98). Unfocused, a destructive row is now a plain row of its kind, message and icon included; focused or pressed it takes the red face, white text, bold meta or description and the rise onto the coral underside it had before. The classes keep their names.

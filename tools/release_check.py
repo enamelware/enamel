@@ -23,6 +23,17 @@ and fails on:
 
 Some patterns would match their own text, so they are built from parts.
 Used by check_guide.py and tests/test_release_rules.py.
+
+The public-text check (#23) reads the same published files for what the
+"Public writing" section of CLAUDE.md rules out: a home folder path written
+with a tilde, the project's owner named by role, the old account name, a
+commit email address (the GitHub noreply address), a claude.ai link, and a
+link to a private repo or to the private planning board. Every published
+file counts, CLAUDE.md and .claude/ included; the few lines that need such
+a text to work are listed in PUBLIC_TEXT_ALLOWED with the reason. Findings
+in the text written before the rule are listed in PUBLIC_TEXT_KNOWN, which
+the rewrite (#24) empties: more of a kind in a file than listed there is a
+failure. Used by check_guide.py and tests/test_public_text.py.
 """
 import os, re, subprocess
 
@@ -62,6 +73,107 @@ PATTERNS = [
 ]
 EMAIL = re.compile(r"(?<![\w.+-])[\w.+-]+@[\w-]+(?:\.[\w-]+)+")
 SSH_HOST = re.compile(r"^git@github\.com$")
+
+
+# The public-text check. The GitHub account and its one public repo; any
+# other repo of the account is private.
+ACCOUNT = "enamelware"
+PUBLIC_REPOS = {"enamel"}
+OLD_ACCOUNT = "steamos" + "tools"
+HOME_PATH = "a home folder path"
+OWNER_WORDING = "the " + "own" + "er"     # in parts, so this file doesn't use the words
+BOARD_LINK = "a link to the private planning board"
+PRIVATE_REPO = "a link to a private repo"
+PUBLIC_TEXT = [
+    (HOME_PATH, re.compile(r"(?<![\w/~])~/[\w.-]")),       # /home/... is a release problem already
+    (OWNER_WORDING, re.compile(r"\bthe\s+" + "own" + r"er\b", re.I)),
+    ("the old account name", re.compile(OLD_ACCOUNT, re.I)),
+    ("a commit email address", re.compile(r"\d+\+[\w-]+@users\.noreply\.github\.com", re.I)),
+    ("a claude.ai link", re.compile(r"\bclaude\.ai/", re.I)),
+    (BOARD_LINK, re.compile(r"github\.com/(?:users|orgs)/[\w-]+/projects\b", re.I)),
+]
+# owner/name, alone or in a GitHub address; the board's users/<account>/projects is not a repo.
+REPO_SLUG = re.compile(rf"(?<![\w.+-])(?<!users/)(?<!orgs/){ACCOUNT}/([\w-]+(?:\.[\w-]+)*)", re.I)
+
+# (file, kind): why that file needs it. Few, and each one explained.
+PUBLIC_TEXT_ALLOWED = {
+    (".claude/settings.json", HOME_PATH):
+        "the deny rules keep Claude Code out of the secret folders (SSH keys, GitHub login, git credentials) in the "
+        "home folder of whoever runs it; they are written from the home folder's short form, with no name in them",
+    (".claude/board.json", BOARD_LINK):
+        "the workflow's board settings: the board's own address, which the board script and its tests read",
+}
+
+# (file, kind): how many findings the text written before the rule still
+# has. A file may have at most this many of a kind; one more is a failure.
+# The rewrite in the project voice (#24) brings these to zero and empties it.
+PUBLIC_TEXT_KNOWN = {
+    (".claude/agents/refactor-scout.md", OWNER_WORDING): 1,
+    (".claude/agents/reviewer.md", OWNER_WORDING): 5,
+    (".claude/agents/test-checker.md", OWNER_WORDING): 3,
+    (".claude/agents/test-writer.md", OWNER_WORDING): 2,
+    (".claude/commands/draft.md", OWNER_WORDING): 2,
+    (".claude/commands/next.md", OWNER_WORDING): 19,
+    (".claude/commands/tidy.md", OWNER_WORDING): 4,
+    ("CHANGELOG.md", PRIVATE_REPO): 4,
+    ("CLAUDE.md", HOME_PATH): 4,
+    ("CLAUDE.md", PRIVATE_REPO): 1,
+    ("CLAUDE.md", OWNER_WORDING): 4,
+    ("DECISIONS.md", HOME_PATH): 2,
+    ("DECISIONS.md", PRIVATE_REPO): 1,
+    ("DECISIONS.md", OWNER_WORDING): 14,
+    ("README.md", HOME_PATH): 1,
+    ("README.md", PRIVATE_REPO): 1,
+}
+
+
+def private_repos(line):
+    """The account's repo names on one line that are not its public repo."""
+    out = []
+    for m in REPO_SLUG.finditer(line):
+        name = m.group(1).rstrip(".")
+        if name.lower().endswith(".git"):
+            name = name[:-4]
+        if name.lower() not in PUBLIC_REPOS:
+            out.append(m.group(0))
+    return out
+
+
+def public_text_findings(rel, text):
+    """[(line number, kind, what was found)] for one file's text, exceptions left out."""
+    found = []
+    for n, line in enumerate(text.splitlines(), 1):
+        for what, pattern in PUBLIC_TEXT:
+            m = pattern.search(line)
+            if m:
+                found.append((n, what, m.group(0)))
+        repos = private_repos(line)
+        if repos:
+            found.append((n, PRIVATE_REPO, repos[0]))
+    return [f for f in found if (rel, f[1]) not in PUBLIC_TEXT_ALLOWED]
+
+
+def public_text(root=ROOT, known=None):
+    """(new, known_counts, files): findings beyond the known list as 'path line N: kind (found)', the count of
+    each (file, kind) found within the known list, and how many files were read."""
+    known = PUBLIC_TEXT_KNOWN if known is None else known
+    files = published_files(root)
+    groups = {}
+    for rel in files:
+        try:
+            with open(os.path.join(root, rel), encoding="utf-8") as f:
+                text = f.read()
+        except UnicodeDecodeError:
+            continue
+        for n, what, match in public_text_findings(rel, text):
+            groups.setdefault((rel, what), []).append(f"{rel} line {n}: {what} ({match[:60]!r})")
+    new, within = [], {}
+    for key, lines in sorted(groups.items()):
+        if len(lines) > known.get(key, 0):
+            new += lines
+        else:
+            within[key] = len(lines)
+    return new, within, len(files)
 
 
 def published_files(root=ROOT):

@@ -10,7 +10,7 @@ touched), in a frame the size of the smallest supported box (20rem by
     top (and the bar really is taller than one bar, so this tells the two
     apart);
   - with the bar removed from the page, both go back to the one-bar gap
-    (--en-size-bar) above the bottom, as the owner chose on #9;
+    (--en-size-bar) above the bottom, as chosen on #9;
   - a new hint bar added later (never seen before) is found, and both stop
     at its top;
   - when that bar is moved into another element, the toast in <body> goes

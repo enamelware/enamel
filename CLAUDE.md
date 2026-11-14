@@ -67,6 +67,19 @@ Same delivery workflow as Kettle Video (`~/Development/kettle-video`, CLAUDE.md 
 - No layout is tied to a screen size, a device or an aspect ratio. Layouts adapt to the space they are given, and breakpoints come from the content and are named by what they do. Devices are for testing, never targets. No file names a capture size or a device as the source of a value.
 - Do not ask the user to run commands or check files. Verify your own work: the CSS parses; the page opens without errors; every token in enamel.css appears on the page and in DESIGN.md Part 1 with the same value; the page uses no colour that is not a token; running the DESIGN.md script twice changes nothing the second time.
 
+## Public writing
+
+Enamel is public and part of a design portfolio, so everything a visitor can read makes sense to a stranger. That covers the README, docs/, DESIGN.md, DECISIONS.md, CHANGELOG.md, MIGRATION.md, the style guide, the workflow files in `.claude/`, issues, comments and commit messages.
+
+- **Project voice.** "Enamel uses…", "Chosen because…". Never "I", "we", "you", and never "owner" for the person who runs the project.
+- **Reference devices.** Devices are named only as reference hardware: Steam Deck (SteamOS) and Retroid Pocket Nova (Armada). They are for testing, never targets (see "Hard rules").
+- **Nothing private.** No personal paths or home folder paths, machine or login names, personal media or real film and show titles, email addresses (the commit address included), and no references to private chats, documents, design canvases, boards or repos. Those are described in words; links only go to public places. Example content is always invented.
+- **Issues** are written as public tickets with these headings: Problem, Why it matters, Proposal, Done when (what Claude Code checks automatically), and Manual checks on the reference devices. Issues the workflow files by itself (a tests run, refactor proposals, a series follow-up) keep the headings their later steps read, in the same voice.
+- **Testing comments and reports** follow the same voice.
+- **Commit messages** follow it from now on. Past commits are never rewritten.
+- **How the work is done** is explained for visitors in [docs/how-this-repo-is-built.md](docs/how-this-repo-is-built.md); public text points there instead of explaining workflow terms again.
+- **Checked automatically.** The public-text check (in `tools/release_check.py`, part of the quick checks) fails on home folder paths, "owner" wording, the old account name, commit email addresses, claude.ai links, and links to private repos or the private board, in every published file, this one and `.claude/` included. The few lines that need such a text to work are listed in the check with the reason. The reviewer checks every change against this section.
+
 ## How to talk to me
 
 - Plain language.

@@ -33,7 +33,7 @@ PLANTED = [
     ("a home folder path", "/" + "home/someone/Videos"),
     ("a home folder path", "/run/" + "media/SDCARD/films"),
     ("a Steam ID or Steam user folder", "7656119" + "8000000001"),
-    ("a Steam ID or Steam user folder", "~/.local/share/" + "Steam/userdata/" + "12345/config"),
+    ("a Steam ID or Steam user folder", "~" + "/.local/share/" + "Steam/userdata/" + "12345/config"),
     ("a device's own login name", "deck" + AT + "steam" + "deck"),
     ("something that looks like a secret", "gh" + "p_" + "A1b2C3d4E5f6G7h8I9j0K1l2"),
     ("something that looks like a secret", "-----BEGIN OPENSSH " + "PRIVATE KEY-----"),
@@ -51,7 +51,7 @@ NOT_PROBLEMS = [
     "if (CSS.supports('container-type: inline-size')) {}",
     '"Edit(//run/media/**)"',                                    # a rule about any drive, no drive named
     "The neutral palette is matched to Steam's Gaming Mode (Steam baseline).",
-    "~/Development/kettle-video",
+    "~" + "/Development/kettle-video",
 ]
 
 
@@ -156,7 +156,7 @@ class TheRepo(unittest.TestCase):
         self.assertIn("Never add anything taken from the Steam client's files. Steam baseline values are recorded "
                       "under Enamel's own names only.", claude)
         self.assertIn("Case-study and portfolio material never goes in this repo; it lives in "
-                      "~/Development/enamel-case-study/.", claude)
+                      "~" + "/Development/enamel-case-study/.", claude)
 
 
 if __name__ == "__main__":
