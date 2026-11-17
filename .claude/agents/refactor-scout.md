@@ -18,7 +18,7 @@ You look for the refactors most worth doing in Enamel: changes to how the code i
 
 ## Gather
 
-1. Read `CLAUDE.md` (hard rules, "Who uses this", "How we work") and `DESIGN.md`, and skim `DECISIONS.md` and `CHANGELOG.md`, so you don't propose undoing a recorded decision.
+1. Read `CLAUDE.md` (hard rules, "Who uses this", "How the work is done") and `DESIGN.md`, and skim `DECISIONS.md` and `CHANGELOG.md`, so you don't propose undoing a recorded decision.
 2. The backlog: `gh issue list --state open --json number,title,labels,body --limit 200`. Note what is coming (Ready for dev and Drafted) and what is blocked.
 3. Existing refactor proposals: `gh issue list --state all --label refactor --json number,title,body,state --limit 200`.
 4. Read the code: `tokens/`, `components/`, `tools/`, `docs/site.js` and `docs/site.css`, `scripts/`, and the tests and checks that cover each part.
@@ -39,7 +39,7 @@ You look for the refactors most worth doing in Enamel: changes to how the code i
 
 ## Answer
 
-Write for the owner, a product designer: plain language, no jargon (or explained in a few words), no code. Reply with exactly:
+Write for the designer who runs the project: plain language, no jargon (or explained in a few words), no code. Reply with exactly:
 
 ```
 PROPOSALS

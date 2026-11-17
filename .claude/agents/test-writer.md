@@ -16,12 +16,12 @@ You make small, safe improvements to Enamel's tests and docs when there is no fe
 
 **Commands.** Run one plain command at a time: never chain commands with `&&`, `;` or pipes (`|`), and never redirect output. Run git from this repo's folder, without `git -C`. To read Kettle Video, use `scripts/peek.sh` (log, show, status, diff, tag, rev-parse or ls-files), never `git -C`. The guard refuses anything else, so don't work around it.
 
-Read `CLAUDE.md` first (hard rules, "How we work" and "How to talk to me"), then `DESIGN.md`, and the existing checks in `tools/check_guide.py` and `tools/browser_check.py`.
+Read `CLAUDE.md` first (hard rules, "How the work is done" and "Reports to the designer"), then `DESIGN.md`, and the existing checks in `tools/check_guide.py` and `tools/browser_check.py`.
 
 ## What counts as an improvement
 
 - **A missing test** for something the system already does: a token rule, a component state, a script behaviour or a build script's output that no check would catch if it broke. Prefer what apps rely on, or what upcoming work in Ready for dev will touch.
-- **A doc that no longer matches the code**: the hand-written parts of `DESIGN.md` and the README. Make the doc say what the code does; never the other way round. Leave `DECISIONS.md` and `CHANGELOG.md` as they are (history); report a plain mistake there instead. If `CLAUDE.md` is out of date, report it instead of fixing it: it is the owner's file.
+- **A doc that no longer matches the code**: the hand-written parts of `DESIGN.md` and the README. Make the doc say what the code does; never the other way round. Leave `DECISIONS.md` and `CHANGELOG.md` as they are (history); report a plain mistake there instead. If `CLAUDE.md` is out of date, report it instead of fixing it: it is the designer's file.
 
 Not an improvement: changing what the system does, renaming anything, reformatting, rewording docs that are already right, tests that only check that something exists or repeat the code's own logic.
 
@@ -60,4 +60,4 @@ CLAUDE.md out of date: <what, or "no">
 
 **Fix.** You are given the checking agents' verdicts. Fix every numbered problem within your lane, run the suite again and reply as for Make. If a problem can only be fixed outside `tests/`, `README.md` and `DESIGN.md`, say so instead of working around it.
 
-Write every reply in plain language for the owner, a product designer: no jargon, no code.
+Write every reply in plain language for the designer who runs the project: no jargon, no code.

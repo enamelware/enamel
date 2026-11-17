@@ -3,11 +3,11 @@ description: Turn an idea or spec into one or more Enamel GitHub issues on the K
 argument-hint: <idea, sentence or spec; several items separated by a line with only ===>
 ---
 
-Draft work items for the owner to review. The text is:
+Draft work items for the designer to review. The text is:
 
 $ARGUMENTS
 
-Follow CLAUDE.md, especially "How we work" and "How to talk to me". **Do not build anything, create branches or edit project files.** This command only writes issues.
+Follow CLAUDE.md, especially "How the work is done" and "Reports to the designer". **Do not build anything, create branches or edit project files.** This command only writes issues.
 
 1. **Board.** Board changes only through `scripts/board.sh` (it reads the IDs in `.claude/board.json` itself). Run one simple command at a time: no `&&`, `;` or pipes.
 
@@ -23,7 +23,7 @@ Follow CLAUDE.md, especially "How we work" and "How to talk to me". **Do not bui
    - **Proposal**: what changes for apps using Enamel and in the style guide.
    - **Watch for** (part of the proposal): risks, edge cases, and anything that touches a CLAUDE.md hard stop (new dependency; a token, component class, state attribute, or function or event of the behaviour script renamed or removed; anything copied from Valve; a change apps would see beyond the spec that doesn't come from the issue or the design system). If apps (Kettle Video) would notice the change, say that it bumps VERSION, adds a plain-language CHANGELOG entry, and what apps need to change.
    - **Done when**, in two parts:
-     - **Checked automatically by Claude Code**: `scripts/test.sh` (quick: tokens, generated pages and DESIGN.md, colours and sizes only from tokens, contrast, every component state, and the style guide pages the change touches in the device's Firefox in full and reduced motion), plus `scripts/test.sh full` if the issue bumps `VERSION`, screenshots, anything doable from a terminal on this device.
+     - **Checked automatically by Claude Code**: `scripts/test.sh` (quick: tokens, generated pages and DESIGN.md, colours and sizes only from tokens, contrast, every component state, and the style guide pages the change touches in the device's Firefox in full and reduced motion), plus `scripts/test.sh full` if the issue bumps `VERSION`, screenshots, anything doable from a terminal on the machine that runs Claude Code.
      - **Manual checks on the reference devices**: a short list of what to look at or try in the style guide (opened with the Enamel style guide launcher) and its components, on the Steam Deck (SteamOS) and the Retroid Pocket Nova (Armada). Never commands. Write "nothing visible yet" when the change has no visible effect.
    Add exactly one size label (`size:S`, `size:M` or `size:L`, by CLAUDE.md's definitions; when unsure between two, take the bigger one) and a topic label if one fits (for example `tokens`, `components`, `motion`, `style-guide`). Create a missing label with `gh label create`.
 
@@ -36,4 +36,4 @@ Follow CLAUDE.md, especially "How we work" and "How to talk to me". **Do not bui
    - One item: one line per issue: `#N (size) — what it does, in one plain sentence.`
    - Several items: one line per issue, in the order given: `#N — title (size)`, adding "needs #M" where a dependency was linked.
    - For each series, one more line: `Series "<name>": #A, #B, #C — reviewed together once the last one is built.`
-   Then stop. The owner reviews on the board, leaves notes as issue comments, and moves the ones to build into Ready for dev.
+   Then stop. The designer reviews on the board, leaves notes as issue comments, and moves the ones to build into Ready for dev.

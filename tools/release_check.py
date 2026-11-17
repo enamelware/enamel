@@ -30,12 +30,12 @@ with a tilde, the project's owner named by role, the old account name, a
 commit email address (the GitHub noreply address), a claude.ai link, and a
 link to a private repo or to the private planning board. Every published
 file counts, CLAUDE.md and .claude/ included; the few lines that need such
-a text to work are listed in PUBLIC_TEXT_ALLOWED with the reason. Findings
-in the text written before the rule are listed in PUBLIC_TEXT_KNOWN, which
-the rewrite (#24) empties: more of a kind in a file than listed there is a
-failure. Used by check_guide.py and tests/test_public_text.py.
+a text to work are listed in PUBLIC_TEXT_ALLOWED with the reason, and only
+those exact lines pass. Any other finding is a failure: the rewrite in the
+project voice (#24) cleared the text written before the rule. Used by
+check_guide.py and tests/test_public_text.py.
 """
-import os, re, subprocess
+import json, os, re, subprocess
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -95,35 +95,65 @@ PUBLIC_TEXT = [
 # owner/name, alone or in a GitHub address; the board's users/<account>/projects is not a repo.
 REPO_SLUG = re.compile(rf"(?<![\w.+-])(?<!users/)(?<!orgs/){ACCOUNT}/([\w-]+(?:\.[\w-]+)*)", re.I)
 
-# (file, kind): why that file needs it. Few, and each one explained.
+# The deny rules that keep Claude Code out of the secret folders in the home
+# folder of whoever runs it: SSH keys, the GitHub login, git credentials and
+# signing keys, and Claude Code's own login.
+SECRET_RULE = re.compile(r"(?:Read|Edit)\(~/(?:\.ssh|\.config/gh|\.gnupg)/\*\*\)"
+                         r"|(?:Read|Edit)\(~/(?:\.claude/\.credentials\.json|\.git-credentials|\.netrc)\)")
+BOARD_ADDRESS = re.compile(r"https://github\.com/users/[\w-]+/projects/\d+")
+
+
+def _json(text):
+    try:
+        data = json.loads(text)
+    except ValueError:
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def _line_value(line):
+    """The JSON string a settings line holds on its own, or None."""
+    try:
+        value = json.loads(line.strip().rstrip(","))
+    except ValueError:
+        return None
+    return value if isinstance(value, str) else None
+
+
+def secret_deny_lines(text):
+    """The numbers of the lines in a settings file that hold a deny rule for a secret folder, and nothing else."""
+    if not _json(text):
+        return set()
+    out, in_deny = set(), False
+    for n, line in enumerate(text.splitlines(), 1):
+        if re.fullmatch(r'\s*"deny":\s*\[\s*', line):
+            in_deny = True
+        elif in_deny and re.match(r"\s*\]", line):
+            in_deny = False
+        elif in_deny and SECRET_RULE.fullmatch(_line_value(line) or ""):
+            out.add(n)
+    return out
+
+
+def board_address_lines(text):
+    """The number of the line in the board settings that holds the board's own address, and nothing else."""
+    if not BOARD_ADDRESS.fullmatch(str(_json(text).get("projectUrl"))):
+        return set()
+    return {n for n, line in enumerate(text.splitlines(), 1)
+            if re.fullmatch(r'\s*"projectUrl":\s*"' + BOARD_ADDRESS.pattern + r'",?\s*', line)}
+
+
+# (file, kind): (why that file needs it, the line numbers it allows). Few, each one
+# explained, and each allows only the exact lines its reason covers: the
+# same kind of text anywhere else in that file is still a finding.
 PUBLIC_TEXT_ALLOWED = {
-    (".claude/settings.json", HOME_PATH):
+    (".claude/settings.json", HOME_PATH): (
         "the deny rules keep Claude Code out of the secret folders (SSH keys, GitHub login, git credentials) in the "
         "home folder of whoever runs it; they are written from the home folder's short form, with no name in them",
-    (".claude/board.json", BOARD_LINK):
+        secret_deny_lines),
+    (".claude/board.json", BOARD_LINK): (
         "the workflow's board settings: the board's own address, which the board script and its tests read",
-}
-
-# (file, kind): how many findings the text written before the rule still
-# has. A file may have at most this many of a kind; one more is a failure.
-# The rewrite in the project voice (#24) brings these to zero and empties it.
-PUBLIC_TEXT_KNOWN = {
-    (".claude/agents/refactor-scout.md", OWNER_WORDING): 1,
-    (".claude/agents/reviewer.md", OWNER_WORDING): 5,
-    (".claude/agents/test-checker.md", OWNER_WORDING): 3,
-    (".claude/agents/test-writer.md", OWNER_WORDING): 2,
-    (".claude/commands/draft.md", OWNER_WORDING): 2,
-    (".claude/commands/next.md", OWNER_WORDING): 19,
-    (".claude/commands/tidy.md", OWNER_WORDING): 4,
-    ("CHANGELOG.md", PRIVATE_REPO): 4,
-    ("CLAUDE.md", HOME_PATH): 4,
-    ("CLAUDE.md", PRIVATE_REPO): 1,
-    ("CLAUDE.md", OWNER_WORDING): 4,
-    ("DECISIONS.md", HOME_PATH): 2,
-    ("DECISIONS.md", PRIVATE_REPO): 1,
-    ("DECISIONS.md", OWNER_WORDING): 14,
-    ("README.md", HOME_PATH): 1,
-    ("README.md", PRIVATE_REPO): 1,
+        board_address_lines),
 }
 
 
@@ -150,30 +180,22 @@ def public_text_findings(rel, text):
         repos = private_repos(line)
         if repos:
             found.append((n, PRIVATE_REPO, repos[0]))
-    return [f for f in found if (rel, f[1]) not in PUBLIC_TEXT_ALLOWED]
+    allowed = {what: rule[1](text) for (where, what), rule in PUBLIC_TEXT_ALLOWED.items() if where == rel}
+    return [f for f in found if f[0] not in allowed.get(f[1], ())]
 
 
-def public_text(root=ROOT, known=None):
-    """(new, known_counts, files): findings beyond the known list as 'path line N: kind (found)', the count of
-    each (file, kind) found within the known list, and how many files were read."""
-    known = PUBLIC_TEXT_KNOWN if known is None else known
+def public_text(root=ROOT):
+    """(findings, files): every finding as 'path line N: kind (found)', and how many files were read."""
     files = published_files(root)
-    groups = {}
+    found = []
     for rel in files:
         try:
             with open(os.path.join(root, rel), encoding="utf-8") as f:
                 text = f.read()
         except UnicodeDecodeError:
             continue
-        for n, what, match in public_text_findings(rel, text):
-            groups.setdefault((rel, what), []).append(f"{rel} line {n}: {what} ({match[:60]!r})")
-    new, within = [], {}
-    for key, lines in sorted(groups.items()):
-        if len(lines) > known.get(key, 0):
-            new += lines
-        else:
-            within[key] = len(lines)
-    return new, within, len(files)
+        found += [f"{rel} line {n}: {what} ({match[:60]!r})" for n, what, match in public_text_findings(rel, text)]
+    return found, len(files)
 
 
 def published_files(root=ROOT):

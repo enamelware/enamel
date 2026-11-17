@@ -2,6 +2,8 @@
 
 A dated log of design decisions for the Enamel design system. Newest first.
 
+Kettle is the family of apps Enamel was built for; Kettle Video is the first of them and the first app built on Enamel.
+
 ## 2026-11-14, public writing and the public-text check (#23)
 
 **One scan, two lists.** The public-text check lives in the release check and reads the same list of published files, with its own list of what counts as a finding: home folder paths written with a tilde, "owner" wording, the old account name, the commit email address, claude.ai links, and links to private repos or the private planning board. The release check still fails on full home paths and every other email address, so nothing is searched for twice. The old-name test takes the old account name from the check, so it is written down once.
@@ -14,15 +16,15 @@ A dated log of design decisions for the Enamel design system. Newest first.
 
 ## 2026-11-14, the destructive row is plain until focused (#22)
 
-**Red only with the focus.** The owner tried the 0.12.0 row on Kettle Video's Quit and wanted it to look like the rows around it, turning red only when it has the focus (enamelware/media-player#98). Unfocused, a destructive row is now a plain row of its kind, message and icon included; focused or pressed it takes the red face, white text, bold meta or description and the rise onto the coral underside it had before. The classes keep their names.
+**Red only with the focus.** Chosen: a destructive row looks like the rows around it and turns red only when it has the focus, after the 0.12.0 row was tried on Kettle Video's Quit (reported in one of Kettle Video's own issues). Unfocused, a destructive row is now a plain row of its kind, message and icon included; focused or pressed it takes the red face, white text, bold meta or description and the rise onto the coral underside it had before. The classes keep their names.
 
 **The red replaces the usual focus look.** A focused destructive row turns red instead of taking a list row's grey lift or a picker row's cream fill, and it still rises onto the underside, so focus reads the same way in a list and in a picker. The face changes colour at once, as a picker row's cream does, while the rise keeps its motion.
 
 ## 2026-11-12, the destructive row (#21)
 
-**A red face with white text, not red text.** Red text fails on every Enamel grey, and a red light enough to pass on the dark rows turns into a salmon next to the coral accent. The owner chose the error red as the row's face with Enamel's white for the text and icon, so there is still one red and one accent.
+**A red face with white text, not red text.** Red text fails on every Enamel grey, and a red light enough to pass on the dark rows turns into a salmon next to the coral accent. Chosen: the error red as the row's face, with Enamel's white for the text and icon, because there is then still one red and one accent.
 
-**One text pair is judged by APCA.** White on the error red is 4.44:1, just under the 4.5:1 every other text pair needs. Under APCA it is Lc 75, and its text is large (the row's own size) or bold (its meta or description), so the contrast check holds this pair, and only this pair, to APCA's Lc 60 for large or bold text. The owner chose to keep today's red rather than add a slightly darker one.
+**One text pair is judged by APCA.** White on the error red is 4.44:1, just under the 4.5:1 every other text pair needs. Under APCA it is Lc 75, and its text is large (the row's own size) or bold (its meta or description), so the contrast check holds this pair, and only this pair, to APCA's Lc 60 for large or bold text. Chosen: today's red, rather than an added, slightly darker one.
 
 **Focus is a rise onto the underside.** A face that stays red can't show focus by turning grey or cream, so a focused destructive row rises onto the coral underside and drops when pressed, as a picker row does, in a plain list too. Reduced motion keeps the underside without the movement. There is no darker red for a press: the drop is the press.
 
@@ -36,13 +38,13 @@ A dated log of design decisions for the Enamel design system. Newest first.
 
 **The before-and-after story is case-study material.** It now lives outside the repo; the eight guidelines it ended with are the system's rules, so they stay on the Overview page under Rules.
 
-**The history starts again at 0.11.1.** To publish nothing from before, the history was replaced by one first commit and every older branch and tag was removed, v0.11.0 included. This is the one exception to "a pushed tag is never moved or deleted", agreed by the owner on #19 ("yes, rewrite"); from 0.11.1 on that rule holds again. The first commit is tagged v0.11.1, so apps always have a release to compare against.
+**The history starts again at 0.11.1.** To publish nothing from before, the history was replaced by one first commit and every older branch and tag was removed, v0.11.0 included. Chosen: this one exception to "a pushed tag is never moved or deleted" (#19, "yes, rewrite"), because nothing from before going public was to be published; from 0.11.1 on that rule holds again. The first commit is tagged v0.11.1, so apps always have a release to compare against.
 
 **Examples use made-up titles.** Film and show names in examples, tests and docs are invented, never taken from anyone's library.
 
 ## 2026-11-06, Enamel's own look: where it comes from
 
-Enamel looked like Steam with one accent on top, which made it familiar and also anonymous. The new material comes from enamel kitchenware: speckled camp plates, cream-rimmed pans, rimmed pie dishes. Hard, soft-shining, a little imperfect, with a lip you can feel. Every new value is Enamel's own; nothing is copied from Valve. Boards A5 and A6 on the owner's canvas were the reference (#18).
+Enamel looked like Steam with one accent on top, which made it familiar and also anonymous. The new material comes from enamel kitchenware: speckled camp plates, cream-rimmed pans, rimmed pie dishes. Hard, soft-shining, a little imperfect, with a lip that can be felt. Every new value is Enamel's own; nothing is copied from Valve. Two boards of the designer's material studies, kept outside the repo, were the reference (#18).
 
 ## 2026-11-06, the grid unit rule
 
@@ -70,7 +72,7 @@ With the interface size now working through zoom, the script measured the hint b
 
 ## 2026-11-06, a primary button is the accent colour at rest
 
-It used to look like any other button until focused, when it turned accent. Focused, every button is now cream, as the issue asks, so without this nothing would mark a primary button at all. Board A5 draws it this way, and the Overview already showed it this way.
+It used to look like any other button until focused, when it turned accent. Focused, every button is now cream, as the issue asks, so without this nothing would mark a primary button at all. The material studies draw it this way, and the Overview already showed it this way.
 
 ## 2026-11-06, progress bars
 
@@ -102,13 +104,13 @@ The toast sits flush with the right edge, as Steam's does. Rounded corners there
 
 ## 2026-11-06, the root size token drives zoom
 
-Enamel no longer sets the root font size, so 1rem stays the user's own text size. `--en-root-size` keeps its name and its job, scaling the whole interface, but through zoom, so it scales pixels too. At 100% it does nothing. The owner's option A in #15 is kept in spirit: one setting still scales everything. It also means sizes in px are no longer a floor at other interface sizes: at 50% the 44px target is 22px, as with browser zoom.
+Enamel no longer sets the root font size, so 1rem stays the user's own text size. `--en-root-size` keeps its name and its job, scaling the whole interface, but through zoom, so it scales pixels too. At 100% it does nothing. Option A, chosen on #15, is kept in spirit: one setting still scales everything. It also means sizes in px are no longer a floor at other interface sizes: at 50% the 44px target is 22px, as with browser zoom.
 
 ## 2026-11-06, rem or px by one question
 
 Should this grow when the user makes text bigger? The side padding of buttons, tabs and picker rows moved to px, since growing it would squeeze the text it holds. The gutter and inset tokens stay in rem, because they are Steam's measured values, also serve as vertical space, and hold up at 200% text; moving them would change every app's layout for little gain.
 
-## 2026-11-06, the Overview page was edited by hand, with the owner's permission
+## 2026-11-06, the Overview page was edited by hand, with the designer's permission
 
 For this issue only (#18, question 2): a new section, the guideline wording, and the few words the new look made untrue ("white fill", "3px wide"). Nothing was regenerated and nothing already there was restyled. Other old figures on that page are left alone, as they were before.
 
@@ -138,7 +140,7 @@ For this issue only (#18, question 2): a new section, the guideline wording, and
 
 **A message is a live region that waits in the row.** Screen readers announce a polite live region reliably only when text arrives in one that is already there, so the message element stays in the row, empty, and takes no space until the app puts the icon and text in it. Showing and hiding it, and moving focus, is the app's job.
 
-**The two group bands differ by fill and by icon.** The filled band, with a drive, is for storage on the device itself; the outlined band, with a card, for storage you can take out. The outline is drawn as thick as the icon's line (`--en-c-icon-stroke`) in the muted grey, so it passes 3:1 against the page. Both icons are Enamel's own drawings.
+**The two group bands differ by fill and by icon.** The filled band, with a drive, is for storage on the device itself; the outlined band, with a card, for storage that can be taken out. The outline is drawn as thick as the icon's line (`--en-c-icon-stroke`) in the muted grey, so it passes 3:1 against the page. Both icons are Enamel's own drawings.
 
 **The badge only changes colour.** Muted soft text in capitals on the control grey; on a focused row or a selected tab, which are that grey themselves, it turns to the page colour. Its size never changes, so neither does its row or tab. A badge that doesn't fit beside a row's title or a tab's label moves under it, so the title keeps whole words.
 
@@ -150,7 +152,7 @@ For this issue only (#18, question 2): a new section, the guideline wording, and
 
 ## 2026-10-29, the interface scales from one root size
 
-**Every size follows one root size, and nothing reads the screen** (#15, the owner's option A). Kettle Video's sizing report found that Firefox draws one to one on both the Deck and the Nova, and that Steam itself doesn't scale by the screen's height (on the taller Nova it is about 4% bigger, where height would have made it 20% bigger). So Enamel keeps every size in rem, and the root size is the page's root font size. The components stylesheet sets it from a new token, `--en-root-size`, at 100%: the browser's own font size, exactly as before. An app that needs the whole interface bigger or smaller sets that one token on `<html>`. A percentage of the browser's font size, rather than a multiplier inside every token, keeps every token's value readable and keeps a larger browser font working the same way.
+**Every size follows one root size, and nothing reads the screen.** Chosen: option A on #15, because Kettle Video's sizing report found that Firefox draws one to one on both reference devices, Steam Deck (SteamOS) and Retroid Pocket Nova (Armada), and that Steam itself doesn't scale by the screen's height (on the taller Retroid Pocket Nova it is about 4% bigger, where height would have made it 20% bigger). So Enamel keeps every size in rem, and the root size is the page's root font size. The components stylesheet sets it from a new token, `--en-root-size`, at 100%: the browser's own font size, exactly as before. An app that needs the whole interface bigger or smaller sets that one token on `<html>`. A percentage of the browser's font size, rather than a multiplier inside every token, keeps every token's value readable and keeps a larger browser font working the same way.
 
 **Lines don't scale.** Hairlines, the focus ring, corners, the icon stroke, the backdrop blur, shadows and the 44px touch target stay in px. Everything else that was in px (the toggle's padding, the progress tracks, the L1 and R1 glyph's corners, the side menu's focus bar) now follows the root size in rem.
 
@@ -160,11 +162,11 @@ For this issue only (#18, question 2): a new section, the guideline wording, and
 
 ## 2026-10-29, Gaming Mode measured larger than Enamel's old sizes
 
-**Enamel's sizes are raised to Steam's Gaming Mode** (#15). Kettle Video's sizing report (its #76 and #77) measured Steam next to Kettle Video on the same screens: Enamel's rows were about 12% shorter, its text about 17% smaller and its buttons about a quarter shorter, and none of that came from scaling. Every measured size is now the report's baseline: rows 64, rows with a control 96, buttons 60, body text about 24, caps 17, small text about 18.7, the page title about 33, the list inset 20, the picker inset 24, tab padding 28, the side menu item 72 with an 8 focus bar and a 360 width, the large tile up to 452, tiles 20 apart, list rows 12 apart, and an icon 16 from its text. The hint bar, the picker row, the button padding, the list gutter, the section heading and the gap between hints already matched.
+**Enamel's sizes are raised to Steam's Gaming Mode** (#15). Kettle Video's sizing report (both of its measuring passes) measured Steam next to Kettle Video on the same screens: Enamel's rows were about 12% shorter, its text about 17% smaller and its buttons about a quarter shorter, and none of that came from scaling. Every measured size is now the report's baseline: rows 64, rows with a control 96, buttons 60, body text about 24, caps 17, small text about 18.7, the page title about 33, the list inset 20, the picker inset 24, tab padding 28, the side menu item 72 with an 8 focus bar and a 360 width, the large tile up to 452, tiles 20 apart, list rows 12 apart, and an icon 16 from its text. The hint bar, the picker row, the button padding, the list gutter, the section heading and the gap between hints already matched.
 
-**New tokens, as the owner asked:** `--en-size-button`, `--en-size-row-control` (used by a row with a toggle or a button at its end), `--en-space-gutter-grid` (grids and shelves; lists keep `--en-space-gutter`), `--en-size-tile-portrait` (Enamel has no portrait tile component yet; this is the width one would use), `--en-space-icon` (between an icon or a button glyph and its text) and `--en-root-size`. Two component variables were added: `--en-c-menu-width` and `--en-c-shelf-gap`. Nothing was renamed or removed.
+**New tokens, as #15 asked:** `--en-size-button`, `--en-size-row-control` (used by a row with a toggle or a button at its end), `--en-space-gutter-grid` (grids and shelves; lists keep `--en-space-gutter`), `--en-size-tile-portrait` (Enamel has no portrait tile component yet; this is the width one would use), `--en-space-icon` (between an icon or a button glyph and its text) and `--en-root-size`. Two component variables were added: `--en-c-menu-width` and `--en-c-shelf-gap`. Nothing was renamed or removed.
 
-**Rounding follows the report.** The report rounds each Steam size up to a multiple of 4. Where Steam was within a pixel of Enamel, that alone moves Enamel's size: the list inset (18 to 20), the picker inset (21 to 24) and the tab padding (24 to 28). They follow the report as the owner asked.
+**Rounding follows the report.** The report rounds each Steam size up to a multiple of 4. Where Steam was within a pixel of Enamel, that alone moves Enamel's size: the list inset (18 to 20), the picker inset (21 to 24) and the tab padding (24 to 28). They follow the report, as asked on #15.
 
 **The hint bar's labels stay at the small text size.** The report's "caps labels" came from the hint bar, whose labels use `--en-text-small`, not `--en-text-caps`. At the new small size they measure close to Steam's (about 18.7 against Steam's about 17 to 19.5, depending on the reading); `--en-text-caps` is still raised to the report's 17 for the other caps labels.
 
@@ -180,7 +182,7 @@ For this issue only (#18, question 2): a new section, the guideline wording, and
 
 **A bundle still lands as one commit per issue.** Each bundled issue's work ends with a marker commit on the shared branch, and the merge rebuilds `main` one issue at a time from those markers, so every issue keeps its own `Refs #N:` commit.
 
-**A series' follow-up goes straight to Ready for dev.** It only fixes what the owner already approved, and in Drafted it would hold the whole series in Building until the owner moved it.
+**A series' follow-up goes straight to Ready for dev.** It only fixes what the designer already approved, and in Drafted it would hold the whole series in Building until the designer moved it.
 
 **/tidy keeps both agents.** Its improvements are tests written by test-writer, which is exactly where test-checker earns its place.
 
@@ -214,7 +216,7 @@ For this issue only (#18, question 2): a new section, the guideline wording, and
 
 **Each changelog entry says who should adopt it and when.** The older entries now say what Kettle Video did with them: it started at 0.3.1, went from there to 0.5.0, and goes from 0.5.0 to 0.6.0.
 
-**Past versions are tagged from v0.3.0, and v0.6.0 is on the commit that released it.** The owner chose this on #10. v0.3.0 to v0.5.1 are on the one commit that set each version, the rule Kettle Video's check used until tags existed, so it gets the same files. v0.6.0 is on the commit that finished 0.6.0, not the earlier one where VERSION first said 0.6.0 part-way through the series: an app that adopts 0.6.0 gets the finished files. 0.1.0, 0.2.0 and 0.2.1 have no changelog entry and no app ever used them, so they have no tags.
+**Past versions are tagged from v0.3.0, and v0.6.0 is on the commit that released it.** Chosen on #10, because an app that compares its copy with a tag must find the files it adopted. v0.3.0 to v0.5.1 are on the one commit that set each version, the rule Kettle Video's check used until tags existed, so it gets the same files. v0.6.0 is on the commit that finished 0.6.0, not the earlier one where VERSION first said 0.6.0 part-way through the series: an app that adopts 0.6.0 gets the finished files. 0.1.0, 0.2.0 and 0.2.1 have no changelog entry and no app ever used them, so they have no tags.
 
 ## 2026-10-21, a check for devices and screen sizes; 0.6.0 ships (#6)
 
@@ -232,7 +234,7 @@ For this issue only (#18, question 2): a new section, the guideline wording, and
 
 **The variable goes on the hint bar's parent element.** The picker dialog and the toast inherit it from there, so a page with several screens (the style guide's frames, a split view) gets the right height in each, and an app whose hint bar is directly in `<body>` (as Kettle Video's is) covers its pickers and the toast the script makes in `<body>`. One hint bar per parent. No token was added and no name changed.
 
-**A hidden hint bar keeps the old one-bar gap.** When an app hides its hint bar (not drawn at all, for example during playback) or removes it, the script takes the variable off the bar's parent, so the picker's layer and the toast stop `--kt-size-bar` above the bottom, exactly as before #9. Only a hint bar that is showing moves them, to its real height. The owner chose this on #9 ("1 is fine") so that apps that hide their hint bar see nothing new; measuring a hidden bar as 0 tall would have dropped the layer to the bottom of the screen and put the toast in the corner.
+**A hidden hint bar keeps the old one-bar gap.** When an app hides its hint bar (not drawn at all, for example during playback) or removes it, the script takes the variable off the bar's parent, so the picker's layer and the toast stop `--kt-size-bar` above the bottom, exactly as before #9. Only a hint bar that is showing moves them, to its real height. Chosen on #9 ("1 is fine"), because apps that hide their hint bar then see nothing new; measuring a hidden bar as 0 tall would have dropped the layer to the bottom of the screen and put the toast in the corner.
 
 **The browser check covers one-line and two-line bars.** In every frame from the smallest supported box to very wide, the picker's layer must meet the top of the hint bar and the toast sit just above it, with Select and Back on one line and again with Select and Cancel and, in wider frames, more hints until it wraps onto two lines; the toast must follow the bar when it changes height while showing, and with the bar hidden the layer and the toast must keep the one-bar gap. This runs in full and reduced motion and with a larger browser font. The same rule applies to every frame on the Resize page.
 
@@ -272,7 +274,7 @@ For this issue only (#18, question 2): a new section, the guideline wording, and
 
 ## 2026-10-19, the responsive rule
 
-**No layout is tied to a screen size, a device or an aspect ratio.** This replaces the rule "Layouts must work at 16:10 and 4:3." Layouts adapt to the space they are given (relative units, min(), max() and clamp(), intrinsic sizing, wrapping, and container queries, so a component responds to its own box rather than to the whole screen). Breakpoints, where needed, come from the content and are named by what they do, never by a device. Devices are for testing, never targets. No file names a capture size or a device as the source of a value. The rule is in CLAUDE.md (Hard rules) and DESIGN.md Part 2, and the style guide copies it. The owner said yes to the whole proposal on issue #2; the answers, which the rest of the responsive series (#3 to #6) builds on:
+**No layout is tied to a screen size, a device or an aspect ratio.** This replaces the rule "Layouts must work at 16:10 and 4:3." Layouts adapt to the space they are given (relative units, min(), max() and clamp(), intrinsic sizing, wrapping, and container queries, so a component responds to its own box rather than to the whole screen). Breakpoints, where needed, come from the content and are named by what they do, never by a device. Devices are for testing, never targets. No file names a capture size or a device as the source of a value. The rule is in CLAUDE.md (Hard rules) and DESIGN.md Part 2, and the style guide copies it. The whole proposal was accepted on issue #2; the answers, which the rest of the responsive series (#3 to #6) builds on:
 
 - **Text and spacing are written in rem, with capped growth.** At the browser's normal font size every size stays where it is today; a larger browser font makes them larger. Above a page width of 100rem they grow by at most a fifth, reaching the limit at 160rem: title 1.875rem to 2.25rem, heading 1.5rem to 1.8rem, body 1.25rem to 1.5rem, small 0.9375rem to 1.125rem, caps 0.8125rem to 0.975rem, picker and toast detail text 1.0625rem to 1.275rem, gutter 2.25rem to 2.7rem, inset 1.125rem to 1.35rem. Gap 0.75rem and tight 0.25rem do not grow. Row and hint bar become minimums of 3.5rem and 3.75rem. No new tokens. The values change in #3 and #4, not here.
 - **When the action bar runs out of room, it gets taller.** Buttons wrap onto a second line and every label stays readable. Cutting labels short was turned down: on a controller there is no pointer to reveal the rest of a cut-off label.
@@ -285,11 +287,11 @@ No token, class, state attribute or script function changed, and apps see nothin
 
 ## 2026-10-19, the toast fades out in place (0.5.1)
 
-**The toast now leaves by fading out where it is, instead of sliding back out to the right.** This replaces the 0.5.0 choice ("slides out, as briefed"). Steam's own toast fades out in place: in Gaming Mode it fades over 300ms with the same curve it slides in with. Following Steam's motion is the rule everywhere else, so the toast follows it too. It still slides in from the right. The fade uses the existing tokens, `--kt-motion-slow` and `--kt-ease-enter`, so no token was added; the leaving state `data-closing="true"` and the script's timing are unchanged. In reduced motion it still simply disappears. The old slide-out keyframes stay in the stylesheet, unused, so nothing an app might use is removed.
+**The toast now leaves by fading out where it is, instead of sliding back out to the right.** This replaces the 0.5.0 choice ("slides out, as first specified"). Steam's own toast fades out in place: in Gaming Mode it fades over 300ms with the same curve it slides in with. Following Steam's motion is the rule everywhere else, so the toast follows it too. It still slides in from the right. The fade uses the existing tokens, `--kt-motion-slow` and `--kt-ease-enter`, so no token was added; the leaving state `data-closing="true"` and the script's timing are unchanged. In reduced motion it still simply disappears. The old slide-out keyframes stay in the stylesheet, unused, so nothing an app might use is removed.
 
 ## 2026-10-19, app names
 
-**Kettle apps are named Kettle plus their medium, with no verbs.** Kettle Watch is now Kettle Video, and Kettle Listen is now Kettle Audio. Current docs, the style guide and the workflow files use the new names; older entries below keep the names used at the time. Only the names changed: no token, class, state attribute, file or folder was renamed, and Kettle Video's repo is still `~/Development/media-player`.
+**Kettle apps are named Kettle plus their medium, with no verbs.** Kettle Watch is now Kettle Video, and Kettle Listen is now Kettle Audio. Current docs, the style guide and the workflow files use the new names; older entries below keep the names used at the time. Only the names changed: no token, class, state attribute, file or folder was renamed, and Kettle Video's repo keeps its old folder and repo name.
 
 ## 2026-10-14, action bar, picker dialog and toast (0.5.0)
 
@@ -299,13 +301,13 @@ No token, class, state attribute or script function changed, and apps see nothin
 
 **Where Steam's Gaming Mode and the existing values disagree, Steam's value wins, as a component variable.** Picker rows are 72px or 96px (the row token is 56px), text starts 21px in (the inset token is 18px), descriptions and toast text are 17px (no type token), and the toast is 35% of the screen wide. Colours within one step of a token use the token: rows #23262F are `--kt-surface-raised`, the current choice #3D434F is `--kt-surface-control`, the toast #0D141C is `--kt-surface-page`. The gap before Cancel uses `--kt-space-tight` (4px) for the measured 3px. The action bar keeps the system's button (`--kt-surface-control`) rather than Steam's #46494E, so there is one button style.
 
-**Dialog and toast motion follow Steam's.** The darkened, blurred layer (Steam's own 85% black and 3px blur) appears at once; the panel fades in over 500ms with the standard curve, as Steam's dialogs and menus do (`--kt-motion-dialog`, added, matched to Steam's Gaming Mode). Steam's dialogs have no closing animation, so closing mirrors opening. The toast slides in from the right over 300ms with `--kt-ease-enter`, as Steam's does, and, as briefed, leaves the same way; Steam's own toast fades out in place instead.
+**Dialog and toast motion follow Steam's.** The darkened, blurred layer (Steam's own 85% black and 3px blur) appears at once; the panel fades in over 500ms with the standard curve, as Steam's dialogs and menus do (`--kt-motion-dialog`, added, matched to Steam's Gaming Mode). Steam's dialogs have no closing animation, so closing mirrors opening. The toast slides in from the right over 300ms with `--kt-ease-enter`, as Steam's does, and, as first specified, leaves the same way; Steam's own toast fades out in place instead.
 
 ## 2026-10-10, motion tuning (0.4.1)
 
 **The focus ring follows Steam more closely.** It breathes with Steam's own in-and-out curve (`--kt-ease-pulse`, ease-in-out), so it dims and brightens smoothly. On focus it appears 12px thick and narrows to its width over 400ms, as in Gaming Mode (`--kt-focus-ring-start`, `--kt-motion-ring`), instead of fading in; the narrowing uses `--kt-ease-standard`, since Steam's plain "ease" has no token. The breathing starts once the ring has narrowed and still ends about five seconds after focus arrives (5.2 seconds). In reduced motion the ring simply appears.
 
-**A tile grows over Steam's 300ms and returns over `--kt-motion-fast`.** `--kt-motion-slow` is now 300ms, matched to a tile moving towards you on focus in Gaming Mode, replacing Kettle's 360ms. The progress fill also uses it and now glides slightly faster.
+**A tile grows over Steam's 300ms and returns over `--kt-motion-fast`.** `--kt-motion-slow` is now 300ms, matched to a tile moving towards the viewer on focus in Gaming Mode, replacing Kettle's 360ms. The progress fill also uses it and now glides slightly faster.
 
 **Steam's sheen is left out on purpose.** A focused Gaming Mode tile also has a light sheen sweeping across it once. Kettle leaves it out because motion marks focus or a change of state only, and the ring already marks focus.
 
@@ -321,11 +323,11 @@ No token, class, state attribute or script function changed, and apps see nothin
 
 **The pulse stops after about five seconds.** Gaming Mode's ring breathes 20 times (24 seconds). Kettle's breathes `--kt-pulse-count` times, 4, so it ends 4.9 seconds after focus arrives and then rests fully visible. This is a Kettle decision, whatever Steam does.
 
-**Where Steam moves differently from the brief, Kettle follows Steam.** A focused toggle shows its ring at once and does not breathe, and a button's focus fill changes at once, as in Gaming Mode. The side menu keeps its own bar and glow motion: Gaming Mode grows the focused item by 10%, which has no token and would push past the menu's edge.
+**Where Steam moves differently from the original motion spec, Kettle follows Steam.** A focused toggle shows its ring at once and does not breathe, and a button's focus fill changes at once, as in Gaming Mode. The side menu keeps its own bar and glow motion: Gaming Mode grows the focused item by 10%, which has no token and would push past the menu's edge.
 
 **Reduced motion is honoured from the device and can be forced by an app.** `prefers-reduced-motion: reduce` or `data-kt-motion="reduced"` removes the pulse, the growth and every slide; colour fades stay at `--kt-motion-fast`, and focus is exactly as visible. `data-kt-motion="full"` on `<html>` forces full motion, for apps with their own setting. Gaming Mode itself keeps its focus ring breathing under both its own Reduce Motion setting and the device preference; Kettle does not copy that.
 
-**Performance was deliberately not considered.** Motion animates whatever properties read best (transform, width, margin, outline colour, inset). This is to be checked on the Steam Deck and on the Nova before Kettle Watch adopts this version.
+**Performance was deliberately not considered.** Motion animates whatever properties read best (transform, width, margin, outline colour, inset). This is to be checked on the reference devices, Steam Deck (SteamOS) and Retroid Pocket Nova (Armada), before Kettle Watch adopts this version.
 
 ## 2026-10-09, MIT licence (0.3.1)
 
@@ -335,7 +337,7 @@ No token, class, state attribute or script function changed, and apps see nothin
 
 ## 2026-10-09, independence from apps
 
-**This repo stays independent of any app; apps depend on it, never the other way round.** Kettle Watch (`~/Development/media-player`) keeps an unmodified copy in its `vendor/kettle-ui/` folder and updates it with its own sync script after a new VERSION here. Nothing here reads, writes or refers to an app's files. Gaps an app finds are fixed here first, then the app re-syncs.
+**This repo stays independent of any app; apps depend on it, never the other way round.** Kettle Watch (in its own repo, in a folder next to this one) keeps an unmodified copy in its `vendor/kettle-ui/` folder and updates it with its own sync script after a new VERSION here. Nothing here reads, writes or refers to an app's files. Gaps an app finds are fixed here first, then the app re-syncs.
 
 ## 2026-10-09, the accent becomes a slot (0.3.0)
 
@@ -343,7 +345,7 @@ No token, class, state attribute or script function changed, and apps see nothin
 
 **The accent is a slot.** Components use only the active accent: `--kt-accent`, `--kt-accent-ink` and `--kt-accent-glow`, whose names do not change. An accent is two values, a colour and its ink, plus a passing accent check: 4.5:1 on the page and on rows, 3:1 on the control surface, its ink 4.5:1 on it, and at least 25 (CIE76 Delta E) away from green, yellow and red. `data-kt-accent="<name>"` on `<html>` or on any element switches it.
 
-**The glow is calculated from the active accent.** `--kt-accent-glow` is the active accent at 42% strength, mixed with `color-mix`, which renders correctly in the Firefox on the Steam Deck. It and the focus ring are declared again on every `[data-kt-accent]` element, so they follow the accent chosen there instead of inheriting the default.
+**The glow is calculated from the active accent.** `--kt-accent-glow` is the active accent at 42% strength, mixed with `color-mix`, which renders correctly in Firefox on the Steam Deck (SteamOS). It and the focus ring are declared again on every `[data-kt-accent]` element, so they follow the accent chosen there instead of inheriting the default.
 
 **Coral is the default; Sage is an example alternate, not a shipping decision.** Sage (#B7CC94, dark ink) is there to prove the slot works and passes the check.
 
@@ -381,7 +383,7 @@ No token, class, state attribute or script function changed, and apps see nothin
 
 **Baseline greys match Steam's Gaming Mode.** The seven greys, the three status colours, the four shadows, the 2px corner, the 12px gap, the 10px focus space and the 1.4 line height are matched to Steam's Gaming Mode, so an app sits naturally beside it.
 
-**The accent replaces Steam's blue, and nothing else changes.** Wherever Gaming Mode uses its blue, Kettle uses its accent. Every other part of the look (greys, status colours, shadows, spacing) stays as Steam has it, so Kettle tools feel at home on the Deck.
+**The accent replaces Steam's blue, and nothing else changes.** Wherever Gaming Mode uses its blue, Kettle uses its accent. Every other part of the look (greys, status colours, shadows, spacing) stays as Steam has it, so Kettle tools feel at home on the Steam Deck (SteamOS).
 
 **Focus has two styles.** Tiles and toggles get an accent ring (3px wide, 4px from the edge). Buttons and fields get a white fill with dark text. A focused row lifts to the control surface colour. Only one element shows focus at a time.
 
@@ -393,4 +395,4 @@ No token, class, state attribute or script function changed, and apps see nothin
 
 **DESIGN.md exists so AI coding tools follow the same rules as people.** Its token tables are generated from `tokens/kettle.css` by `tools/build_design_md.py`, so the file and the tokens can't drift apart. The rules underneath are written by hand.
 
-**The pill radius is a Kettle value, not a Steam one.** `--kt-radius-pill: 999px` was briefed as part of the Steam baseline. Steam's Gaming Mode only uses 1px, 2px and 3px corners, so it moved to the brand group and is labelled as Enamel's own choice (then called Kettle).
+**The pill radius is a Kettle value, not a Steam one.** `--kt-radius-pill: 999px` was first specified as part of the Steam baseline. Steam's Gaming Mode only uses 1px, 2px and 3px corners, so it moved to the brand group and is labelled as Enamel's own choice (then called Kettle).

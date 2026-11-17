@@ -10,16 +10,16 @@ docs/index.html, docs/components.html and docs/resize.html are fully generated b
 
 ## Who uses this
 
-- Kettle Video (on this device at `~/Development/kettle-video`; its GitHub repo is still `enamelware/media-player`) uses this system through an unmodified copy in its `vendor/enamel/` folder.
-- Kettle Video keeps the old names (the "kt" prefix and the old file names) until its own switch issue, which follows MIGRATION.md. This repo's folder is `~/Development/enamel`; apps look for a folder called "enamel" first and fall back to the old folder name.
+- Kettle Video, the first app built on Enamel, uses this system through an unmodified copy in its `vendor/enamel/` folder. Its folder, `kettle-video`, sits next to this repo's folder; its GitHub repo is private and still has its old name.
+- Kettle Video keeps the old names (the "kt" prefix and the old file names) until its own switch issue, which follows MIGRATION.md. This repo's folder is called `enamel`; apps look for a folder called "enamel" first and fall back to the old folder name.
 - Apps update by re-running their own sync script after a new VERSION here. Nothing in this repo reaches into an app.
 - Never edit an app's files from this repo.
 - Renaming or removing a token, a component class or a state attribute breaks apps. Before doing so, stop and report what would break.
 - Gaps found while building an app are fixed here, then the app re-syncs. Apps never style around a missing part: they add the gap to the standing issue "Gaps found by the apps" (#7, label `gaps`).
 
-## How we work
+## How the work is done
 
-Same delivery workflow as Kettle Video (`~/Development/kettle-video`, CLAUDE.md "How we work"). Details are in `.claude/commands/` and `.claude/agents/`.
+The same delivery workflow as Kettle Video's. Details are in `.claude/commands/` and `.claude/agents/`; [docs/how-this-repo-is-built.md](docs/how-this-repo-is-built.md) explains it for visitors.
 
 - Issues live in this repo on GitHub and on the shared "Kettle" board (IDs in `.claude/board.json`; the board's Repository field shows which repo a card belongs to). Columns: Drafted, Ready for dev, Building, More to do, Ready for testing, Done.
 - `/draft` writes issues into Drafted. `/next`, `/next N`, `/next all` and `/tidy` work as in Kettle Video: only Ready for dev or More to do are built, More to do first, `refactor` issues last; one `issue-N` branch per issue with pushed checkpoints and one progress comment; resume first; the checks scale with the issue's size (below) and must PASS (at most 2 fix rounds) before a squash merge into `main`; `/next` and `/next all` never stop to ask (see "Decide more, stop less" below); `/next all` ends with idle work (test-writer on Sonnet, refactor-scout on Opus, which only files Drafted `refactor` issues).
@@ -28,15 +28,15 @@ Same delivery workflow as Kettle Video (`~/Development/kettle-video`, CLAUDE.md 
   - `size:M`: one feature or one screen (one component or one style guide page).
   - `size:L`: several screens, or a change across the design system.
 - **Checks by size.** The builder always writes the tests the change needs, as part of building it. S and M: the builder, then the reviewer, which also checks the tests are adequate; quick checks; no separate test-checker. L: the builder, test-checker and the reviewer, quick checks, plus `scripts/test.sh full` before merging. Every size keeps its own branch, merging only when checks pass, the progress comment, the testing comment and the board moves.
-  - The reviewer fixes tidy-ups itself in one small extra commit and notes them (unused lines or imports, repeated set-up, a missing licence header, wording); it fails only for real problems: wrong behaviour, a broken layout, something the issue asks for that is missing, a gap not reported to the owner, security or privacy.
+  - The reviewer fixes tidy-ups itself in one small extra commit and notes them (unused lines or imports, repeated set-up, a missing licence header, wording); it fails only for real problems: wrong behaviour, a broken layout, something the issue asks for that is missing, a gap not reported to the designer, security or privacy.
   - **Upgrades are automatic.** An S that turns out to touch more than about 3 files, or touches tokens, the style guide launcher, privacy or licences, becomes M; an M that grows past one screen or feature becomes L. Change the size label and say why in one line on the issue; the issue then takes the new size's path.
   - **Small issues are bundled.** Two or more S issues next to each other in Ready for dev that touch the same area are built on one branch with one commit per issue and one review. Each card still moves and gets its own testing comment.
   - **Series are reviewed as a whole.** Issues /draft split from one feature share a `series: <name>` label and link to each other. Each is built on its own size's path; when the last one merges, one reviewer pass covers the whole series' combined change (fit between the pieces, duplicated code, the feature as a whole against its spec). Fixes go in a small follow-up issue in the same series. The series' cards wait in Building, with a progress comment saying so, and move to Ready for testing only once that review passes.
   - **Resuming** after an interruption always re-runs the quick checks, but re-runs the reviewer or test-checker only if the code changed since they last passed.
   - **Board housekeeping:** every `/next` and `/next all` starts by closing any issue whose card is in Done but which is still open, with a one-line comment.
 - **Decide more, stop less.** Here "the design system" means this repo's own tokens and components. Details are in `.claude/commands/next.md`, "Decide or block".
-  - Decide yourself, without asking or stopping, when all of these are true: the choice can be undone with a git revert; you would recommend one option; none of the hard stops below applies. Then comment on the issue "Decided: <what>. Why: <one line>. To change it, reply on this issue." and add the `decided` label, so the owner can review all of these together on the board.
-  - Hard stops, the only reasons to stop: a new dependency or licence question (copying anything of Valve's counts); anything that could change, move or delete the owner's media or other files outside the repo; anything a git revert can't undo; a product change nobody asked for that doesn't come from the issue or the design system (renaming or removing a token, component class, state attribute or script function the issue doesn't ask for counts); security or privacy; the issue and CLAUDE.md contradicting each other. For a hard stop: write one plain-language question in the issue, add `blocked` and move on to the next issue.
+  - Decide yourself, without asking or stopping, when all of these are true: the choice can be undone with a git revert; you would recommend one option; none of the hard stops below applies. Then comment on the issue "Decided: <what>. Why: <one line>. To change it, reply on this issue." and add the `decided` label, so the designer can review all of these together on the board.
+  - Hard stops, the only reasons to stop: a new dependency or licence question (copying anything of Valve's counts); anything that could change, move or delete personal media or other files outside the repo; anything a git revert can't undo; a product change nobody asked for that doesn't come from the issue or the design system (renaming or removing a token, component class, state attribute or script function the issue doesn't ask for counts); security or privacy; the issue and CLAUDE.md contradicting each other. For a hard stop: write one plain-language question in the issue, add `blocked` and move on to the next issue.
   - Design system changes are expected. When an issue changes sizes, spacing, colours or components, everything in this repo that uses them (components, style guide pages, docs, tests) follows, and that is in scope. Never hardcode a size the design system provides: read its token or measure the element. Only treat it as a problem if something stops working (can't be reached, read or used), not because it looks different, and even then fix it here if you can.
   - Never use the interactive question prompt during `/next` or `/next all`. Questions go in the issue. A question never stops the run: either decide or block and move on.
   - Time limit: if one problem takes more than about 30 minutes without progress, write what you found in the issue, add `blocked` and move on.
@@ -54,16 +54,16 @@ Same delivery workflow as Kettle Video (`~/Development/kettle-video`, CLAUDE.md 
 - Never edit the Kettle Video repo. If Kettle Video needs to change, say so in the issue comment and the report.
 - When asked to continue or change #N, read that issue and its comments with `gh` first.
 - To delete one of your own memory notes, use scripts/forget-note.sh (allowed without approval; it works out this project's memory folder and accepts only a plain .md file name in it), never rm.
-- Moving a card to Done is the owner's approval; the board housekeeping closes the issue on the next run (never close one otherwise). Phrase (several issue numbers allowed): "#N failed: <what happened>" comments the feedback and moves it to More to do, without starting the fix.
+- Moving a card to Done is the designer's approval; the board housekeeping closes the issue on the next run (never close one otherwise). Phrase (several issue numbers allowed): "#N failed: <what happened>" comments the feedback and moves it to More to do, without starting the fix.
 
 ## Hard rules
 
 - Never copy Valve's CSS, class names, icons, logos or font files.
 - Never add anything taken from the Steam client's files. Steam baseline values are recorded under Enamel's own names only.
-- Case-study and portfolio material never goes in this repo; it lives in ~/Development/enamel-case-study/.
+- Case-study and portfolio material never goes in this repo; it lives in its own folder, `enamel-case-study`, next to this repo's folder.
 - Install nothing. Scripts use the Python already on the device, standard library only, kept in tools/ (the workflow's small shell wrappers are in scripts/).
 - Do not rename, add or remove tokens or rules unless asked. If you think one is missing, say so in the report instead.
-- Commit and push only as "How we work" describes: issue branches and `main` on GitHub, never a force-push.
+- Commit and push only as "How the work is done" describes: issue branches and `main` on GitHub, never a force-push.
 - No layout is tied to a screen size, a device or an aspect ratio. Layouts adapt to the space they are given, and breakpoints come from the content and are named by what they do. Devices are for testing, never targets. No file names a capture size or a device as the source of a value.
 - Do not ask the user to run commands or check files. Verify your own work: the CSS parses; the page opens without errors; every token in enamel.css appears on the page and in DESIGN.md Part 1 with the same value; the page uses no colour that is not a token; running the DESIGN.md script twice changes nothing the second time.
 
@@ -80,9 +80,9 @@ Enamel is public and part of a design portfolio, so everything a visitor can rea
 - **How the work is done** is explained for visitors in [docs/how-this-repo-is-built.md](docs/how-this-repo-is-built.md); public text points there instead of explaining workflow terms again.
 - **Checked automatically.** The public-text check (in `tools/release_check.py`, part of the quick checks) fails on home folder paths, "owner" wording, the old account name, commit email addresses, claude.ai links, and links to private repos or the private board, in every published file, this one and `.claude/` included. The few lines that need such a text to work are listed in the check with the reason. The reviewer checks every change against this section.
 
-## How to talk to me
+## Reports to the designer
 
 - Plain language.
 - No code in reports.
 - Say what changed and what to look at.
-- Never ask me to run commands.
+- Never ask the designer to run commands.

@@ -28,8 +28,7 @@ style guide page, stylesheet and script. Then checks that:
   - nothing that would be published holds anything taken from Steam's files
     or anything personal (check_release, see release_check.py);
   - nothing that would be published breaks the public-writing rule in a way
-    a pattern can find (check_public_text, see release_check.py), beyond the
-    known findings the rewrite (#24) clears;
+    a pattern can find (check_public_text, see release_check.py);
 and prints the contrast of every text and background pair the components use,
 once per named accent. It also runs the accent check on every named accent
 (see DESIGN.md, Accents) and checks that no component or page other than the
@@ -745,7 +744,7 @@ def pattern_problems(css):
 def check_patterns():
     for sel in pattern_problems(read(COMPONENTS)):
         fail(f"components: {sel} has a pattern; patterns live on the page ground and in progress fills only")
-    print(f"Patterns: only on {', '.join(sorted(PATTERN_SELECTORS))}; nothing you can select is patterned")
+    print(f"Patterns: only on {', '.join(sorted(PATTERN_SELECTORS))}; nothing that can be selected is patterned")
 
 
 def check_no_screens():
@@ -778,18 +777,12 @@ def check_release():
 
 
 def check_public_text():
-    new, known, count = release_check.public_text()
-    for where in new:
+    found, count = release_check.public_text()
+    for where in found:
         fail(f"public text: {where} (CLAUDE.md, \"Public writing\")")
-    if not new and not known:
+    if not found:
         print(f"Public text: nothing private and no wording the public-writing rule rules out in the {count} files "
               "that would be published")
-    elif known:
-        total = sum(known.values())
-        print(f"Public text: {total} known findings in {len({rel for rel, _ in known})} files, written before the "
-              "public-writing rule; the rewrite (#24) clears them, and any new one fails:")
-        for (rel, what), n in sorted(known.items()):
-            print(f"  {rel}: {n} x {what}")
 
 
 def motion_tokens():

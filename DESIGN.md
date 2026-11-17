@@ -2,7 +2,7 @@
 
 Enamel is a design system for controller-first apps that feel at home in Steam's Gaming Mode: Steam's own baseline with one accent colour on top, like a thin coat of enamel over steel. It is the shared set of tokens and rules those apps use for their look. Coral is the default accent.
 
-Tokens live in `tokens/enamel.css`. Components live in `components/enamel-components.css`, with one small behaviour script, `components/enamel-components.js`, for the picker dialog and the toast. The style guide has five pages: `docs/overview.html` (overview), `docs/index.html` (token reference), `docs/components.html` (components), `docs/motion.html` (motion) and `docs/resize.html` (every component in frames you can resize, and at fixed widths).
+Tokens live in `tokens/enamel.css`. Components live in `components/enamel-components.css`, with one small behaviour script, `components/enamel-components.js`, for the picker dialog and the toast. The style guide has five pages: `docs/overview.html` (overview), `docs/index.html` (token reference), `docs/components.html` (components), `docs/motion.html` (motion) and `docs/resize.html` (every component in frames that resize, and at fixed widths).
 
 Licence: MIT (see `LICENSE` and `NOTICE.md`); the Enamel and Kettle names and the Kettle wordmark are not covered.
 
@@ -132,11 +132,11 @@ A size in rem grows with the user's text size and a size in px does not (see "Sc
 - The accent appears only for: selected side-menu item, toggle on, slider and progress fill, primary button, status text, "new" dot, the focus ring, the focus underside, the progress speckle's fill and the page speckle's occasional fleck.
 - Focus: accent ring with a soft glow on tiles, accent ring on toggles; cream fill with dark semibold text on a 4px accent underside on buttons, fields and picker rows; a focused row on a page lifts to `--en-surface-control`, with muted text stepping up to `--en-text-soft`.
 - Satin, never gloss.
-- Patterns live on the page ground and in progress fills only. Nothing you can select is ever patterned.
+- Patterns live on the page ground and in progress fills only. Nothing that can be selected is ever patterned.
 - One border per element: no rims inside rings, no lips inside outlines.
-- One focus style per kind of element: cream on a coral underside for things you press, a coral ring for tiles, a lift for rows.
+- One focus style per kind of element: cream on a coral underside for things that can be pressed, a coral ring for tiles, a lift for rows.
 - Cream is a neutral; the accent stays the only colour.
-- Only things you press move physically.
+- Only things that can be pressed move physically.
 - Every size is a multiple of 4 in its own unit (0.25rem if it grows with text, 4px if it does not) unless a listed exception applies.
 - Ask of every size: should it grow when the user makes text bigger? Yes is rem, no is px. Never set the root font size.
 - Only one element shows focus at a time.
@@ -204,7 +204,7 @@ Link `tokens/enamel.css`, then `components/enamel-components.css`. For the picke
 ### Group band
 - Classes: `.en-band` (on a heading element), `.en-band--outline`, `.en-band__name` (holding the `.en-icon` first, then the name, so the two stay together), `.en-band__count`.
 - State: none. It never takes focus.
-- Use it above each group of list rows, with the group's icon, its name (shown in capitals) and how many it holds on the right, then the group's `.en-rows` under it. The two kinds differ by fill and by icon, never by colour alone: the filled band for storage on the device itself, with a drive; the outlined band, drawn with a line as thick as its icon's, for storage you can take out, with a card. Draw these icons as on the Components page; they are Enamel's own. When the name and count don't fit side by side, the count moves onto a line of its own.
+- Use it above each group of list rows, with the group's icon, its name (shown in capitals) and how many it holds on the right, then the group's `.en-rows` under it. The two kinds differ by fill and by icon, never by colour alone: the filled band for storage on the device itself, with a drive; the outlined band, drawn with a line as thick as its icon's, for storage that can be taken out, with a card. Draw these icons as on the Components page; they are Enamel's own. When the name and count don't fit side by side, the count moves onto a line of its own.
 - Motion: none.
 
 ### Tile
@@ -283,7 +283,7 @@ Link `tokens/enamel.css`, then `components/enamel-components.css`. For the picke
 ### Page speckle
 - Classes: `.en-speckle`, on an empty area of the page ground.
 - State: none.
-- Use it on empty areas only: very faint cream flecks, with the occasional one in the accent. Never put it behind list text. Nothing you can select is ever patterned. Text beside it still passes its contrast check.
+- Use it on empty areas only: very faint cream flecks, with the occasional one in the accent. Never put it behind list text. Nothing that can be selected is ever patterned. Text beside it still passes its contrast check.
 - Motion: none. Nothing animates.
 
 ### Lighter fallback
@@ -339,7 +339,7 @@ Anything that holds text uses a minimum height, never a fixed one, so wrapped te
 
 ## Motion
 
-Components move on their own; apps add no motion CSS. Only things you press (buttons and picker rows) move physically. Every duration and curve is a Group D token, and motion only marks focus or a change of state. Focus motion restarts each time focus arrives, whether by `:focus-visible` or `data-focused="true"`.
+Components move on their own; apps add no motion CSS. Only things that can be pressed (buttons and picker rows) move physically. Every duration and curve is a Group D token, and motion only marks focus or a change of state. Focus motion restarts each time focus arrives, whether by `:focus-visible` or `data-focused="true"`.
 
 - **Reduced motion** applies when the device asks for it (`prefers-reduced-motion: reduce`) or when `data-en-motion="reduced"` is set on `<html>` (or on any element, for everything inside it). There is no pulse, no scale, no narrowing ring, no rising or dropping and no sliding or growing; those changes are instant, a tile's ring simply appears, a focused button turns cream at once and a press only darkens. Colour fades stay, at `--en-motion-fast`. Focus is exactly as visible as in full motion.
 - **Full motion** is forced with `data-en-motion="full"` on `<html>`, whatever the device asks for. Use it only when the app has its own motion setting and the user chose full motion there.

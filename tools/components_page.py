@@ -46,7 +46,7 @@ SEARCH_ICON = ('<svg class="en-icon" viewBox="0 0 24 24" fill="none" stroke="cur
                '<circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg>')
 INFO_ICON = ('<svg class="en-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">'
              '<circle cx="12" cy="12" r="9"/><path d="M12 11v6"/><path d="M12 7.5v.5"/></svg>')
-# Storage on the device itself: a drive with its light. Storage you can take
+# Storage on the device itself: a drive with its light. Storage that can be taken
 # out: a card with a cut corner and its contacts. The error mark: a disc,
 # filled, with an exclamation mark drawn over it.
 STORAGE_ICON = ('<svg class="en-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">'
@@ -297,7 +297,7 @@ SECTIONS = [
             </ul>''', wide=True, copy=True),
      ]),
     ("tile", "Tile",
-     "A video on a shelf: a paused frame, how far you have watched, and its title.", "", [
+     "A video on a shelf: a paused frame, how much has been watched, and its title.", "", [
         ex("Default", tile("Copper Tide Rising", 3), "center", wide=True),
         ex("Focused", tile("Copper Tide Rising", 3, focused=True), "center", wide=True),
         ex("Shelf, large tile focused", '<div class="en-shelf">\n'
@@ -306,7 +306,7 @@ SECTIONS = [
            + indent(tile("Orchard Weather · Part 1", 11)) + "\n</div>", wide=True, copy=True),
      ]),
     ("button", "Button",
-     "Something you press to do an action. The primary button is the main action on a screen.",
+     "Something pressed to do an action. The primary button is the main action on a screen.",
      "Buttons sit on a row. The primary button is the accent colour until it is focused; focused, every button is "
      "cream on its accent underside. On a controller, set data-pressed=\"true\" while A is held, since a stylesheet "
      "can't see a controller's press; without it, only that movement is missing.", [
@@ -334,7 +334,7 @@ SECTIONS = [
         ex("Thin, under tiles", PROGRESS.format(label="Watched", v=34).replace('en-progress"', 'en-progress en-progress--thin"')),
      ]),
     ("menu", "Side menu",
-     "The list of places down the left of a screen. The place you are in is marked as current.",
+     "The list of places down the left of a screen. The current place is marked.",
      "This style guide's own left menu is built from this component.", [
         ex("Default", '<div class="en-menu"><a class="en-menu__item" href="#menu">TV shows</a></div>', "raised flush"),
         ex("Current", '<div class="en-menu"><a class="en-menu__item" href="#menu" aria-current="page">Movies</a></div>', "raised flush"),
@@ -387,7 +387,7 @@ SECTIONS = [
            "screen flush", wide=True, copy=True),
      ]),
     ("steplabel", "Step label",
-     "A small, muted line above a page title that says where you are in a short flow, such as Step 1 of 3.",
+     "A small, muted line above a page title that says how far along a short flow is, such as Step 1 of 3.",
      "Put it inside the title's heading element, so screen readers read the step and the title together as one "
      "heading.", [
         ex("Above a title", steplabel("Step 1 of 3", "Which folder has your movies?"), "start", wide=True, copy=True),
@@ -398,7 +398,7 @@ SECTIONS = [
      "The header of a group of list rows: an icon, the group's name in capitals and how many it holds.",
      "It never takes focus. Use a heading element. The two kinds differ by fill and by icon, never by colour alone, "
      "so two bands next to each other are easy to tell apart: the filled band with the drive for storage on the "
-     "device itself, the outlined band with the card for storage you can take out. The icons are Enamel's own.", [
+     "device itself, the outlined band with the card for storage that can be taken out. The icons are Enamel's own.", [
         ex("Filled", band("Internal storage", "3 folders"), wide=True),
         ex("Outlined", band("SD card", "2 folders", outline=True), wide=True),
         ex("Two groups of rows", band("SD card", "2 folders", outline=True) + '\n<ul class="en-rows">\n'
@@ -411,7 +411,7 @@ SECTIONS = [
         ex("Outlined, narrow box", band("SD card in the slot", "2 folders", outline=True)),
      ]),
     ("badge", "Badge",
-     "A small, muted tag: a label on a row, such as the folder you already chose, or after a tab's label.",
+     "A small, muted tag: a label on a row, such as the folder already chosen, or after a tab's label.",
      "Only its colours change when its row is focused or its tab is selected, so nothing changes size. Its text "
      "is part of the row's or tab's accessible name.", [
         ex("On a row", '<div class="en-rows">' + badged_row("SD card › Films", "Movies") + '</div>', copy=True),
@@ -523,7 +523,7 @@ SECTIONS = [
     ("speckle", "Page speckle",
      "Very faint flecks on the page ground, with the occasional one in the accent colour. Put it on an empty area "
      "of the page.",
-     "Never put it behind list text, and nothing you can select is ever patterned. Text next to it still passes its "
+     "Never put it behind list text, and nothing that can be selected is ever patterned. Text next to it still passes its "
      "contrast check.", [
         ex("An empty area", '<div class="en-speckle" style="min-height: 15rem"></div>', "flush", wide=True, copy=True),
      ]),
@@ -596,7 +596,7 @@ for their behaviour; they look right without it. State comes from standard attri
 or on <code>data-focused="true"</code>. A press from a controller is <code>data-pressed="true"</code>.</p>
 <p class="site-note">The examples are shown side by side to compare states, so several look focused at once.
 In an app, only one element shows focus at a time. The examples move as they would in an app; the
-<a href="motion.html">Motion page</a> has demos you can operate.</p>
+<a href="motion.html">Motion page</a> has working demos.</p>
 {body}
 </main>
 <footer class="site-footer">Enamel is not affiliated with Valve. Steam and Steam Deck are trademarks of Valve Corporation.</footer>

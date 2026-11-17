@@ -5,7 +5,7 @@ argument-hint: "[#N | all | N]"
 
 Build or rework issues end to end. Argument: $ARGUMENTS
 
-Follow CLAUDE.md throughout, especially the hard rules, "Who uses this", "How we work" and "How to talk to me", and DESIGN.md.
+Follow CLAUDE.md throughout, especially the hard rules, "Who uses this", "How the work is done" and "Reports to the designer", and DESIGN.md.
 
 **Modes**, from the argument:
 - *(empty)*: **single mode**, one issue picked from the board.
@@ -15,7 +15,7 @@ Follow CLAUDE.md throughout, especially the hard rules, "Who uses this", "How we
 
 Single mode runs step 0, then steps 1 to 13 once (a bundle of small issues counts as one). Batch mode is described after step 13.
 
-**Never stop to ask the owner, in either mode, and never use the interactive question prompt.** Questions go in the issue. Every choice is either decided and recorded, or a hard stop that becomes one plain-language question in the issue's comments and the `blocked` label (see "Decide or block" and "Blocked"); the branch is kept. In batch mode the run then goes on with the next issue; single mode builds one issue, so it ends with its report.
+**Never stop to ask the designer, in either mode, and never use the interactive question prompt.** Questions go in the issue. Every choice is either decided and recorded, or a hard stop that becomes one plain-language question in the issue's comments and the `blocked` label (see "Decide or block" and "Blocked"); the branch is kept. In batch mode the run then goes on with the next issue; single mode builds one issue, so it ends with its report.
 
 ## Decide or block
 
@@ -23,12 +23,12 @@ Single mode runs step 0, then steps 1 to 13 once (a bundle of small issues count
 
 **Decide** yourself, without asking or stopping, when all of these are true: the choice can be undone with a git revert; you would recommend one option; none of the hard stops below applies. An unclear spec, a spec that conflicts with the code or DESIGN.md, or a choice between ways to build it is decided this way. Then:
 - comment on the issue, written to a file and posted with `gh issue comment N --body-file ...`: `Decided: <what>. Why: <one line>. To change it, reply on this issue.` One comment per decision; on a resume, don't post one that is already there;
-- add the label if it isn't there: `scripts/board.sh label N add decided`, so the owner can review all of these together on the board;
+- add the label if it isn't there: `scripts/board.sh label N add decided`, so the designer can review all of these together on the board;
 - record it in `DECISIONS.md` too if it is a real design decision, as usual, and list it under "Decided" in the testing comment (step 11).
 
 **Hard stops**, the only reasons to stop:
 - a new dependency or licence question (anything copied from Valve's CSS, class names, icons, logos or fonts, or doing more to the Steam client than read it, counts);
-- anything that could change, move or delete the owner's media or other files outside the repo;
+- anything that could change, move or delete personal media or other files outside the repo;
 - anything a git revert can't undo;
 - a product change nobody asked for that doesn't come from the issue or the design system. Renaming or removing a token, component class, state attribute, or function or event of `components/enamel-components.js` that the issue doesn't ask for counts (apps use these names), and so does adding a token or rule the issue doesn't ask for;
 - security or privacy;
@@ -77,15 +77,15 @@ Issues that /draft split from one feature share a label `series: <name>` and lin
 - **The last one** (every other issue in the series is merged, or closed): after its own merge, run the **series review** before step 10.
   - Base: the parent of the series' first `Refs #` commit on `main` (`git log origin/main --reverse --format=%H --grep="^Refs #A:"` for each issue in the series; take the earliest, then `git rev-parse <commit>^`).
   - Run the `reviewer` agent with: `Series review: "<name>", issues #A, #B, #C. Check the combined change on main against <base>.`
-  - **PASS:** move every card in the series to Ready for testing, post on each issue one comment `Series review passed: <the verdict word for word>`, and update each progress comment (`Next: owner testing`).
-  - **FAIL:** file one small follow-up issue in the same series: title `<name>: fixes from the series review`, body with What / Watch for / Done when (the numbered problems, plus any "Tidy-ups left"), labels `size:S` (or bigger, by CLAUDE.md's sizes) and the series label, a line linking the series, then `scripts/board.sh add F` and `scripts/board.sh status F "Ready for dev"` (it goes straight there: it only fixes what the owner already asked for). Comment on every series issue `Series review found problems; fixes in #F. The cards move to Ready for testing once it passes.` Building #F is the next issue to take; when it merges it is the last of the series, so the series review runs again over everything from the same base.
+  - **PASS:** move every card in the series to Ready for testing, post on each issue one comment `Series review passed: <the verdict word for word>`, and update each progress comment (`Next: designer testing`).
+  - **FAIL:** file one small follow-up issue in the same series: title `<name>: fixes from the series review`, body with What / Watch for / Done when (the numbered problems, plus any "Tidy-ups left"), labels `size:S` (or bigger, by CLAUDE.md's sizes) and the series label, a line linking the series, then `scripts/board.sh add F` and `scripts/board.sh status F "Ready for dev"` (it goes straight there: it only fixes what the designer already asked for). Comment on every series issue `Series review found problems; fixes in #F. The cards move to Ready for testing once it passes.` Building #F is the next issue to take; when it merges it is the last of the series, so the series review runs again over everything from the same base.
   - **Still FAIL after two follow-ups:** handle the last follow-up as **Blocked** with the verdict word for word; the series' cards stay in Building.
   - Tidy-ups left from a passing series review go in the report, not into a new issue.
 - Note each series review and its result for the report.
 
 ## Safe to interrupt
 
-A run can stop at any moment: usage limit, the session closed, the Deck turned off. Everything below is built so that the next /next can pick up where it stopped:
+A run can stop at any moment: usage limit, the session closed, the device turned off. Everything below is built so that the next /next can pick up where it stopped:
 
 - **One branch per issue** (or per bundle of small issues), named `issue-N`, started from the latest `main`. Work in progress is committed and pushed to that branch at each checkpoint. `main` only ever receives finished work: merged once the checking agents of its size say PASS and all automated tests pass on the final code. Kettle Video copies its Enamel files from this folder with its own sync script, so nothing half-done may reach `main`, and every run ends with the folder back on `main`.
 - **One progress comment per issue**, edited in place at each checkpoint (see "Progress comment").
@@ -118,7 +118,7 @@ Last update: <YYYY-MM-DD HH:MM>
 
 `Checks passed on:` is written as soon as every agent of the path has said PASS, with the commit the branch was on after the reviewer's tidy-ups. A resume uses it to decide whether the agents need to run again.
 
-When the issue is finished, `Done:` ends with `merged into main as <short commit>, moved to Ready for testing, testing comment posted` and `Next:` says `owner testing`. When it is blocked, `Next:` says `blocked: <one line>`.
+When the issue is finished, `Done:` ends with `merged into main as <short commit>, moved to Ready for testing, testing comment posted` and `Next:` says `designer testing`. When it is blocked, `Next:` says `blocked: <one line>`.
 
 **Checkpoints** (commit to `issue-N` if anything changed, push, then update the progress comment):
 1. **plan**: branch created and pushed, card in Building, plan written in the progress comment. Commit `WIP issue-N: plan` with `--allow-empty` (the plan itself lives in the comment).
@@ -138,12 +138,12 @@ Then, before taking anything new, look for unfinished work. Read step 1 first, t
 - For the current branch, `main` and every local `issue-*` branch: `git rev-list --count origin/<branch>..<branch>` (unpushed commits; a local branch with no copy on GitHub counts as unpushed).
 - The board (step 2's list): cards in **Building**.
 
-Each finding belongs to an issue N: `issue-N` branches by name, Building cards by number. A Building card whose progress comment names a bundle branch (`Branch: issue-N (bundle: …)`) belongs to that bundle, which is resumed as one. A Building card whose progress comment says `Next: series review` is **waiting**, not unfinished: leave it, unless every issue in its series is merged or closed, in which case the series review was interrupted: run it now (see "Series"). An issue with the `blocked` label is **parked**, not unfinished: leave its branch alone; it is picked up as normal once the owner removes the label (step 4 then continues from its branch). An issue labelled `tests` is idle work: /next leaves it to `.claude/commands/tidy.md` ("Resume"), which /next all runs at the end and /tidy runs on its own; in single mode, just mention it in the report.
+Each finding belongs to an issue N: `issue-N` branches by name, Building cards by number. A Building card whose progress comment names a bundle branch (`Branch: issue-N (bundle: …)`) belongs to that bundle, which is resumed as one. A Building card whose progress comment says `Next: series review` is **waiting**, not unfinished: leave it, unless every issue in its series is merged or closed, in which case the series review was interrupted: run it now (see "Series"). An issue with the `blocked` label is **parked**, not unfinished: leave its branch alone; it is picked up as normal once the designer removes the label (step 4 then continues from its branch). An issue labelled `tests` is idle work: /next leaves it to `.claude/commands/tidy.md` ("Resume"), which /next all runs at the end and /tidy runs on its own; in single mode, just mention it in the report.
 
 Handle what you find in this order:
 
 1. **Uncommitted changes on `issue-N`**: commit them as `WIP issue-N: saved after interruption` and push. Then treat N as unfinished.
-2. **Uncommitted changes on `main` or any other branch**, or **unpushed commits on `main`** that are not explained below: the state is unclear, and no issue can be built safely on top of it. Touch nothing, start nothing new, and end the whole run with a plain-language report of what you found (which files or commits, on which branch) and one question for the owner. This is the one case where batch mode ends early: it isn't waiting on an issue, and nothing else can run until the folder is clean.
+2. **Uncommitted changes on `main` or any other branch**, or **unpushed commits on `main`** that are not explained below: the state is unclear, and no issue can be built safely on top of it. Touch nothing, start nothing new, and end the whole run with a plain-language report of what you found (which files or commits, on which branch) and one question for the designer. This is the one case where batch mode ends early: it isn't waiting on an issue, and nothing else can run until the folder is clean.
 3. **Unpushed commits on `main` that are exactly one `Refs #N:` commit**, or the `Refs #` commits of some or all the issues of one bundle, where `git diff --quiet main issue-N` shows it holds the same files as `issue-N` (for a bundle cut short, the same files as the last merged issue's `#M done` commit): the merge happened but the push didn't, or it stopped part way. Treat N as unfinished; it continues at step 8, checked against `origin/main` from `main`, and step 9 then only pushes and cleans up.
 4. **Every other unfinished issue** (a Building card, or an `issue-N` branch that is not blocked): treat N as unfinished.
 
@@ -160,15 +160,15 @@ For each unfinished issue N, in issue-number order:
 
 2. **Pick the issue.**
    - List the board: `scripts/board.sh list` (number, status, labels, title).
-   - If an issue number was given, use it. **Its Status must be More to do or Ready for dev** (or Building, when step 0 is resuming it). If it is anything else, say which status it has and stop. If it has the `blocked` label, say so, point to the open question in its comments, and stop: the owner unblocks it by removing the label.
+   - If an issue number was given, use it. **Its Status must be More to do or Ready for dev** (or Building, when step 0 is resuming it). If it is anything else, say which status it has and stop. If it has the `blocked` label, say so, point to the open question in its comments, and stop: the designer unblocks it by removing the label.
    - Otherwise, **first** take the first item (board order) whose Status is More to do. **Only if** none is in More to do, take the first item whose Status is Ready for dev **and that is not labelled `refactor`**. **Only if** none of those is left, take the first Ready for dev item labelled `refactor`: refactors always come after every other Ready for dev issue (see "Refactor issues"). In every case skip items with the `blocked` label, and items that depend on a blocked or unbuilt issue (see "Dependencies" below).
    - If nothing is left to take, say "Nothing in More to do or Ready for dev" (mentioning any blocked or skipped issues) and stop.
    - Note its issue number N, and whether it came from **More to do** (a rework) or **Ready for dev** (a new build).
    - **Bundle:** if it came from Ready for dev and is `size:S`, check the cards right below it for a bundle (see "Bundles of small issues"). Steps 3 to 11 then run once for the bundle, each issue read, built, committed and reported in turn.
 
-3. **Read it fully**: `gh issue view N --json body,comments,labels` (`--comments` alone prints nothing here), the body, labels and ALL comments. Note its size and any `series:` label (see "Size and path"). The owner's review notes and failure reports are in the comments; they override the original body where they differ.
-   - **For a rework (More to do):** these are issues the owner tested and sent back. Find when it last left Building (your last "Ready for testing" comment) and focus on the owner's feedback since then. List each point of feedback separately; every one must be addressed.
-   - **For a previously blocked issue** (it has a "Blocked" comment from you, and the owner has since removed the label): the owner's answer is in the comments after it. Follow that answer.
+3. **Read it fully**: `gh issue view N --json body,comments,labels` (`--comments` alone prints nothing here), the body, labels and ALL comments. Note its size and any `series:` label (see "Size and path"). The designer's review notes and failure reports are in the comments; they override the original body where they differ.
+   - **For a rework (More to do):** these are issues the designer tested and sent back. Find when it last left Building (your last "Ready for testing" comment) and focus on the designer's feedback since then. List each point of feedback separately; every one must be addressed.
+   - **For a previously blocked issue** (it has a "Blocked" comment from you, and the designer has since removed the label): the designer's answer is in the comments after it. Follow that answer.
 
 4. **Branch and plan** (checkpoint "plan"). Check `git status --porcelain` is empty first; if not, go back to step 0.
    - `git switch main` and `git pull --ff-only`.
@@ -180,7 +180,7 @@ For each unfinished issue N, in issue-number order:
 
 5. **Build.** Build without asking for plan approval, and never ask during the build. **Write the tests the change needs as part of building it**, whatever the size: for each acceptance point that can be checked from the terminal, a test that would fail if the feature broke (`tests/test_*.py`, or a `tests/*_check.py` script for what needs the device's Firefox; standard library only, the MIT SPDX header, a docstring naming the issue). On S and M no one else writes tests: the reviewer only checks them. Keep an eye on the size as the change grows (see "Upgrades"). Each choice is either decided (comment, `decided` label) or a hard stop (Blocked), as "Decide or block" says. A visible change counts as a stop only when it goes beyond the spec and doesn't come from the issue or the design system. Record real decisions in `DECISIONS.md`, as usual.
 
-6. **Test everything you can yourself.** Never ask the owner to run commands or test cases.
+6. **Test everything you can yourself.** Never ask the designer to run commands or test cases.
    - After any change to tokens, rules or components, run `python3 tools/build_design_md.py`, then `python3 tools/build_styleguide.py`, and run both again to see that the second run changes nothing (CLAUDE.md).
    - Run `scripts/test.sh` (quick: the unit tests, the build and structure checks, and the device's Firefox on the style guide pages the change touches, in full and reduced motion). If anything fails, fix it and run again. Slower checks for the code you touched: `scripts/test.sh check <name>`.
    - Work through every item under "Checked automatically" in "Done when": run the scripts and read their output, look at screenshots of the style guide in the device's Firefox (`tools/check_guide.py --screenshots` can save them), measure timings.
@@ -196,7 +196,7 @@ For each unfinished issue N, in issue-number order:
    - **Round 1:** run the agents of the path (Agent tool, `subagent_type` set to each name), one after the other. Prompt each with: `Issue #N. Check the change on branch issue-N against main. Round 1.` (When step 0 found a merge that wasn't pushed, say `against origin/main` instead, from `main`.) On L, run the reviewer even if test-checker failed, so you get every problem at once. Keep every verdict word for word.
    - **All PASS:** push the reviewer's tidy-up commit if it made one, write `Checks passed on:` in the progress comment, and go on to step 9.
    - **Any FAIL:** fix every numbered problem (the system's own files for the system, a test only if test-checker's test is itself wrong), run the quick suite again (step 6; it only re-runs what changed), commit and push checkpoint "fixes round R", then run the path's agents again, as round 2. At most **2 fix rounds** (rounds 2 and 3), and always every agent of the path each round. The reviewer's tidy-ups never count as a FAIL.
-   - **Still FAIL after round 3**, or a problem marked "Needs the owner" (that is a hard stop, not something to fix): handle it as **Blocked** (see "Blocked") with one plain-language question or explanation built from the remaining problems. In single mode, then report and stop; in batch mode, move on.
+   - **Still FAIL after round 3**, or a problem marked "Needs the designer" (that is a hard stop, not something to fix): handle it as **Blocked** (see "Blocked") with one plain-language question or explanation built from the remaining problems. In single mode, then report and stop; in batch mode, move on.
 
 9. **Merge into main** (checkpoint "merged"), only after every agent of the path said PASS in step 8.
    - Make any "Tidy-ups left" from the reviewer (see "Tidy-ups"), then commit anything left on `issue-N` (such as tests test-checker added) as `WIP issue-N: checked`, and push.
@@ -212,7 +212,7 @@ For each unfinished issue N, in issue-number order:
 10. **Move to Ready for testing** if it isn't there already (`scripts/board.sh status N "Ready for testing"`). Update the progress comment. **In a series**, only once the series review has passed (see "Series"): until then the card stays in Building. In a bundle, move each issue's card.
 
 11. **Comment on the issue**, unless you already posted a "Ready for testing" comment after this round started. Write it to a file and use `gh issue comment N --body-file ...`, in plain language, with:
-   - **For a rework only — Feedback addressed**: each point of the owner's feedback, and what you changed in response (or why nothing needed changing).
+   - **For a rework only — Feedback addressed**: each point of the designer's feedback, and what you changed in response (or why nothing needed changing).
    - **Decided**: one line per decision you made on this round (the "Decided" comments), or "nothing".
    - **Verified automatically**: one line per thing you checked and its result.
    - **Not verified automatically**: anything in "Done when" you could not check from the terminal, and why. Write "nothing" if so.
@@ -232,11 +232,11 @@ For each unfinished issue N, in issue-number order:
     - **Decided along the way**: each decision made without asking (all labelled `decided` on the board), or "nothing".
     - **Blocked**, if it was: the question waiting in the issue.
 
-13. **Never close the issue here.** It moves on through the pass/fail phrases in CLAUDE.md ("How we work").
+13. **Never close the issue here.** It moves on through the pass/fail phrases in CLAUDE.md ("How the work is done").
 
 ## Refactor issues
 
-Issues labelled `refactor` (proposed by refactor-scout through /tidy, approved by the owner moving them to Ready for dev) change how the code is organised, never what the design system does. On top of the steps above:
+Issues labelled `refactor` (proposed by refactor-scout through /tidy, approved by the designer moving them to Ready for dev) change how the code is organised, never what the design system does. On top of the steps above:
 - **Tests pass before:** right after step 4, run the quick suite on the fresh branch before changing anything. If it fails, handle as Blocked ("the tests already fail before the refactor"); never refactor on a failing suite.
 - **Tests first:** if the issue's "How the tests cover it" names behaviour without a test, add those tests first and see them pass on the unchanged code.
 - **Behaviour stays the same:** no token value, component look, motion, script behaviour or generated page changes, no token, class, state attribute or script function renamed, no version bump, and no existing test loosened or removed (tests may be added or moved, checking the same things). Anything else is a hard stop: a product change nobody asked for.
@@ -259,7 +259,7 @@ When an issue is blocked (a hard stop, tests that still fail, a problem past the
 - move it back to the column it came from (More to do or Ready for dev) if it isn't there already;
 - update the progress comment (`Next: blocked: <one line>`).
 
-The branch stays parked. When the owner removes the label, the next /next continues from it (step 4).
+The branch stays parked. When the designer removes the label, the next /next continues from it (step 4).
 
 ## Batch mode (`/next all`, `/next N`)
 
@@ -268,12 +268,12 @@ Start with step 0 (housekeeping, then its checks). Resumed issues come first, th
 **Keep the main session small.** It only holds the queue, the checking agents' verdicts and the final summary. Each issue (or bundle) is built in its own fresh helper agent:
 
 1. **Start a builder**: Agent tool, `subagent_type` `general-purpose`, prompt:
-   `You are the builder for Enamel issue #N in a /next batch run. Read CLAUDE.md and .claude/commands/next.md, especially "Decide or block". Never ask the owner and never use the interactive question prompt: decide what a git revert can undo and you would recommend (comment "Decided: ...", add the decided label), and handle a hard stop, tests that still fail, or one problem stuck for about 30 minutes as Blocked. Changes that come from the issue or the design system are in scope; never hardcode a size a token provides. Write the tests the change needs as part of building it, and upgrade the size label yourself if the change grows past its size (next.md "Size and path"). <"It is size S|M|L." | "It is a bundle of #N, #M: one issue at a time, as next.md "Bundles of small issues" says."> Run one plain command at a time (never chain with &&, ; or |), run git from this repo's folder without git -C, and read Kettle Video only with scripts/peek.sh. <"This is a new build from <column>." | "This is a resume: continue from the progress comment, then re-run the quick suite.">  Do steps 3 to 7 (or the remaining ones), then stop: you cannot run the checking agents yourself. Reply in at most 5 lines, starting with READY FOR CHECKS or BLOCKED, plus the issue title, its size now (and any upgrade) and any decisions made.`
+   `You are the builder for Enamel issue #N in a /next batch run. Read CLAUDE.md and .claude/commands/next.md, especially "Decide or block". Never ask the designer and never use the interactive question prompt: decide what a git revert can undo and you would recommend (comment "Decided: ...", add the decided label), and handle a hard stop, tests that still fail, or one problem stuck for about 30 minutes as Blocked. Changes that come from the issue or the design system are in scope; never hardcode a size a token provides. Write the tests the change needs as part of building it, and upgrade the size label yourself if the change grows past its size (next.md "Size and path"). <"It is size S|M|L." | "It is a bundle of #N, #M: one issue at a time, as next.md "Bundles of small issues" says."> Run one plain command at a time (never chain with &&, ; or |), run git from this repo's folder without git -C, and read Kettle Video only with scripts/peek.sh. <"This is a new build from <column>." | "This is a resume: continue from the progress comment, then re-run the quick suite.">  Do steps 3 to 7 (or the remaining ones), then stop: you cannot run the checking agents yourself. Reply in at most 5 lines, starting with READY FOR CHECKS or BLOCKED, plus the issue title, its size now (and any upgrade) and any decisions made.`
 2. **Run the checks** yourself (step 8, the agents of the issue's size, in order), with the same prompts as single mode. Use the size from the builder's reply: an upgrade changes the path. On a resume whose checks already passed on the same code, skip them (step 0).
 3. **Any FAIL**: send the builder every verdict word for word with SendMessage, asking it to fix them, commit and push checkpoint "fixes round R", and reply READY FOR CHECKS. Then run the path's agents again. The same limit applies: at most 2 fix rounds.
 4. **All PASS**: send the builder the final verdicts (with any "Tidy-ups left") and the number of rounds, asking it to do steps 9 to 11 and reply in one line: `DONE: #N title — what to try in the style guide` (or "nothing visible yet"), or `WAITING: #N title — merged, waits for the series review` for a series issue that isn't the last.
 5. **Last of a series**: after its DONE, run the series review yourself (see "Series"), then move the cards and comment, or file the follow-up issue.
-6. **Still FAIL after round 3**, or a "Needs the owner" problem: ask the builder to handle it as Blocked with those verdicts and reply in one line with what the owner needs to answer.
+6. **Still FAIL after round 3**, or a "Needs the designer" problem: ask the builder to handle it as Blocked with those verdicts and reply in one line with what the designer needs to answer.
 
 If helper agents aren't available, do the same steps in the main session. If a builder stops without replying, run step 0's checks for that issue and carry on from its progress comment.
 
@@ -297,10 +297,10 @@ For each issue, the steps are the same as in single mode, with these differences
 - **Resumed**: one line per issue picked up from an earlier interruption: `#N title`, which checkpoint it continued from, and where it ended (Ready for testing or blocked). Write "nothing" if none.
 - **Ready for testing**: one line per issue (a series' issues only once its review passed; the others are listed as waiting in Building): `#N title`, the new version if any, what to look at in the style guide (or "nothing visible yet"), and what Kettle Video needs to do (or "nothing").
 - **Decided**: one line per decision made without asking: `#N title` and what was decided. Then: "All labelled decided on the board; reply on the issue to change one." Write "nothing" if none.
-- **Blocked**: one line per issue: `#N title`, and what it needs from the owner. Then: "Answer in the issue comments and remove the blocked label; the next /next picks it up."
+- **Blocked**: one line per issue: `#N title`, and what it needs from the designer. Then: "Answer in the issue comments and remove the blocked label; the next /next picks it up."
 - **Skipped**: one line per issue: `#N title`, and which issue it is waiting for.
 - **Left over** (only when the N limit was reached): how many issues are still waiting in More to do and Ready for dev.
 - **Release check** (`/next all` only): the full check passed, or which issue it sent back to More to do and why; or "nothing merged, not run".
 - **Idle work** (`/next all` only): tidy.md's report: tests and docs (with the smoke check), refactor proposals filed, and anything found along the way.
 
-The `blocked` label is the owner's switch: once they remove it, the issue is picked up again by any /next as normal.
+The `blocked` label is the designer's switch: once they remove it, the issue is picked up again by any /next as normal.

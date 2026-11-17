@@ -18,7 +18,7 @@ All tokens live in [`tokens/enamel.css`](tokens/enamel.css), in one `:root` bloc
 ## Using it in an app
 
 1. Copy `tokens/enamel.css` and `DESIGN.md` into the app.
-2. Note the version you copied (from [`VERSION`](VERSION), currently 0.13.0) next to them, for example in a comment at the top of the copied CSS or in the app's README.
+2. Note the copied version (from [`VERSION`](VERSION), currently 0.13.1) next to them, for example in a comment at the top of the copied CSS or in the app's README.
 3. Link `enamel.css` before the app's own styles. Use only the Group C tokens, and follow the rules in `DESIGN.md`.
 4. To use the components, also copy [`components/enamel-components.css`](components/enamel-components.css) and link it after `enamel.css`.
 5. For the picker dialog and the toast, also copy [`components/enamel-components.js`](components/enamel-components.js) and load it after the stylesheets. Apps with their own key handling should read the "Behaviour script" part of `DESIGN.md`.
@@ -37,29 +37,33 @@ Every released version has an annotated git tag named `v` plus the version, for 
 
 Components move on their own (focus, state changes) and honour reduced motion; see the Motion section of `DESIGN.md`.
 
-Token names are version 0 and may change until Kettle Video ships, so check `CHANGELOG.md` and `DECISIONS.md` when you update. [`MIGRATION.md`](MIGRATION.md) lists every name from before the move to the `en` prefix next to its new name, file names included.
+Token names are version 0 and may change until Kettle Video ships, so an app checks `CHANGELOG.md` and `DECISIONS.md` when it updates. [`MIGRATION.md`](MIGRATION.md) lists every name from before the move to the `en` prefix next to its new name, file names included.
 
 ## Who uses this
 
-- Kettle Video (on this device at `~/Development/kettle-video`; its GitHub repo is still `enamelware/media-player`) uses this system through an unmodified copy in its `vendor/enamel/` folder.
+- Kettle Video, the first app built on Enamel, uses this system through an unmodified copy in its `vendor/enamel/` folder. Its repo is private.
 - Apps update by re-running their own sync script after a new VERSION here. Nothing in this repo reaches into an app.
-- Never edit an app's files from this repo.
-- Renaming or removing a token, a component class or a state attribute breaks apps. Before doing so, stop and report what would break.
+- Nothing in this repo edits an app's files.
+- Renaming or removing a token, a component class or a state attribute breaks apps, so what would break is reported before any such change is made.
 - Gaps found while building an app are fixed here, then the app re-syncs. Apps never style around a missing part: they add the gap to the standing issue "Gaps found by the apps" (#7, label `gaps`).
 
 ## Style guide
 
 Open the style guide with the Enamel style guide launcher, never by double-clicking the html files.
 
-The launcher is "Enamel style guide" on the Desktop. It runs `tools/serve.py`, which serves this repo on this device only (127.0.0.1) and opens the page in the browser. Firefox here is sandboxed and can't load `tokens/enamel.css` from a page opened as a file, so a double-clicked page shows up unstyled. Close the launcher's terminal window to stop the server.
+The launcher is a Desktop shortcut called "Enamel style guide" on the development device. It runs `tools/serve.py`, which serves this repo to the same machine only (127.0.0.1) and opens the page in the browser. Closing the launcher's terminal window stops the server.
+
+Without the launcher, anyone with a copy of the repo can do the same: run `python3 tools/serve.py` from the repo's folder (Python 3, nothing to install) and open the page it prints if no browser opens by itself. `python3 tools/serve.py --no-open` only serves and prints the address. Ctrl+C stops it.
+
+The pages are served rather than opened as files because a sandboxed Firefox (for example a Flatpak install) can't read `tokens/enamel.css` from a page opened as a file, so a double-clicked page shows up unstyled.
 
 It has five pages, with the same left menu on each:
 
 - [`docs/overview.html`](docs/overview.html), the overview (written by hand).
 - [`docs/index.html`](docs/index.html), the token reference: every token with its value, a sample and where it came from, plus contrast results and the rules.
 - [`docs/components.html`](docs/components.html), the Components page: every component in every state, with the HTML to copy.
-- [`docs/motion.html`](docs/motion.html), the Motion page: every motion token with a demo, focus moving along tiles and rows, controls you can operate, and the same focus demo in reduced motion.
-- [`docs/resize.html`](docs/resize.html), the Resize page: every component in a frame you resize by dragging its corner, and a row of fixed frames from the smallest supported box to very wide, each labelled by its width.
+- [`docs/motion.html`](docs/motion.html), the Motion page: every motion token with a demo, focus moving along tiles and rows, working controls, and the same focus demo in reduced motion.
+- [`docs/resize.html`](docs/resize.html), the Resize page: every component in a frame that resizes by dragging its corner, and a row of fixed frames from the smallest supported box to very wide, each labelled by its width.
 
 Each page's menu is written with that page already marked, so it works without scripts. The menu's layout is in `docs/site.css`; `docs/site.js` marks the section in view while scrolling, runs the accent and motion switches at the bottom of the menu, and runs the Motion page demos.
 

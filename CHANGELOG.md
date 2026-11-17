@@ -2,13 +2,29 @@
 
 Each version of Enamel, newest first. Apps copy a version and re-sync after a new one; check the entry before updating. A version is released only once its entry is written and its git tag (for example `v0.6.0`) is pushed; each entry says which apps should adopt it and when. "Visual" means things look or move differently; no existing name changed unless the entry says so.
 
-## 0.13.0, 2026-11-14 (visual)
+## 0.13.1, 2026-11-17
 
-The destructive row is now a plain row until it has the focus (#22), as Kettle Video asked for its Quit row (enamelware/media-player#98, listed in Enamel's "Gaps found by the apps", #7). Everything else looks the same.
+Wording only (#23, #24): the documents, the style guide and the comments are now written in the project's voice for a visitor reading the public repo, and nothing in them points to a private place. Nothing looks or moves differently, every token keeps its value, and every rule, decision, version and date means what it did.
 
 **Renamed or removed: none.** No token, component class, state attribute, component variable, or script function or event was renamed, removed or added. Markup doesn't change.
 
-**Who should adopt it, and when:** Kettle Video, through its own "Bring in Enamel 0.13.0" issue, before it puts Quit back on the destructive row (its #98 waits for this). Apps that don't use the destructive row can adopt it whenever they next re-sync; nothing they use changes.
+**Who should adopt it, and when:** Kettle Video, whenever it next re-syncs; nothing it uses changes. Other apps the same.
+
+**What each app must do to pick it up:** re-sync and record v0.13.1 as the adopted release. The copied files only differ in wording (DESIGN.md and one comment in the components stylesheet) and in the version number at the top of the three main files; apps need to change nothing.
+
+Changed:
+- DESIGN.md's guidelines and component notes say "things that can be pressed" and "nothing that can be selected", with the same meaning as before.
+- The style guide's Overview, Components and Motion pages, the README, DECISIONS.md and this changelog are reworded the same way; a decision that used to say who made it now reads "Chosen: …, because …".
+- The public-text check now fails on every finding: the list of findings in the older text is gone, and the settings exception covers only the deny rules for the secret folders.
+- The README says how anyone can open the style guide (serve the repo with `tools/serve.py` and open the page it prints) and why a page opened as a file shows up unstyled: a sandboxed Firefox, for example a Flatpak install, can't read the stylesheet from it. The top of DECISIONS.md says what Kettle is.
+
+## 0.13.0, 2026-11-14 (visual)
+
+The destructive row is now a plain row until it has the focus (#22), as Kettle Video asked for its Quit row (in one of its own issues, listed in Enamel's "Gaps found by the apps", #7). Everything else looks the same.
+
+**Renamed or removed: none.** No token, component class, state attribute, component variable, or script function or event was renamed, removed or added. Markup doesn't change.
+
+**Who should adopt it, and when:** Kettle Video, through its own "Bring in Enamel 0.13.0" issue, before it puts Quit back on the destructive row (its Quit row waits for this). Apps that don't use the destructive row can adopt it whenever they next re-sync; nothing they use changes.
 
 **What each app must do to pick it up:**
 - Re-sync the three main files. Nothing else: a row that already has the destructive class now looks plain until it has the focus.
@@ -21,11 +37,11 @@ Rules (DESIGN.md, Part 2):
 
 ## 0.12.0, 2026-11-12 (visual)
 
-A destructive row (#21), found by Kettle Video for the Quit row in its Home menu (enamelware/media-player#98, listed in Enamel's "Gaps found by the apps", #7). Everything that was there before looks the same.
+A destructive row (#21), found by Kettle Video for the Quit row in its Home menu (in one of its own issues, listed in Enamel's "Gaps found by the apps", #7). Everything that was there before looks the same.
 
 **Renamed or removed: none.** No token, component class, state attribute, component variable, or script function or event was renamed or removed. No token or component variable was added: the new row uses the error red and the white that were there.
 
-**Who should adopt it, and when:** Kettle Video, through its own "Bring in Enamel 0.12.0" issue, before it builds its Home polish (its #98 waits for this). Apps that don't need it can adopt it whenever they next re-sync; nothing they use changes.
+**Who should adopt it, and when:** Kettle Video, through its own "Bring in Enamel 0.12.0" issue, before it builds its Home polish (its Quit row waits for this). Apps that don't need it can adopt it whenever they next re-sync; nothing they use changes.
 
 **What each app must do to pick it up:**
 - Re-sync the three main files.
@@ -100,15 +116,15 @@ Added (class and states, new): `.en-speckle`, the page speckle; `data-pressed="t
 
 Added (component variables, new): `--en-c-tile-glow`, `--en-c-focus-stroke`, `--en-c-speckle-accent`, `--en-c-rise`, `--en-c-satin-shadow`, `--en-c-lift-shadow`, `--en-c-press-shadow`.
 
-Added (rules): the grid unit rule, satin never gloss, where patterns live, one border per element, one focus style per kind of element, cream as a neutral, only things you press move physically, and rem or px by one question. See DESIGN.md Part 2 and "Scaling". The style guide check enforces the grid rule and the pattern rule.
+Added (rules): the grid unit rule, satin never gloss, where patterns live, one border per element, one focus style per kind of element, cream as a neutral, only things that can be pressed move physically, and rem or px by one question. See DESIGN.md Part 2 and "Scaling". The style guide check enforces the grid rule and the pattern rule.
 
 ## 0.10.0, 2026-11-05 (visual)
 
-A stat panel, a stat pair and a note (#17), found by Kettle Video for its onboarding result screen (enamelware/media-player#90, listed in Enamel's "Gaps found by the apps", #7). Everything that was there before looks the same.
+A stat panel, a stat pair and a note (#17), found by Kettle Video for its onboarding result screen (in one of its own issues, listed in Enamel's "Gaps found by the apps", #7). Everything that was there before looks the same.
 
 **Renamed or removed: none.** No token, component class, state attribute, component variable, or script function or event was renamed or removed. No token was added; two component variables were, for sizes no token gives.
 
-**Who should adopt it, and when:** Kettle Video, through its own "Bring in Enamel 0.10.0" issue, before it builds its onboarding part 2 result screen (its #90 waits for these parts). Apps that don't need them can adopt it whenever they next re-sync; nothing they use changes.
+**Who should adopt it, and when:** Kettle Video, through its own "Bring in Enamel 0.10.0" issue, before it builds its onboarding part 2 result screen (that screen waits for these parts). Apps that don't need them can adopt it whenever they next re-sync; nothing they use changes.
 
 **What each app must do to pick it up:**
 - Re-sync the three main files.
@@ -127,11 +143,11 @@ Changed (visual): nothing apps see. On the style guide only, the site's paragrap
 
 ## 0.9.0, 2026-10-30 (visual)
 
-Five small components for onboarding (#16), found by Kettle Video while drafting its first-launch screens (enamelware/media-player#83 and #84, listed in Enamel's "Gaps found by the apps", #7): a step label, a group band, a badge, a message inside a row, and numbered steps. Everything that was there before looks the same.
+Five small components for onboarding (#16), found by Kettle Video while drafting its first-launch screens (in two of its own issues, listed in Enamel's "Gaps found by the apps", #7): a step label, a group band, a badge, a message inside a row, and numbered steps. Everything that was there before looks the same.
 
 **Renamed or removed: none.** No token, component class, state attribute, component variable, or script function or event was renamed or removed. No token was added; the new parts use the tokens and component variables that were there.
 
-**Who should adopt it, and when:** Kettle Video, through its own "Bring in Enamel 0.9.0" issue, before it builds its onboarding screens (its #83 and #84 wait for these parts). Apps that don't need them can adopt it whenever they next re-sync; nothing they use changes.
+**Who should adopt it, and when:** Kettle Video, through its own "Bring in Enamel 0.9.0" issue, before it builds its onboarding screens (those screens wait for these parts). Apps that don't need them can adopt it whenever they next re-sync; nothing they use changes.
 
 **What each app must do to pick it up:**
 - Re-sync the three main files.
@@ -149,7 +165,7 @@ Changed (visual): nothing apps see. On the style guide only, the site's heading 
 
 ## 0.8.0, 2026-10-29 (visual)
 
-Steam baseline sizes, scaled from one root size (#15). Enamel's sizes are raised to Steam's Gaming Mode, as Kettle Video's sizing report measured them (both passes, its #76 and #77): rows, buttons and text get bigger, so the whole interface looks as big as Gaming Mode. Every size except text is a multiple of 4px at the browser's normal font size, and every size follows one root size that an app can turn up or down with one token. Nothing reads the screen's size.
+Steam baseline sizes, scaled from one root size (#15). Enamel's sizes are raised to Steam's Gaming Mode, as Kettle Video's sizing report measured them (both of its measuring passes): rows, buttons and text get bigger, so the whole interface looks as big as Gaming Mode. Every size except text is a multiple of 4px at the browser's normal font size, and every size follows one root size that an app can turn up or down with one token. Nothing reads the screen's size.
 
 **Renamed or removed: none.** No token, component class, state attribute, component variable, or script function or event was renamed or removed. Token names are unchanged; their sizes are bigger.
 
@@ -214,7 +230,7 @@ The design system is now called Enamel (#12 and #13). Enamel is a design system 
 
 **Renamed (breaking):** every public name takes the `en` prefix in place of the old one: all tokens and component variables (`--en-…`), all component classes (`en-…`), the two state attributes (`data-en-accent`, `data-en-motion`), the animation names, and the behaviour script's global (`window.EnamelUI`) and events (`en-select`, `en-cancel`). The three main files are now `tokens/enamel.css`, `components/enamel-components.css` and `components/enamel-components.js`. [`MIGRATION.md`](MIGRATION.md) lists every old name next to its new one, file names included. Nothing was removed and nothing was added.
 
-**Who should adopt it, and when:** Kettle Video, through its own switch issue (its #67), when that issue is picked up. Until then it stays on 0.6.0 with the old names, which keep working there.
+**Who should adopt it, and when:** Kettle Video, through its own switch issue, when that issue is picked up. Until then it stays on 0.6.0 with the old names, which keep working there.
 
 **What each app must do to pick it up:**
 - Rename every name in its stylesheets, markup and scripts as MIGRATION.md lists: tokens, classes, the accent and motion attributes, and the script's global and events.
@@ -276,7 +292,7 @@ Changed (visual), from #4: text and spacing in rem, every other component sized 
 - Style guide: its layout widths are in rem, and the menu moves above the page when the menu and the narrowest readable page cannot sit side by side (56.25rem) instead of below 900px. The Overview page's measurement labels show the new values.
 
 Added to the style guide, from #5 (apps see no change from this):
-- A Resize page (`docs/resize.html`), in the left menu of every page: every component in a frame you resize by dragging its corner, and a row of fixed frames from the smallest supported box (20rem) to very wide, each labelled by its width only. The live picker and toast use the same behaviour script as the Motion page.
+- A Resize page (`docs/resize.html`), in the left menu of every page: every component in a frame that resizes by dragging its corner, and a row of fixed frames from the smallest supported box (20rem) to very wide, each labelled by its width only. The live picker and toast use the same behaviour script as the Motion page.
 
 Changed (visual), from #9: the picker and the toast always clear the hint bar, however tall it is. No token, component class, state attribute, component variable, or script function or event was renamed or removed, and no token was added.
 - Until now the picker's layer and the toast stopped one fixed hint bar height (`--kt-size-bar`) above the bottom, so a hint bar that wrapped onto two lines (for example Select and Cancel in the smallest supported box) had them about 12px over its top line. Now the picker's layer meets the top of the hint bar and the toast sits just above it, at any height, in full and reduced motion and with a larger browser font.

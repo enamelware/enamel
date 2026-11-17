@@ -1,10 +1,11 @@
 """Serve the repo over http on 127.0.0.1 and open the style guide.
 
-Firefox here is sandboxed and can't read ../tokens/enamel.css from a file://
-page, so the docs must be viewed over http. Binds to 127.0.0.1 only, on a
-free port, and opens /docs/overview.html (or /docs/index.html if there is no
-overview yet) in the default browser. Stops on Ctrl+C or when its terminal
-window is closed. Standard library only.
+A sandboxed Firefox (for example a Flatpak install) can't read
+../tokens/enamel.css from a page opened as a file, so a double-clicked page
+shows up unstyled and the docs are viewed over http instead. Binds to
+127.0.0.1 only, on a free port, and opens /docs/overview.html (or
+/docs/index.html if there is no overview yet) in the default browser. Stops
+on Ctrl+C or when its terminal window is closed. Standard library only.
 
     python3 tools/serve.py            # serve and open the browser
     python3 tools/serve.py --no-open  # serve only, print the URL

@@ -1,5 +1,5 @@
 /*
- * Enamel components, version 0.13.0.
+ * Enamel components, version 0.13.1.
  * Copyright (c) 2026 Mario Carabotta
  * SPDX-License-Identifier: MIT
  * Plain CSS. Link tokens/enamel.css first, then this file.
@@ -1000,7 +1000,7 @@
 
 /* r) Page speckle: very faint flecks on the page ground. It goes on an empty
    area of the page, never behind list text. Only this and a progress fill are
-   ever patterned; nothing you can select is. The cream flecks are the element's
+   ever patterned; nothing that can be selected is. The cream flecks are the element's
    background; the occasional accent fleck is ::before, a mask filled with the
    active accent. Nothing animates. */
 .en-speckle {

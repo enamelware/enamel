@@ -3,7 +3,7 @@
 """Issue #18, Enamel's own look: the new tokens, the three new style guide rules
 (the grid unit, no pattern on anything interactive, contrast by the speckle), the
 speckle images, satin and corners on every raised surface, one focus style per
-kind of element (only things you press rise and drop), the unit audit, the
+kind of element (only things that can be pressed rise and drop), the unit audit, the
 guidelines and the notes. How it all looks and moves in a browser is checked by
 tests/own_look_check.py.
 
@@ -29,11 +29,11 @@ def read(*parts):
 
 GUIDELINES = [
     "Satin, never gloss.",
-    "Patterns live on the page ground and in progress fills only. Nothing you can select is ever patterned.",
+    "Patterns live on the page ground and in progress fills only. Nothing that can be selected is ever patterned.",
     "One border per element: no rims inside rings, no lips inside outlines.",
-    "One focus style per kind of element: cream on a coral underside for things you press, a coral ring for tiles, a lift for rows.",
+    "One focus style per kind of element: cream on a coral underside for things that can be pressed, a coral ring for tiles, a lift for rows.",
     "Cream is a neutral; the accent stays the only colour.",
-    "Only things you press move physically.",
+    "Only things that can be pressed move physically.",
     "Every size is a multiple of 4 in its own unit (0.25rem if it grows with text, 4px if it does not) unless a listed exception applies.",
     "Ask of every size: should it grow when the user makes text bigger? Yes is rem, no is px. Never set the root font size.",
 ]
@@ -126,8 +126,8 @@ class Satin(unittest.TestCase):
 
 
 class OneFocusStyle(unittest.TestCase):
-    """Items 4, 7 and 8: one focus style per kind of element, and only things
-    you press move physically. Since #21 a destructive list row is pressed too:
+    """Items 4, 7 and 8: one focus style per kind of element, and only things that
+    can be pressed move physically. Since #21 a destructive list row is pressed too:
     its red face can't turn grey, so it rises onto the underside like a picker
     row. It is allowed by name, and no other row."""
 

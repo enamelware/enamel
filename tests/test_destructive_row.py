@@ -205,7 +205,6 @@ class Docs(unittest.TestCase):
         section = page[page.index('id="destructive"'):page.index("</section>", page.index('id="destructive"'))]
         self.assertIn("a plain row until it has the focus", section)
         self.assertIn("List row, with a message<", section)
-        self.assertEqual(read("VERSION").strip(), "0.13.0")
         changelog = read("CHANGELOG.md")
         self.assertIn("## 0.13.0, 2026-11-14 (visual)", changelog)
         self.assertLess(changelog.index("## 0.13.0"), changelog.index("## 0.12.0"))

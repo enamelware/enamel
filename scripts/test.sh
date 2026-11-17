@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 #
 # The one way to run Enamel's automated checks, so a single narrow
-# permission rule covers them (see CLAUDE.md, "How we work").
+# permission rule covers them (see CLAUDE.md, "How the work is done").
 #
 #   scripts/test.sh [quick] [--again]  the quick suite, run on every issue: the
 #                                    unit tests in tests/, then

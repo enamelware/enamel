@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 #
 # The one way /next changes the Kettle board and progress comments, so a
-# single narrow permission rule covers them (see CLAUDE.md, "How we work").
+# single narrow permission rule covers them (see CLAUDE.md, "How the work is done").
 # The Kettle board is shared with Kettle Video; this script only ever reads,
 # moves, labels or closes cards whose issue belongs to this repo (Enamel). The
 # repo and the board are read from .claude/board.json.

@@ -155,8 +155,8 @@ class TheRepo(unittest.TestCase):
             claude = f.read()
         self.assertIn("Never add anything taken from the Steam client's files. Steam baseline values are recorded "
                       "under Enamel's own names only.", claude)
-        self.assertIn("Case-study and portfolio material never goes in this repo; it lives in "
-                      "~" + "/Development/enamel-case-study/.", claude)
+        self.assertIn("Case-study and portfolio material never goes in this repo; it lives in its own folder, "
+                      "`enamel-case-study`, next to this repo's folder.", claude)
 
 
 if __name__ == "__main__":

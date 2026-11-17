@@ -1,8 +1,8 @@
 """The Motion page, docs/motion.html, written by build_styleguide.py.
 
 Sections: the motion tokens (each with its value, source label and a live
-demo with a replay button), focus moving along tiles and rows, controls you
-can operate, and the same focus demo forced into reduced motion. The demos
+demo with a replay button), focus moving along tiles and rows, working
+controls, and the same focus demo forced into reduced motion. The demos
 are run by docs/site.js; the components move on their own, from
 components/enamel-components.css. Standard library only.
 """
@@ -199,7 +199,7 @@ ring return over <code>--en-motion-fast</code>. A row's colours fade over <code>
 
 <section id="press">
 <h2>Lift and press</h2>
-<p>Only things you press move physically: buttons and picker rows. When focus arrives the face rises
+<p>Only things that can be pressed move physically: buttons and picker rows. When focus arrives the face rises
 <code>--en-lift</code> over <code>--en-motion-medium</code> as its underside appears, and settles back over
 <code>--en-motion-fast</code> when focus leaves. Hold a press: it drops onto its underside over
 <code>--en-motion-fast</code> and darkens, and release springs it back over <code>--en-motion-medium</code>.</p>

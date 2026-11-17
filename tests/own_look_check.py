@@ -18,7 +18,7 @@ temporary profile; Steam is never touched):
   - nothing cut off by a lift: a risen button stays inside its bar, a risen picker
     row covers no neighbour and stays inside its panel;
   - progress: a sunken dark track, speckled fill, 8px under a tile, 12px in a toast;
-  - nothing you can select is patterned, on the real Components page.
+  - nothing that can be selected is patterned, on the real Components page.
 
     scripts/test.sh check own_look_check
 """
@@ -209,7 +209,7 @@ async (args) => {
 }
 """
 
-# On the real Components page: nothing you can select carries a pattern.
+# On the real Components page: nothing that can be selected carries a pattern.
 PATTERNS = r"""
 async () => {
   const sel = '.en-button, .en-row, .en-tile, .en-tile__frame, .en-tab, .en-toggle, .en-menu__item, .en-picker__row, .en-badge, .en-statpanel, .en-band';
@@ -270,7 +270,7 @@ class OwnLook(unittest.TestCase):
             patterns = ff.run(PATTERNS, {}, "the pattern check")
             self.assertGreater(patterns["count"], 50)
             if patterns["bad"]:
-                errors.append(f"patterned, though you can select them: {patterns['bad']}")
+                errors.append(f"patterned, though they can be selected: {patterns['bad']}")
             errors += ff.run(LOOK, {}, "the lighter fallback switch check")["errors"]
             self.assertEqual(errors, [], "\n".join(errors))
             print(f"Own look: focus styles, lift and press timings, reduced motion, the lighter fallback, lifts and "

@@ -97,7 +97,7 @@ class ToastWording(unittest.TestCase):
         text = read("DECISIONS.md")
         m = re.search(r"^## [^\n]*toast fades out in place[^\n]*\n(.*?)(?=^## )", text, re.S | re.M)
         self.assertIsNotNone(m, "DECISIONS.md has no entry for the toast fading out in place")
-        self.assertIn("slides out, as briefed", m.group(1))
+        self.assertIn("slides out, as first specified", m.group(1))
         self.assertIn("Steam's own toast fades out in place", m.group(1))
 
 
