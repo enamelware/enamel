@@ -71,7 +71,7 @@ The same delivery workflow as Kettle Video's. Details are in `.claude/commands/`
 
 Enamel is public and part of a design portfolio, so everything a visitor can read makes sense to a stranger. That covers the README, docs/, DESIGN.md, DECISIONS.md, CHANGELOG.md, MIGRATION.md, the style guide, the workflow files in `.claude/`, issues, comments and commit messages.
 
-- **Project voice.** "Enamel uses…", "Chosen because…". Never "I", "we", "you", and never "owner" for the person who runs the project.
+- **Project voice.** "Enamel uses…", "Chosen because…". Never "I", "we", "you", and never "owner" for the person who runs the project. Instructions addressed to Claude Code, in CLAUDE.md and `.claude/`, may speak to it as "you".
 - **Reference devices.** Devices are named only as reference hardware: Steam Deck (SteamOS) and Retroid Pocket Nova (Armada). They are for testing, never targets (see "Hard rules").
 - **Nothing private.** No personal paths or home folder paths, machine or login names, personal media or real film and show titles, email addresses (the commit address included), and no references to private chats, documents, design canvases, boards or repos. Those are described in words; links only go to public places. Example content is always invented.
 - **Issues** are written as public tickets with these headings: Problem, Why it matters, Proposal, Done when (what Claude Code checks automatically), and Manual checks on the reference devices. Issues the workflow files by itself (a tests run, refactor proposals, a series follow-up) keep the headings their later steps read, in the same voice.

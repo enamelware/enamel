@@ -4,6 +4,10 @@ A dated log of design decisions for the Enamel design system. Newest first.
 
 Kettle is the family of apps Enamel was built for; Kettle Video is the first of them and the first app built on Enamel.
 
+## 2026-11-17, existing text in the project voice (#24)
+
+**The known list is empty.** Since the rewrite, the public-text check fails on every finding, and the settings exception covers only the deny rules for the secret folders in `.claude/settings.json`.
+
 ## 2026-11-14, public writing and the public-text check (#23)
 
 **One scan, two lists.** The public-text check lives in the release check and reads the same list of published files, with its own list of what counts as a finding: home folder paths written with a tilde, "owner" wording, the old account name, the commit email address, claude.ai links, and links to private repos or the private planning board. The release check still fails on full home paths and every other email address, so nothing is searched for twice. The old-name test takes the old account name from the check, so it is written down once.

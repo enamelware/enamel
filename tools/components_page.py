@@ -306,7 +306,7 @@ SECTIONS = [
            + indent(tile("Orchard Weather · Part 1", 11)) + "\n</div>", wide=True, copy=True),
      ]),
     ("button", "Button",
-     "Something pressed to do an action. The primary button is the main action on a screen.",
+     "Something to press for an action. The primary button is the main action on a screen.",
      "Buttons sit on a row. The primary button is the accent colour until it is focused; focused, every button is "
      "cream on its accent underside. On a controller, set data-pressed=\"true\" while A is held, since a stylesheet "
      "can't see a controller's press; without it, only that movement is missing.", [
