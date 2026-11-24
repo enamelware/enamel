@@ -43,9 +43,9 @@ Each issue is built and checked by separate agents, so the one that wrote a chan
 
 | Size | What it is | Checks before merging |
 |---|---|---|
-| S | One small change, about three files or fewer, no new component or style guide page, nothing in the tokens | the reviewer, and the quick checks |
+| S | One small change, about three files or fewer (tests, the decision log, the changelog, the version file and generated pages don't count), no new component or style guide page, nothing in the tokens | the reviewer, and the quick checks |
 | M | One feature, or one component or style guide page | the reviewer, and the quick checks |
-| L | Several components or pages, or a change across the design system | test-checker, then the reviewer, the quick checks and the full checks |
+| L | Several components or pages, or a change across the design system | test-checker, then the reviewer, the quick checks, and the full checks once before merging |
 
 The quick checks run the unit tests, rebuild the generated pages to see nothing was edited by hand, check that every colour and size comes from a token, check contrast, and open the style guide pages the change touches in Firefox, in full and reduced motion. The full checks open every page, in four motion modes and with a larger font, and run every browser check. They also run before any new version is released, since apps only take released versions.
 

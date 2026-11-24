@@ -4,6 +4,14 @@ A dated log of design decisions for the Enamel design system. Newest first.
 
 Kettle is the family of apps Enamel was built for; Kettle Video is the first of them and the first app built on Enamel.
 
+## 2026-11-24, the size rules follow the handbook's table (#31)
+
+**Tests and the decision log no longer count towards an S.** Like the changelog, the version file and generated pages, they are left out of its limit of about three files, as in the handbook's operations skill. A new component or style guide page makes an S an M wherever the upgrade rule is written.
+
+**The full check runs once, by the builder, just before merging.** It runs on the final code, after the checks and any tidy-ups, on a size L issue or whenever the version is bumped. test-checker no longer runs it, so a large issue no longer waits for it twice.
+
+**The commands point to the handbook for the sizes.** CLAUDE.md keeps Enamel's own additions to them (tokens, the style guide launcher and its server, privacy, licences).
+
 ## 2026-11-24, the shared rules come from the Enamelware handbook (#28)
 
 **The Enamelware handbook is added as a Claude Code plugin for this repo only.** The shared settings name its public repo and switch it on, so every session here has its five skills (decisions, product, design, development and operations). The plugin was allowed for this issue although CLAUDE.md says "Install nothing", by a "Decision:" comment on the issue.
