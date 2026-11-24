@@ -296,7 +296,7 @@ class CheckerStopsOnOldNames(unittest.TestCase):
             "MIGRATION.md": f"| `tokens/{KETTLE}.css` | `tokens/enamel.css` |\n",
         })
         self.assertEqual(code, 0, out)
-        self.assertIn("All checks passed.", out)
+        self.assertIn("Style guide checks passed.", out)
 
 
 if __name__ == "__main__":

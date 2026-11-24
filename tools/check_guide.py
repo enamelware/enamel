@@ -1009,7 +1009,7 @@ def main():
         for f in failures:
             print("  " + f)
         sys.exit(1)
-    print("\nAll checks passed.")
+    print("\nStyle guide checks passed.")
 
 
 if __name__ == "__main__":

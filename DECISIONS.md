@@ -4,6 +4,14 @@ A dated log of design decisions for the Enamel design system. Newest first.
 
 Kettle is the family of apps Enamel was built for; Kettle Video is the first of them and the first app built on Enamel.
 
+## 2026-11-24, the checks script's last line matches its result (#29)
+
+**Only the checks script says "All checks passed."** The style guide check runs last in a quick or full run and used to end with "All checks passed." about its own checks, so a run whose unit tests had failed still ended with that line. The exit result was already a failure and no pass was remembered, but anyone reading the last line saw a pass. The style guide check now ends with "Style guide checks passed.", and the checks script ends every quick or full run with its own summary: "All checks passed." only when every step passed, otherwise "FAILED:" and the name of each failed check. Chosen so the last line and the exit result can never disagree.
+
+**A pass is remembered only after every step passed.** This was already so; a test now runs the checks script in a temporary folder with a deliberately failing unit test, a failing style guide check and a failing slower check, and fails if any of them is remembered as a pass.
+
+**The workflow's next command, reviewer and test-checker stay as they are.** None of them judges a run by the words "All checks passed."; they go by whether a run passes or fails, and the last line now always agrees with the exit result.
+
 ## 2026-11-17, existing text in the project voice (#24)
 
 **The known list is empty.** Since the rewrite, the public-text check fails on every finding, and the settings exception covers only the deny rules for the secret folders in `.claude/settings.json`.

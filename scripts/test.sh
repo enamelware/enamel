@@ -31,7 +31,9 @@
 # the repo. Running the same mode again on the same code says it already
 # passed instead of running again; a full pass also counts for quick.
 # --again runs it anyway. Nothing here changes a file in the repo. Exits
-# non-zero if anything failed.
+# non-zero if anything failed. A quick or full run ends with one summary line:
+# "All checks passed." only when every step passed, otherwise "FAILED: "
+# and the failed checks; a run with any failure is never remembered as a pass.
 
 set -u
 cd "$(dirname "$0")/.." || exit 1
@@ -89,19 +91,26 @@ check() {
     python3 "tests/$name.py"
 }
 
+# Every tests/*_check.py in turn; the names of any that failed go in FAILED_CHECKS.
+FAILED_CHECKS=""
 checks() {
-    local failed=0 file
+    local failed=0 file name
+    FAILED_CHECKS=""
     for file in tests/*_check.py; do
         [ -e "$file" ] || continue
+        name="$(basename "$file" .py)"
         echo "== $file"
-        check "$(basename "$file" .py)" || failed=1
+        if ! check "$name"; then
+            failed=1
+            FAILED_CHECKS="$FAILED_CHECKS, $name"
+        fi
     done
     return "$failed"
 }
 
 # quick or full, with the result remembered; $2 is empty or --again.
 run_mode() {
-    local mode="$1" again="${2:-}" key status=0
+    local mode="$1" again="${2:-}" key status=0 failed=""
     if [ -n "$again" ] && [ "$again" != "--again" ]; then
         echo "usage: scripts/test.sh $mode [--again]" >&2
         return 2
@@ -114,17 +123,25 @@ run_mode() {
             already_passed "$key" full && return 0
         fi
     fi
-    unit || status=1
+    unit || failed="$failed, unit tests"
     if [ "$mode" = quick ]; then
-        python3 tools/check_guide.py --quick || status=1
+        python3 tools/check_guide.py --quick || failed="$failed, style guide check"
     else
-        python3 tools/check_guide.py || status=1
-        checks || status=1
+        python3 tools/check_guide.py || failed="$failed, style guide check"
+        checks || failed="$failed, slower checks (${FAILED_CHECKS#, })"
+    fi
+    echo
+    if [ -n "$failed" ]; then
+        status=1
+        # The last line always names what failed; no pass is remembered.
+        echo "FAILED: ${failed#, }."
+        return "$status"
     fi
     # Only remember a pass if the code didn't change while the checks ran.
-    if [ "$status" -eq 0 ] && [ "$key" = "$(code_key)" ]; then
+    if [ "$key" = "$(code_key)" ]; then
         remember "$mode" "$key"
     fi
+    echo "All checks passed."
     return "$status"
 }
 
