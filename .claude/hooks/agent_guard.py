@@ -29,7 +29,8 @@ agent may read Kettle Video the same way through scripts/peek.sh (also
 `tag`, `rev-parse` and `ls-files` there); `git -C` is never allowed.
 
 Copied from Kettle Video's guard, with Enamel's write areas. What it
-can and can't enforce is in DECISIONS.md (2026-10-14, delivery workflow).
+can and can't enforce is in DECISIONS.md (2026-10-28, checks scale with
+the issue's size).
 
 Usage: agent_guard.py reviewer|test-checker|test-writer|refactor-scout
 """

@@ -27,7 +27,7 @@ AT = "@"
 HOME = "~" + "/"
 THE_OWNER = "the " + "own" + "er"
 PLANTED = [
-    (rc.HOME_PATH, "Kettle Video lives at " + HOME + "Development/kettle-video."),
+    (rc.HOME_PATH, "Kettle Video lives at " + HOME + "Development/example-app."),
     (rc.HOME_PATH, "cp tokens/enamel.css " + HOME + "Videos/"),
     (rc.OWNER_WORDING, "Chosen by " + THE_OWNER + " on #9."),
     (rc.OWNER_WORDING, "The " + "Own" + "er's answers."),
@@ -36,9 +36,9 @@ PLANTED = [
     ("a commit email address", "335260252+" + rc.ACCOUNT + AT + "users.noreply.github.com"),
     ("a claude.ai link", "See https://" + "claude" + ".ai/" + "chat/0123abcd for the brief."),
     ("a claude.ai link", "the canvas at " + "claude" + ".ai/" + "design/x"),
-    (rc.PRIVATE_REPO, "https://github.com/" + rc.ACCOUNT + "/media-player/issues/4"),
+    (rc.PRIVATE_REPO, "https://github.com/" + rc.ACCOUNT + "/example-app/issues/4"),
     (rc.PRIVATE_REPO, "git" + AT + "github.com:" + rc.ACCOUNT + "/enamel-archive.git"),
-    (rc.PRIVATE_REPO, "its GitHub repo is still `" + rc.ACCOUNT + "/media-player`"),
+    (rc.PRIVATE_REPO, "its GitHub repo is still `" + rc.ACCOUNT + "/example-app`"),
     (rc.BOARD_LINK, "https://github.com/" + "users/" + rc.ACCOUNT + "/projects/1"),
 ]
 
@@ -126,7 +126,7 @@ class Exceptions(unittest.TestCase):
     def test_other_home_folder_paths_in_the_settings_are_caught(self):
         """#24: the settings exception covers only the deny rules for the secret folders."""
         for where, rule in (("allow", "Read(" + HOME + "Videos/**)"),
-                            ("deny", "Read(" + HOME + "Development/kettle-video/**)"),
+                            ("deny", "Read(" + HOME + "Development/example-app/**)"),
                             ("ask", "Edit(" + HOME + ".ssh/**)"),
                             ("deny", "Bash(cat " + HOME + ".ssh/id_rsa)")):
             with self.subTest(where=where, rule=rule):
@@ -236,10 +236,21 @@ class TheRule(unittest.TestCase):
         self.assertTrue(rule, "CLAUDE.md has no \"Public writing\" section")
         for words in ('"Enamel uses…"', '"Chosen because…"', '"I", "we", "you"', "Steam Deck (SteamOS)",
                       "Retroid Pocket Nova (Armada)", "Example content is always invented",
-                      "Problem, Why it matters, Proposal, Done when", "Manual checks on the reference devices",
+                      "Problem, Why it matters, Proposal (with Watch for as part of it), and Done when",
+                      "Manual checks on the reference devices",
                       "Testing comments and reports", "Past commits are never rewritten",
                       "docs/how-this-repo-is-built.md", "tools/release_check.py", "The reviewer checks every change"):
             self.assertIn(words, rule)
+
+    def test_the_issue_headings_match_the_draft_command(self):
+        """#30: CLAUDE.md lists the same issue headings as the draft command, which writes them."""
+        rule = section(read("CLAUDE.md"), "Public writing")
+        draft = read(".claude/commands/draft.md")
+        for heading in ("Problem", "Why it matters", "Proposal", "Watch for", "Done when",
+                        "Checked automatically by Claude Code", "Manual checks on the reference devices"):
+            with self.subTest(heading=heading):
+                self.assertIn(f"**{heading}**", draft)
+                self.assertIn(heading, rule)
 
     def test_the_reviewer_points_to_it(self):
         text = read(".claude/agents/reviewer.md")

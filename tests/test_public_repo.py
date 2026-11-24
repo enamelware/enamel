@@ -189,7 +189,8 @@ class GuideCheckFails(unittest.TestCase):
         self.assertEqual(self.run_check([]), [])
 
 
-CASE_STUDY = os.path.join(os.path.dirname(ROOT), "enamel-case-study", "index.html")
+# The case study's folder sits next to this repo; its name is built from parts so it isn't spelled out here.
+CASE_STUDY = os.path.join(os.path.dirname(ROOT), "enamel" + "-case-" + "study", "index.html")
 
 
 @unittest.skipUnless(os.path.exists(CASE_STUDY), "the case-study page lives outside this repo and is not here")

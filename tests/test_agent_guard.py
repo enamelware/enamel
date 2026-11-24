@@ -43,7 +43,7 @@ class AgentGuard(unittest.TestCase):
     def test_unsafe_peek_and_git_minus_c_are_refused(self):
         for role in ROLES:
             for command in ("scripts/peek.sh push", "scripts/peek.sh diff --output=x", "scripts/peek.sh tag -d v1",
-                            "git -C ../kettle-video log", "git log && git status", "git log ; ls", "git log | head"):
+                            "git -C ../example-app log", "git log && git status", "git log ; ls", "git log | head"):
                 self.assertEqual(guard(role, command), 2, f"{role}: {command}")
 
     def test_every_agent_file_states_the_command_rules(self):

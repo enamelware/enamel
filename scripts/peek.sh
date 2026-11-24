@@ -7,11 +7,11 @@
 #
 #   scripts/peek.sh log|show|status|diff|tag|rev-parse|ls-files [ARGS...]
 #
-# The other repo is found next to this one: the folder kettle-video, or
-# media-player, its name before 2026-10-28. Only the read-only git commands
-# above are run, never a pager. `tag` always lists (git refuses to create
-# or delete a tag while listing), any argument that writes a file
-# (--output) is refused, and `status` takes no lock on the index.
+# The other repo is found next to this one, in its own folder. Only the
+# read-only git commands above are run, never a pager. `tag` always lists
+# (git refuses to create or delete a tag while listing), any argument that
+# writes a file (--output) is refused, and `status` takes no lock on the
+# index.
 
 set -euo pipefail
 
@@ -33,14 +33,8 @@ for arg in "$@"; do
 done
 
 here="$(cd "$(dirname "$0")/.." && pwd -P)"
-other=""
-for name in kettle-video media-player; do
-    if [ -d "$(dirname "$here")/$name/.git" ]; then
-        other="$(dirname "$here")/$name"
-        break
-    fi
-done
-[ -n "$other" ] || fail "no kettle-video (or media-player) repo next to $here"
+other="$(dirname "$here")/kettle-video"
+[ -d "$other/.git" ] || fail "no Kettle Video repo next to this one"
 
 if [ "$cmd" = tag ]; then
     set -- --list "$@"

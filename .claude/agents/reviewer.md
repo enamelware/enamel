@@ -33,7 +33,7 @@ You are given an issue number N. The change is **everything on the issue's branc
    - Nothing of Valve's copied: no CSS, class names, icons, logos or font files.
    - No token, component class, state attribute, or function or event of `components/enamel-components.js` renamed or removed, unless the issue asks for it and `CHANGELOG.md` says plainly what apps must change. Apps (Kettle Video) use these names.
    - Any change an app would notice bumps `VERSION` and adds a plain-language `CHANGELOG.md` entry, marked "visual" or "breaking" as it applies.
-   - Generated files are rebuilt, never edited by hand: `docs/index.html`, `docs/components.html`, `docs/motion.html` and DESIGN.md Part 1. `docs/overview.html` is hand-written: only its menu (between the markers) changes, unless the issue asks for a specific edit.
+   - Generated files are rebuilt, never edited by hand: `docs/index.html`, `docs/components.html`, `docs/motion.html`, `docs/resize.html` and DESIGN.md Part 1. `docs/overview.html` is hand-written: only its menu (between the markers) changes, unless the issue asks for a specific edit.
    - Colours, sizes and radii come from tokens; motion only from the motion tokens; every component works in reduced motion; focus is visible; nothing is hover-only.
    - New source files start with the MIT SPDX header used in this repo (a missing one is a tidy-up: add it).
    - Nothing in the change reaches into the Kettle Video repo.

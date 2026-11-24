@@ -51,7 +51,7 @@ Token names are version 0 and may change until Kettle Video ships, so an app che
 
 Open the style guide with the Enamel style guide launcher, never by double-clicking the html files.
 
-The launcher is a Desktop shortcut called "Enamel style guide" on the development device. It runs `tools/serve.py`, which serves this repo to the same machine only (127.0.0.1) and opens the page in the browser. Closing the launcher's terminal window stops the server.
+The launcher is a shortcut called "Enamel style guide". It runs `tools/serve.py`, which serves this repo to the same machine only (127.0.0.1) and opens the page in the browser. Closing the launcher's terminal window stops the server.
 
 Without the launcher, anyone with a copy of the repo can do the same: run `python3 tools/serve.py` from the repo's folder (Python 3, nothing to install) and open the page it prints if no browser opens by itself. `python3 tools/serve.py --no-open` only serves and prints the address. Ctrl+C stops it.
 

@@ -51,7 +51,7 @@ NOT_PROBLEMS = [
     "if (CSS.supports('container-type: inline-size')) {}",
     '"Edit(//run/media/**)"',                                    # a rule about any drive, no drive named
     "The neutral palette is matched to Steam's Gaming Mode (Steam baseline).",
-    "~" + "/Development/kettle-video",
+    "~" + "/Development/example-app",
 ]
 
 
@@ -155,8 +155,7 @@ class TheRepo(unittest.TestCase):
             claude = f.read()
         self.assertIn("Never add anything taken from the Steam client's files. Steam baseline values are recorded "
                       "under Enamel's own names only.", claude)
-        self.assertIn("Case-study and portfolio material never goes in this repo; it lives in its own folder, "
-                      "`enamel-case-study`, next to this repo's folder.", claude)
+        self.assertIn("Case-study and portfolio material never goes in this repo; it is kept outside it.", claude)
 
 
 if __name__ == "__main__":

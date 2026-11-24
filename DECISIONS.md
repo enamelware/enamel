@@ -4,6 +4,18 @@ A dated log of design decisions for the Enamel design system. Newest first.
 
 Kettle is the family of apps Enamel was built for; Kettle Video is the first of them and the first app built on Enamel.
 
+## 2026-11-24, public files name no folders on the development machine (#30)
+
+**The Kettle Video repo is named only as "the Kettle Video repo".** CLAUDE.md no longer gives its folder, where that folder sits, whether the repo is private or what it used to be called; it says the repo is read only through `scripts/peek.sh`. The older entries in this log, such as the one of 2026-10-09 about independence from apps, stay as they were written.
+
+**The read-only helper looks for the Kettle Video repo under its current folder name only.** The fallback to the folder's name before 2026-10-28 is gone, because nothing uses that name any more. The current folder name stays in the helper, the one place that needs it to find the repo.
+
+**The launcher and the portfolio material are described without a location.** The launcher is a shortcut called "Enamel style guide", and case-study and portfolio material is kept outside this repo; neither names a folder on the development machine.
+
+**"Until Kettle Watch ships" in the entry of 2026-10-08 is history.** The current wording is in README.md: token names may change until Kettle Video ships.
+
+**Kept on purpose.** `.claude/board.json` names the public organisation and a board that gives nobody else access, so it stays. The deny rules in `.claude/settings.json` that protect credential folders and removable media name no person, so they stay too.
+
 ## 2026-11-24, the checks script's last line matches its result (#29)
 
 **Only the checks script says "All checks passed."** The style guide check runs last in a quick or full run and used to end with "All checks passed." about its own checks, so a run whose unit tests had failed still ended with that line. The exit result was already a failure and no pass was remembered, but anyone reading the last line saw a pass. The style guide check now ends with "Style guide checks passed.", and the checks script ends every quick or full run with its own summary: "All checks passed." only when every step passed, otherwise "FAILED:" and the name of each failed check. Chosen so the last line and the exit result can never disagree.
