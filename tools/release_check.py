@@ -78,7 +78,7 @@ SSH_HOST = re.compile(r"^git@github\.com$")
 # The public-text check. The GitHub account and its one public repo; any
 # other repo of the account is private.
 ACCOUNT = "enamelware"
-PUBLIC_REPOS = {"enamel"}
+PUBLIC_REPOS = {"enamel", "handbook"}
 OLD_ACCOUNT = "steamos" + "tools"
 HOME_PATH = "a home folder path"
 OWNER_WORDING = "the " + "own" + "er"     # in parts, so this file doesn't use the words

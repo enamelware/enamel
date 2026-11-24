@@ -1,5 +1,7 @@
 # Enamel
 
+The shared Enamelware rules come from the Enamelware handbook plugin (its skills decisions, product, design, development and operations); this file holds only what is specific to Enamel.
+
 Read DESIGN.md before any interface work.
 
 After any change to tokens/enamel.css, re-run the DESIGN.md script and rebuild the style guide pages in the same commit. That means running `python3 tools/build_design_md.py`, then `python3 tools/build_styleguide.py`. The style guide copies its Rules section from DESIGN.md, so re-run it after rule changes too.
@@ -14,7 +16,6 @@ docs/index.html, docs/components.html, docs/motion.html and docs/resize.html are
 - Kettle Video keeps the old names (the "kt" prefix and the old file names) until its own switch issue, which follows MIGRATION.md. This repo's folder is called `enamel`; apps look for a folder called "enamel" first and fall back to the old folder name.
 - Apps update by re-running their own sync script after a new VERSION here. Nothing in this repo reaches into an app.
 - Never edit an app's files from this repo.
-- Renaming or removing a token, a component class or a state attribute breaks apps. Before doing so, stop and report what would break.
 - Gaps found while building an app are fixed here, then the app re-syncs. Apps never style around a missing part: they add the gap to the standing issue "Gaps found by the apps" (#7, label `gaps`).
 
 ## How the work is done
@@ -22,7 +23,7 @@ docs/index.html, docs/components.html, docs/motion.html and docs/resize.html are
 Details are in `.claude/commands/` and `.claude/agents/`; [docs/how-this-repo-is-built.md](docs/how-this-repo-is-built.md) explains it for visitors.
 
 - Issues live in this repo on GitHub and on the shared "Kettle" board (IDs in `.claude/board.json`; the board's Repository field shows which repo a card belongs to). Columns: Drafted, Ready for dev, Building, More to do, Ready for testing, Done.
-- `/draft` writes issues into Drafted. `/next`, `/next N`, `/next all` and `/tidy` work as [docs/how-this-repo-is-built.md](docs/how-this-repo-is-built.md) describes: only Ready for dev or More to do are built, More to do first, `refactor` issues last; one `issue-N` branch per issue with pushed checkpoints and one progress comment; resume first; the checks scale with the issue's size (below) and must PASS (at most 2 fix rounds) before a squash merge into `main`; `/next` and `/next all` never stop to ask (see "Decide more, stop less" below); `/next all` ends with idle work (test-writer on Sonnet, refactor-scout on Opus, which only files Drafted `refactor` issues).
+- `/draft`, `/next`, `/next N`, `/next all` and `/tidy` work as the handbook and [docs/how-this-repo-is-built.md](docs/how-this-repo-is-built.md) describe. Here, `refactor` issues are built after every other Ready for dev issue; each issue has one progress comment, edited in place; `/next` never stops to ask either (see "Decide more, stop less" below); and `/next all` ends with idle work (test-writer on Sonnet, refactor-scout on Opus, which only files Drafted `refactor` issues).
 - **Sizes.** /draft labels every issue with one of these, and /next picks its path from it:
   - `size:S`: one small change, about 3 files or fewer (not counting files the build scripts regenerate, `VERSION` and `CHANGELOG.md`), no new screen (here: no new component or style guide page), and no change to tokens, the style guide launcher or `tools/serve.py`, privacy or licences.
   - `size:M`: one feature or one screen (one component or one style guide page).
@@ -30,10 +31,9 @@ Details are in `.claude/commands/` and `.claude/agents/`; [docs/how-this-repo-is
 - **Checks by size.** The builder always writes the tests the change needs, as part of building it. S and M: the builder, then the reviewer, which also checks the tests are adequate; quick checks; no separate test-checker. L: the builder, test-checker and the reviewer, quick checks, plus `scripts/test.sh full` before merging. Every size keeps its own branch, merging only when checks pass, the progress comment, the testing comment and the board moves.
   - The reviewer fixes tidy-ups itself in one small extra commit and notes them (unused lines or imports, repeated set-up, a missing licence header, wording); it fails only for real problems: wrong behaviour, a broken layout, something the issue asks for that is missing, a gap not reported to the designer, security or privacy.
   - **Upgrades are automatic.** An S that turns out to touch more than about 3 files, or touches tokens, the style guide launcher, privacy or licences, becomes M; an M that grows past one screen or feature becomes L. Change the size label and say why in one line on the issue; the issue then takes the new size's path.
-  - **Small issues are bundled.** Two or more S issues next to each other in Ready for dev that touch the same area are built on one branch with one commit per issue and one review. Each card still moves and gets its own testing comment.
-  - **Series are reviewed as a whole.** Issues /draft split from one feature share a `series: <name>` label and link to each other. Each is built on its own size's path; when the last one merges, one reviewer pass covers the whole series' combined change (fit between the pieces, duplicated code, the feature as a whole against its spec). Fixes go in a small follow-up issue in the same series. The series' cards wait in Building, with a progress comment saying so, and move to Ready for testing only once that review passes.
+  - **Small issues are bundled** as the handbook describes; each bundled card still moves on its own and gets its own testing comment.
+  - **Series are reviewed as a whole** as the handbook describes. Issues of a series share a `series: <name>` label and link to each other; the series review checks the fit between the pieces, duplicated code and the feature as a whole against its spec, and waiting cards carry a progress comment saying so.
   - **Resuming** after an interruption always re-runs the quick checks, but re-runs the reviewer or test-checker only if the code changed since they last passed.
-  - **Board housekeeping:** every `/next` and `/next all` starts by closing any issue whose card is in Done but which is still open, with a one-line comment.
 - **Decide more, stop less.** Here "the design system" means this repo's own tokens and components. Details are in `.claude/commands/next.md`, "Decide or block".
   - Decide yourself, without asking or stopping, when all of these are true: the choice can be undone with a git revert; you would recommend one option; none of the hard stops below applies. Then comment on the issue "Decided: <what>. Why: <one line>. To change it, reply on this issue." and add the `decided` label, so the designer can review all of these together on the board.
   - Hard stops, the only reasons to stop: a new dependency or licence question (copying anything of Valve's counts); anything that could change, move or delete personal media or other files outside the repo; anything a git revert can't undo; a product change nobody asked for that doesn't come from the issue or the design system (renaming or removing a token, component class, state attribute or script function the issue doesn't ask for counts); security or privacy; the issue and CLAUDE.md contradicting each other. For a hard stop: write one plain-language question in the issue, add `blocked` and move on to the next issue.
@@ -42,9 +42,9 @@ Details are in `.claude/commands/` and `.claude/agents/`; [docs/how-this-repo-is
   - Time limit: if one problem takes more than about 30 minutes without progress, write what you found in the issue, add `blocked` and move on.
   - The workflow's own steps (merging, pushing, tagging the release an issue ships) are not choices to stop on.
 - Board changes only through `scripts/board.sh`, which only reads, moves and labels this repo's cards, and closes the ones already in Done. Checks only through `scripts/test.sh`, in two modes: `scripts/test.sh` (quick) runs the unit tests, the build and structure checks, and the device's Firefox only on the style guide pages the change touches, in full and reduced motion; `scripts/test.sh full` runs everything, including the complete style guide check in Firefox.
-- During `/next` and `/next all`, run one simple command at a time, so each one can match the allow list: never chain commands with `&&`, `;` or pipes (`|`). To filter output, do it in a separate step or with the built-in tools. Run git from this repo's folder without `-C`; read Kettle Video only with `scripts/peek.sh` (log, show, status, diff, tag, rev-parse, ls-files), while `git -C` keeps asking. The helper agents and any general-purpose helper follow the same rules, which are written into each agent's own instructions and the builder's prompt.
+- During `/next` and `/next all`, never chain commands with `&&`, `;` or pipes (`|`). To filter output, do it in a separate step or with the built-in tools. Run git from this repo's folder without `-C`; read Kettle Video only with `scripts/peek.sh` (log, show, status, diff, tag, rev-parse, ls-files), while `git -C` keeps asking. The helper agents and any general-purpose helper follow the same rules, which are written into each agent's own instructions and the builder's prompt.
 - A new ask or deny rule must never catch a read-only command. Check it against git log, show, status and diff; gh issue view and list; ls, cat and grep; `scripts/board.sh list`; and `scripts/peek.sh`, and narrow any existing ask rule that catches one. `tests/test_agent_guard.py` checks this for the shared settings.
-- Deleting a file that git tracks inside this repo is done with `git rm`, which needs no approval, because like any edit it can be undone. Plain `rm`, `git rm` with force or on anything outside the repo, `git clean`, and anything that deletes untracked files still ask first.
+- `git rm` on a file git tracks inside this repo needs no approval, because like any edit it can be undone. Plain `rm`, `git rm` with force or on anything outside the repo, `git clean`, and anything that deletes untracked files still ask first.
 - Every issue runs quick before it is merged; quick aims to finish in under 2 minutes, so if it grows past that, speed it up without checking less. Full runs before merging a `size:L` issue, before any `VERSION` bump (apps only sync released versions) and once at the end of `/next all` if anything was merged. If that full run fails, find from the commits which merged issue caused it, move that issue to More to do with a plain-language comment, and bump no `VERSION` until full passes again.
 - Never run the same check twice on the same code: `scripts/test.sh` remembers a pass against the exact code, so a later run on the same code (the builder's final commit, then test-checker) says it already passed instead of running again.
 - Testing an issue means trying the style guide and its components, opened with the launcher. The testing comment is one short list of things to try there.
@@ -54,7 +54,7 @@ Details are in `.claude/commands/` and `.claude/agents/`; [docs/how-this-repo-is
 - Never edit the Kettle Video repo. If Kettle Video needs to change, say so in the issue comment and the report.
 - When asked to continue or change #N, read that issue and its comments with `gh` first.
 - To delete one of your own memory notes, use scripts/forget-note.sh (allowed without approval; it works out this project's memory folder and accepts only a plain .md file name in it), never rm.
-- Moving a card to Done is the designer's approval; the board housekeeping closes the issue on the next run (never close one otherwise). Phrase (several issue numbers allowed): "#N failed: <what happened>" comments the feedback and moves it to More to do, without starting the fix.
+- Issues are closed only by the board housekeeping at the start of every `/next` (`scripts/board.sh close-done`), never otherwise. Phrase (several issue numbers allowed): "#N failed: <what happened>" comments the feedback and moves it to More to do, without starting the fix.
 
 ## Hard rules
 
@@ -63,9 +63,9 @@ Details are in `.claude/commands/` and `.claude/agents/`; [docs/how-this-repo-is
 - Case-study and portfolio material never goes in this repo; it is kept outside it.
 - Install nothing. Scripts use the Python already on the device, standard library only, kept in tools/ (the workflow's small shell wrappers are in scripts/).
 - Do not rename, add or remove tokens or rules unless asked. If you think one is missing, say so in the report instead.
-- Commit and push only as "How the work is done" describes: issue branches and `main` on GitHub, never a force-push.
+- Commit and push only as "How the work is done" describes: issue branches and `main` on GitHub.
 - No layout is tied to a screen size, a device or an aspect ratio. Layouts adapt to the space they are given, and breakpoints come from the content and are named by what they do. Devices are for testing, never targets. No file names a capture size or a device as the source of a value.
-- Do not ask the user to run commands or check files. Verify your own work: the CSS parses; the page opens without errors; every token in enamel.css appears on the page and in DESIGN.md Part 1 with the same value; the page uses no colour that is not a token; running the DESIGN.md script twice changes nothing the second time.
+- Verify your own work: the CSS parses; the page opens without errors; every token in enamel.css appears on the page and in DESIGN.md Part 1 with the same value; the page uses no colour that is not a token; running the DESIGN.md script twice changes nothing the second time.
 
 ## Public writing
 
@@ -82,7 +82,4 @@ Enamel is public and part of a design portfolio, so everything a visitor can rea
 
 ## Reports to the designer
 
-- Plain language.
-- No code in reports.
-- Say what changed and what to look at.
-- Never ask the designer to run commands.
+- Reports follow the handbook; here they also say what to look at in the style guide.

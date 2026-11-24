@@ -4,6 +4,12 @@ A dated log of design decisions for the Enamel design system. Newest first.
 
 Kettle is the family of apps Enamel was built for; Kettle Video is the first of them and the first app built on Enamel.
 
+## 2026-11-24, the shared rules come from the Enamelware handbook (#28)
+
+**The Enamelware handbook is added as a Claude Code plugin for this repo only.** The shared settings name its public repo and switch it on, so every session here has its five skills (decisions, product, design, development and operations). The plugin was allowed for this issue although CLAUDE.md says "Install nothing", by a "Decision:" comment on the issue.
+
+**CLAUDE.md keeps only what is specific to Enamel.** Rules the handbook already states (closing issues only from Done, no force-push on commits, plain-language reports, bundles and series in general) now point to it instead of repeating it. Where Enamel is stricter or more specific, CLAUDE.md keeps its own line; the rule that a pushed tag is never moved or deleted stays word for word, because a release test reads it, and so does the 30-minute time limit, because CLAUDE.md lists its own reasons to stop. Where CLAUDE.md and the handbook disagree, the lines stay as they are and the disagreements are listed on #28 for the designer to decide.
+
 ## 2026-11-24, public files name no folders on the development machine (#30)
 
 **The Kettle Video repo is named only as "the Kettle Video repo".** CLAUDE.md no longer gives its folder, where that folder sits, whether the repo is private or what it used to be called; it says the repo is read only through `scripts/peek.sh`. The older entries in this log, such as the one of 2026-10-09 about independence from apps, stay as they were written.

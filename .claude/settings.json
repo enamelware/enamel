@@ -1,7 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
-    "defaultMode": "auto",
     "allow": [
       "Read(./**)",
       "Edit(./**)",
@@ -74,6 +73,20 @@
       "Bash(npm list)",
       "Bash(npm list *)",
       "Bash(npm view *)"
+    ],
+    "deny": [
+      "Bash(sudo)",
+      "Bash(sudo *)",
+      "Bash(gh auth token*)",
+      "Bash(gh auth status *--show-token*)",
+      "Read(~/.ssh/**)",
+      "Edit(~/.ssh/**)",
+      "Read(~/.config/gh/**)",
+      "Read(~/.claude/.credentials.json)",
+      "Read(~/.git-credentials)",
+      "Read(~/.netrc)",
+      "Read(~/.gnupg/**)",
+      "Edit(//run/media/**)"
     ],
     "ask": [
       "Bash(git push --force*)",
@@ -165,20 +178,18 @@
       "Edit(.claude/settings.json)",
       "Edit(.claude/settings.local.json)"
     ],
-    "deny": [
-      "Bash(sudo)",
-      "Bash(sudo *)",
-      "Bash(gh auth token*)",
-      "Bash(gh auth status *--show-token*)",
-      "Read(~/.ssh/**)",
-      "Edit(~/.ssh/**)",
-      "Read(~/.config/gh/**)",
-      "Read(~/.claude/.credentials.json)",
-      "Read(~/.git-credentials)",
-      "Read(~/.netrc)",
-      "Read(~/.gnupg/**)",
-      "Edit(//run/media/**)"
-    ],
+    "defaultMode": "auto",
     "disableBypassPermissionsMode": "disable"
+  },
+  "extraKnownMarketplaces": {
+    "enamelware": {
+      "source": {
+        "source": "github",
+        "repo": "enamelware/handbook"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "enamelware@enamelware": true
   }
 }

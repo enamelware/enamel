@@ -47,6 +47,8 @@ NOT_FINDINGS = [
     "https://github.com/" + rc.ACCOUNT + "/enamel/issues/7.",
     "git" + AT + "github.com:" + rc.ACCOUNT + "/enamel.git",
     '"repo": "' + rc.ACCOUNT + '/enamel"',
+    '"repo": "' + rc.ACCOUNT + '/handbook"',                       # the public handbook (#28)
+    "https://github.com/" + rc.ACCOUNT + "/handbook",
     '"' + "own" + 'er": "' + rc.ACCOUNT + '"',                       # a settings key, not the wording
     "Kettle Video copies Enamel's files into its vendor/enamel/ folder.",
     "The designer chose coral; Enamel uses it as the default accent.",
