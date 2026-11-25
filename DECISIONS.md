@@ -4,6 +4,14 @@ A dated log of design decisions for the Enamel design system. Newest first.
 
 Kettle is the family of apps Enamel was built for; Kettle Video is the first of them and the first app built on Enamel.
 
+## 2026-11-25, CLAUDE.md holds only what every Enamel session needs (#34)
+
+**CLAUDE.md is read at the start of every session, so it keeps only what a session building any Enamel issue would get wrong without it.** What the Enamelware handbook already says (the sizes and their checks, when to decide or stop, the 30-minute limit, the voice and privacy principles, installing nothing, layouts tied to no screen) is left to the handbook; Enamel's additions to it stay. Rules only one command or agent needs moved there: how commands are run, permission rules, removing files, memory notes and closing issues into `/next` step 0 and step 1; the release and tagging rules into `/next` steps 6 and 9; the full Valve rule into the reviewer's checks; the issue headings into `/draft`. No rule changed meaning, and the tests that read a moved rule now read it where it lives.
+
+**The "#N failed" phrase stays in CLAUDE.md, as a rule of its own.** The designer types it in any session, not only during `/next`, so a session must know it without opening a command file.
+
+**The start of a session got lighter:** CLAUDE.md went from about 5,100 to about 2,500 tokens by Claude Code's own context report, the same measure as #28. The aim of 1,200 to 1,500 is not reached without losing a rule; the lines holding it up are listed on #34.
+
 ## 2026-11-25, where CLAUDE.md and the handbook disagreed, Enamel follows the handbook (#28)
 
 The designer chose the handbook on each disagreement listed on #28.

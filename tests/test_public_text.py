@@ -238,21 +238,20 @@ class TheRule(unittest.TestCase):
         self.assertTrue(rule, "CLAUDE.md has no \"Public writing\" section")
         for words in ('"Enamel uses…"', '"Chosen because…"', '"I", "we", "you"', "Steam Deck (SteamOS)",
                       "Retroid Pocket Nova (Armada)", "Example content is always invented",
-                      "Problem, Why it matters, Proposal (with Watch for as part of it), and Done when",
-                      "Manual checks on the reference devices",
+                      "the headings in `.claude/commands/draft.md` (step 4)",
                       "Testing comments and reports", "Past commits are never rewritten",
                       "docs/how-this-repo-is-built.md", "tools/release_check.py", "The reviewer checks every change"):
             self.assertIn(words, rule)
 
-    def test_the_issue_headings_match_the_draft_command(self):
-        """#30: CLAUDE.md lists the same issue headings as the draft command, which writes them."""
-        rule = section(read("CLAUDE.md"), "Public writing")
+    def test_the_issue_headings_are_in_the_draft_command(self):
+        """#30, #34: the issue headings live in the draft command, which writes them; CLAUDE.md points there."""
         draft = read(".claude/commands/draft.md")
+        step4 = draft[draft.index("4. **Write each issue**"):draft.index("5. **Create and place**")]
         for heading in ("Problem", "Why it matters", "Proposal", "Watch for", "Done when",
                         "Checked automatically by Claude Code", "Manual checks on the reference devices"):
             with self.subTest(heading=heading):
-                self.assertIn(f"**{heading}**", draft)
-                self.assertIn(heading, rule)
+                self.assertIn(f"**{heading}**", step4)
+        self.assertIn("**Watch for** (part of the proposal)", step4)
 
     def test_the_reviewer_points_to_it(self):
         text = read(".claude/agents/reviewer.md")

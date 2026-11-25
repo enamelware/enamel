@@ -1,6 +1,8 @@
 # Copyright (c) 2026 Mario Carabotta
 # SPDX-License-Identifier: MIT
 """Issue #31: the commands, agents and CLAUDE.md follow the handbook's size table.
+Since #34, CLAUDE.md only points to the handbook and keeps Enamel's additions; the
+size rules it used to repeat are checked in next.md, where they live.
 
     scripts/test.sh unit tests.test_size_rules
 """
@@ -20,24 +22,20 @@ def line_with(text, needle):
 
 
 class WhatCountsTowardsAnS(unittest.TestCase):
-    def test_claude_md_and_next_leave_out_the_same_files(self):
-        places = {
-            "CLAUDE.md": line_with(read("CLAUDE.md"), "`size:S`:"),
-            "next.md": line_with(read(".claude", "commands", "next.md"), "**Upgrades, automatic.**"),
-        }
-        for where, line in places.items():
-            for word in NOT_COUNTED:
-                with self.subTest(where=where, word=word):
-                    self.assertIn(word, line)
+    def test_next_leaves_out_the_same_files_as_the_handbook(self):
+        line = line_with(read(".claude", "commands", "next.md"), "**Upgrades, automatic.**")
+        for word in NOT_COUNTED:
+            with self.subTest(word=word):
+                self.assertIn(word, line)
+
+    def test_claude_md_says_which_files_are_regenerated(self):
+        line = line_with(read("CLAUDE.md"), "**Sizes**")
+        self.assertIn("regenerated files are the ones the build scripts write", line)
 
     def test_a_new_component_or_page_makes_an_s_an_m(self):
-        places = {
-            "CLAUDE.md": line_with(read("CLAUDE.md"), "**Upgrades are automatic.**"),
-            "next.md": line_with(read(".claude", "commands", "next.md"), "**Upgrades, automatic.**"),
-        }
-        for where, line in places.items():
-            with self.subTest(where=where):
-                self.assertRegex(line, r"new component or style guide page")
+        self.assertRegex(line_with(read(".claude", "commands", "next.md"), "**Upgrades, automatic.**"),
+                         r"new component or style guide page")
+        self.assertIn("a screen is a component or a style guide page", line_with(read("CLAUDE.md"), "**Sizes**"))
 
     def test_the_sizes_point_to_the_handbook(self):
         for rel in (("CLAUDE.md",), (".claude", "commands", "next.md"), (".claude", "commands", "draft.md")):
@@ -64,12 +62,15 @@ class TheFullCheckRunsOnce(unittest.TestCase):
         # It runs before the squash merge, on the branch's final code.
         self.assertLess(step9.index("**The full check**"), step9.index("git merge --squash issue-N"))
 
-    def test_claude_md_says_the_same_in_both_places(self):
-        text = read("CLAUDE.md")
-        checks = line_with(text, "**Checks by size.**")
-        runs = line_with(text, "Every issue runs quick before it is merged")
-        self.assertIn("`scripts/test.sh full` once, run by the builder before merging", checks)
-        self.assertIn("Full runs once, by the builder, before merging a `size:L` issue or any `VERSION` bump", runs)
+    def test_next_says_when_it_runs(self):
+        """#34: moved from CLAUDE.md; next.md's size table and the release check say the same."""
+        text = read(".claude", "commands", "next.md")
+        self.assertIn("`scripts/test.sh full` once, run by you before merging", line_with(text, "| L |"))
+        self.assertIn("The full check also runs before any `VERSION` bump", text)
+        self.assertIn("Every issue runs quick before it is merged; quick aims to finish in under 2 minutes", text)
+        release = text[text.index("**Release check**"):text.index("**Idle work**")]
+        self.assertIn("if anything was merged", release)
+        self.assertIn("no `VERSION` may be bumped until full passes again", release)
 
 
 class SeriesFollowUps(unittest.TestCase):

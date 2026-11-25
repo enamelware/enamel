@@ -1,7 +1,8 @@
 # Copyright (c) 2026 Mario Carabotta
 # SPDX-License-Identifier: MIT
-"""Issue #2: the responsive rule. The agreed wording is in CLAUDE.md (Hard
-rules) and DESIGN.md Part 2, replacing "Layouts must work at 16:10 and 4:3";
+"""Issue #2: the responsive rule. The agreed wording is in DESIGN.md Part 2,
+replacing "Layouts must work at 16:10 and 4:3", and CLAUDE.md (Hard rules)
+keeps the part DESIGN.md doesn't say and points there (#34);
 the style guide's Rules section shows it; DECISIONS.md records the rule and
 the answers to its questions; the two agreed sentences on the Overview page follow it.
 
@@ -31,10 +32,9 @@ def section(text, heading):
     return m.group(1)
 
 
-CLAUDE_RULE = ("- No layout is tied to a screen size, a device or an aspect ratio. Layouts adapt to the "
-               "space they are given, and breakpoints come from the content and are named by what they "
-               "do. Devices are for testing, never targets. No file names a capture size or a device as the "
-               "source of a value.")
+# #34: CLAUDE.md keeps only the part DESIGN.md Part 2 doesn't say, and points there.
+CLAUDE_RULE = ("- No file names a capture size or a device as the source of a value; the rest of the layout "
+               "rule is DESIGN.md Part 2.")
 
 DESIGN_RULES = [
     "No layout is tied to a screen size, a device or an aspect ratio. Nothing in tokens, components, "
@@ -56,8 +56,10 @@ class ClaudeMd(unittest.TestCase):
         lines = [l for l in rules.splitlines() if l.startswith("- ")]
         self.assertIn(CLAUDE_RULE, lines, "CLAUDE.md Hard rules: the responsive rule is missing or reworded")
 
-    def test_rule_is_only_in_hard_rules(self):
-        self.assertEqual(read("CLAUDE.md").count("No layout is tied to a screen size"), 1)
+    def test_the_rest_of_the_rule_is_only_in_design_md(self):
+        """#34: the layout rule moved to DESIGN.md Part 2 (checked below); CLAUDE.md doesn't repeat it."""
+        self.assertEqual(read("CLAUDE.md").count("No layout is tied to a screen size"), 0)
+        self.assertEqual(read("DESIGN.md").count("No layout is tied to a screen size"), 1)
 
 
 class DesignMd(unittest.TestCase):

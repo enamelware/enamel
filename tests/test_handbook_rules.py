@@ -1,6 +1,8 @@
 # Copyright (c) 2026 Mario Carabotta
 # SPDX-License-Identifier: MIT
 """Issue #28: where CLAUDE.md and the handbook disagreed, Enamel follows the handbook.
+Since #34, CLAUDE.md keeps only Enamel's additions; what it no longer repeats is
+checked in next.md, the reviewer and the visitors' page.
 
     scripts/test.sh unit tests.test_handbook_rules
 """
@@ -30,7 +32,7 @@ class HardStops(unittest.TestCase):
                 self.assertRegex(read(*rel), r"handbook's[^.]*decisions skill")
 
     def test_a_spec_read_two_ways_that_looks_different_is_a_stop(self):
-        for rel in (CLAUDE, NEXT, REVIEWER):
+        for rel in (NEXT, REVIEWER):
             with self.subTest(rel=rel):
                 self.assertRegex(read(*rel), r"read two ways[^.]*look different to the user")
 
@@ -45,9 +47,14 @@ class HardStops(unittest.TestCase):
                     self.assertIn(words, text)
 
 
+class ClaudeMdPointsToTheDetails(unittest.TestCase):
+    def test_decide_or_block_is_named(self):
+        line = line_with(read(*CLAUDE), "**Decide more, stop less.**")
+        self.assertIn("`.claude/commands/next.md`, \"Decide or block\"", line)
+
+
 class Questions(unittest.TestCase):
     def test_a_blocked_question_has_numbered_options_and_a_recommendation(self):
-        self.assertIn("numbered options and a recommendation", line_with(read(*CLAUDE), "Hard stops, the only reasons to stop"))
         nxt = read(*NEXT)
         self.assertIn("one plain-language question, with numbered options and a recommendation", nxt)
         self.assertIn("at most 3 numbered options, your recommendation", nxt)
@@ -56,8 +63,6 @@ class Questions(unittest.TestCase):
 class SizeSLimits(unittest.TestCase):
     def test_data_formats_and_the_settings_format_make_an_s_an_m(self):
         places = {
-            "CLAUDE.md S": line_with(read(*CLAUDE), "`size:S`:"),
-            "CLAUDE.md upgrades": line_with(read(*CLAUDE), "**Upgrades are automatic.**"),
             "next.md": line_with(read(*NEXT), "**Upgrades, automatic.**"),
             "visitors": line_with(read(*VISITORS), "| S |"),
         }

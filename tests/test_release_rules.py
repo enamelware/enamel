@@ -153,8 +153,12 @@ class TheRepo(unittest.TestCase):
                       "rights to the Enamel or Kettle names or the Kettle wordmark.", notice)
         with open(os.path.join(ROOT, "CLAUDE.md"), encoding="utf-8") as f:
             claude = f.read()
-        self.assertIn("Never add anything taken from the Steam client's files. Steam baseline values are recorded "
-                      "under Enamel's own names only.", claude)
+        self.assertIn("Steam baseline values are recorded under Enamel's own names only.", claude)
+        # #34: the full Valve rule moved to the reviewer's rules (Check 3), which every change goes through.
+        with open(os.path.join(ROOT, ".claude", "agents", "reviewer.md"), encoding="utf-8") as f:
+            reviewer = f.read()
+        self.assertIn("and nothing taken from the Steam client's files. Steam baseline values are recorded "
+                      "under Enamel's own names only.", reviewer)
         self.assertIn("Case-study and portfolio material never goes in this repo; it is kept outside it.", claude)
 
 

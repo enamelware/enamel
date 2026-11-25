@@ -89,7 +89,7 @@ class ReviewerTidyUps(unittest.TestCase):
 
 
 class SharedSettings(unittest.TestCase):
-    """A new ask or deny rule must never catch a read-only command (CLAUDE.md)."""
+    """A new ask or deny rule must never catch a read-only command (next.md step 1, since #34)."""
 
     READ_ONLY = ["git log --oneline -5", "git log -p -- tokens/enamel.css", "git show HEAD:CHANGELOG.md",
                  "git show --stat HEAD~1", "git status", "git status --short", "git diff main...issue-14",

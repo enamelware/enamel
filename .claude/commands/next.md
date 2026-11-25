@@ -128,7 +128,7 @@ When the issue is finished, `Done:` ends with `merged into main as <short commit
 
 ## 0. Housekeeping, then resume
 
-**Board housekeeping**, first, every run: `scripts/board.sh close-done`. It closes every open issue whose card is in Done, with the one-line comment "Closed by /next: its card is in Done but the issue was still open." Note the issues it closed for the report.
+**Board housekeeping**, first, every run: `scripts/board.sh close-done`. It closes every open issue whose card is in Done, with the one-line comment "Closed by /next: its card is in Done but the issue was still open." Note the issues it closed for the report. Issues are closed only by this housekeeping, never otherwise.
 
 Then, before taking anything new, look for unfinished work. Read step 1 first, then:
 
@@ -156,7 +156,10 @@ For each unfinished issue N, in issue-number order:
 
 ## Steps
 
-1. **Board and tests.** Board changes only through `scripts/board.sh` (it reads the IDs in `.claude/board.json` itself); tests only through `scripts/test.sh`. Run one simple command at a time: no `&&`, `;` or pipes, no `cd`, no `export`. Run git from this repo's folder without `git -C`; read Kettle Video only with `scripts/peek.sh`. Every helper agent follows the same rules, and any general-purpose helper you start (the builder, or any other) gets them in its prompt.
+1. **Board and tests.** Board changes only through `scripts/board.sh` (it reads the IDs in `.claude/board.json` itself); tests only through `scripts/test.sh`. Run one simple command at a time: no `&&`, `;` or pipes, no `cd`, no `export`; to filter output, do it in a separate step or with the built-in tools. Run git from this repo's folder without `git -C` (it keeps asking); read Kettle Video only with `scripts/peek.sh` (log, show, status, diff, tag, rev-parse, ls-files). Every helper agent follows the same rules, written into its own instructions, and any general-purpose helper you start (the builder, or any other) gets them in its prompt. Also:
+   - **Permission rules.** A new ask or deny rule must never catch a read-only command. Check it against git log, show, status and diff; gh issue view and list; ls, cat and grep; `scripts/board.sh list`; and `scripts/peek.sh`, and narrow any existing ask rule that catches one. `tests/test_agent_guard.py` checks this for the shared settings.
+   - **Removing files.** `git rm` on a file git tracks inside this repo needs no approval, because like any edit it can be undone. Plain `rm`, `git rm` with force or on anything outside the repo, `git clean`, and anything that deletes untracked files still ask first.
+   - **Memory notes.** To delete one of your own memory notes, use `scripts/forget-note.sh` (allowed without approval; it works out this project's memory folder and accepts only a plain .md file name in it), never `rm`.
 
 2. **Pick the issue.**
    - List the board: `scripts/board.sh list` (number, status, labels, title).
@@ -182,10 +185,10 @@ For each unfinished issue N, in issue-number order:
 
 6. **Test everything you can yourself.** Never ask the designer to run commands or test cases.
    - After any change to tokens, rules or components, run `python3 tools/build_design_md.py`, then `python3 tools/build_styleguide.py`, and run both again to see that the second run changes nothing (CLAUDE.md).
-   - Run `scripts/test.sh` (quick: the unit tests, the build and structure checks, and the device's Firefox on the style guide pages the change touches, in full and reduced motion). If anything fails, fix it and run again. Slower checks for the code you touched: `scripts/test.sh check <name>`.
+   - Run `scripts/test.sh` (quick: the unit tests, the build and structure checks, and the device's Firefox on the style guide pages the change touches, in full and reduced motion). If anything fails, fix it and run again. Every issue runs quick before it is merged; quick aims to finish in under 2 minutes, so if it grows past that, speed it up without checking less. Slower checks for the code you touched: `scripts/test.sh check <name>`.
    - Work through every item under "Checked automatically" in "Done when": run the scripts and read their output, look at screenshots of the style guide in the device's Firefox (`tools/check_guide.py --screenshots` can save them), measure timings.
    - **Version and changelog.** If apps would notice the change (any token, component, rule or script change), bump `VERSION` (the next minor version for additions or visual changes, a note "breaking" for renames or removals), add a plain-language `CHANGELOG.md` entry marked "visual" or "breaking" that also says which apps should adopt it and when, and re-run the build scripts so the version is stamped. A rename or removal is only allowed when the issue asks for it, and its entry says exactly what apps need to change. **Before any `VERSION` bump, and before merging a `size:L` issue, the full check runs once, in step 9,** on the final code: apps only sync released versions.
-   - **Released means tagged.** A version counts as released only when its `CHANGELOG.md` entry is written and its tag is pushed (step 9). Work in progress on `main` never counts, even when `VERSION` already shows the new number: a version built over several issues is released by the issue that finishes it (its entry is complete and the issue says it ships the version), and only that issue tags it.
+   - **Released means tagged.** A version counts as released only when its `CHANGELOG.md` entry is written and its tag is pushed (step 9). Work in progress on `main` never counts, even when `VERSION` already shows the new number: a version built over several issues is released by the issue that finishes it (its entry is complete and the issue says it ships the version), and only that issue tags it, with an annotated tag named `v` plus the version (for example `v0.11.1`). Apps record a version and compare their copy with the files at its tag.
    - **Never run the same check twice on the same code.** `scripts/test.sh` remembers a pass against the exact code and says "already passed" instead of running again; that counts as a pass. Only `--again` forces a re-run, and only when there is a reason to doubt the earlier result.
    - If you cannot make it pass, or one problem takes more than about 30 minutes without progress, handle it as **Blocked** with a plain explanation of what fails and what you tried.
 
@@ -233,7 +236,7 @@ For each unfinished issue N, in issue-number order:
     - **Decided along the way**: each decision made without asking (all labelled `decided` on the board), or "nothing".
     - **Blocked**, if it was: the question waiting in the issue.
 
-13. **Never close the issue here.** It moves on through the pass/fail phrases in CLAUDE.md ("How the work is done").
+13. **Never close the issue here.** It moves on when the designer moves its card, or through the "#N failed" phrase in CLAUDE.md ("How the work is done"), and step 0's housekeeping closes it once it is in Done.
 
 ## Refactor issues
 

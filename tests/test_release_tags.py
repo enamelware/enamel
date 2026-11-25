@@ -8,10 +8,10 @@ changelog version from 0.11.1 up to the one before the current version must
 have a tag, and no older version has one. Each tag is annotated, carries the
 version and its changelog date, and the files at the tag show that version;
 every tag has a changelog entry. Also checks that every changelog entry says
-who should adopt it and when, that CLAUDE.md and the /next release steps say
-a version is released only when its entry is written and its tag is pushed
-(one plain push per tag, never forced), and that the README has the section
-for apps.
+who should adopt it and when, that the /next release steps say a version is
+released only when its entry is written and its tag is pushed (one plain push
+per tag, never forced) and CLAUDE.md points to them (#34), and that the README
+has the section for apps.
 
 Reads the local git history only; never pushes or fetches.
 
@@ -110,14 +110,22 @@ class ChangelogSaysWhoAdopts(unittest.TestCase):
 
 
 class ReleaseRules(unittest.TestCase):
-    def test_claude_md(self):
+    def test_claude_md_points_to_the_release_steps(self):
+        """#34: CLAUDE.md keeps the version-bump line; the release rules live in next.md."""
         text = read("CLAUDE.md")
+        line = next(l for l in text.splitlines() if "Every change apps would notice bumps `VERSION`" in l)
+        self.assertIn("plain-language `CHANGELOG.md` entry", line)
+        self.assertIn("what apps must change for any rename or removal", line)
+        self.assertIn("Releasing and tagging: `.claude/commands/next.md`, steps 6 and 9.", line)
+
+    def test_next_md_holds_the_rules_moved_from_claude_md(self):
+        text = read(".claude", "commands", "next.md")
         self.assertIn("A version counts as released only when its `CHANGELOG.md` entry is written", text)
         self.assertIn("its tag is pushed", text)
-        self.assertIn("annotated tag", text)
+        self.assertIn("annotated tag named `v` plus the version", text)
         self.assertIn("Work in progress on `main` never counts", text)
-        self.assertIn("one plain `git push origin <tag>` per tag, never forced", text)
-        self.assertIn("never moved or deleted", text)
+        self.assertIn("One push per tag, never forced; a pushed tag is never moved or deleted", text)
+        self.assertIn("Apps record a version and compare their copy with the files at its tag.", text)
 
     def test_next_md_release_steps(self):
         text = read(".claude", "commands", "next.md")
