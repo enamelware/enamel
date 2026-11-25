@@ -4,6 +4,12 @@ A dated log of design decisions for the Enamel design system. Newest first.
 
 Kettle is the family of apps Enamel was built for; Kettle Video is the first of them and the first app built on Enamel.
 
+## 2026-11-25, decisions follow the handbook's three levels (#36)
+
+**Only decisions worth the designer's look are flagged.** Until now every choice made without asking got a "Decided:" comment and the `decided` label, so routine choices (how code is arranged, which test cases to write, how a doc is worded) hid the few the designer may want to change. Enamel now follows the three levels of the Enamelware handbook's decisions skill: a plain **decide** is just made, with a `DECISIONS.md` line only if a future reader would ask "why?"; a **decide and flag** choice (a default the spec didn't give, a small visible detail needed to meet the spec, a source that disagrees with a recorded decision) keeps the comment and the label; **escalate** is the hard stops, unchanged. Chosen because the label is only useful when it points at what matters, and because Enamel's rules should follow the handbook rather than restate it differently.
+
+**CLAUDE.md keeps only what is Enamel's own**: the comment's wording and the `decided` label. The levels themselves are the handbook's, and `/next` ("Decide or block") and the public page on how this repo is built say the same. Past issues keep the labels they have.
+
 ## 2026-11-25, the builder's report names the commit it hands over and the checks' result on it (#35)
 
 **A report can say no more than the code supports.** In #32 a builder's report said the quick checks passed, but they failed on the code it had committed. Now the builder runs the quick checks on the exact commit it hands over, after its last change, with nothing uncommitted, and its report ends with `Handed over: commit <short>, quick checks exit code <n>.` A pass on an earlier commit doesn't count. Chosen because the report is what the reviewer and the designer trust, and a commit and an exit code can be checked where a plain "passed" can't.

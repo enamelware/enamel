@@ -92,6 +92,7 @@ class ClaudeMdKeeps(unittest.TestCase):
         work = section(CLAUDE, "How the work is done")
         self.assertIn('"Decided: <what>. Why: <one line>. To change it, reply on this issue."', work)
         self.assertIn("the `decided` label", work)
+        self.assertIn('Only a "decide and flag" choice gets', work)
         self.assertIn("Design system changes are expected", work)
         self.assertIn("Never hardcode a size a token provides", work)
 
