@@ -1,17 +1,19 @@
 ---
-description: Idle work for the Kettle board, on its own or at the end of /next all. Has test-writer add up to 2 missing tests or doc fixes (each on its own branch, checked by test-checker and reviewer, merged into main), reported on one "tests" issue in Ready for testing; then has refactor-scout propose up to 3 refactors as Drafted "refactor" issues.
-argument-hint: ""
+description: Idle work for the Kettle board, run only when the designer chooses ("/tidy", or "/tidy deep" for a deeper refactor search). Has test-writer add up to 2 missing tests or doc fixes (each on its own branch, checked by test-checker and reviewer, merged into main), reported on one "tests" issue in Ready for testing; then has refactor-scout propose up to 3 refactors as Drafted "refactor" issues.
+argument-hint: "[deep]"
 ---
 
-Idle work: small tests and docs improvements, then refactor proposals. Never changes what the design system does.
+Idle work: small tests and docs improvements, then refactor proposals. Never changes what the design system does. Argument: $ARGUMENTS
+
+/next never runs this file; only the designer starts it.
 
 Follow CLAUDE.md throughout, especially "How the work is done" and "Reports to the designer", and the shared rules in `.claude/commands/next.md` ("Safe to interrupt", "Progress comment", "Blocked", step 8 and step 9), which apply here as written unless this file says otherwise. Board changes only through `scripts/board.sh`; tests only through `scripts/test.sh`. One simple command at a time: no `&&`, `;` or pipes, no `cd`, no `export`.
 
-**Never stop to ask the designer,** whether run on its own or from /next all. A question or a check that still fails becomes a "Blocked" comment and label (next.md, "Blocked"); then go on with the next part.
+**Never stop to ask the designer.** A question or a check that still fails becomes a "Blocked" comment and label (next.md, "Blocked"); then go on with the next part.
 
 ## 0. Before starting
 
-- `git fetch origin --prune`, then `git status --porcelain` must be empty and `git branch --show-current` must be `main`; then `git pull --ff-only`. If the folder isn't clean or isn't on `main`: when run on its own, touch nothing, do nothing and report what you found; from /next all, this can't happen (its step 0 already checked).
+- `git fetch origin --prune`, then `git status --porcelain` must be empty and `git branch --show-current` must be `main`; then `git pull --ff-only`. If the folder isn't clean or isn't on `main`: touch nothing, do nothing and report what you found.
 - **Resume first.** List open issues labelled `tests` (`gh issue list --state open --label tests --json number,title,labels`). One without the `blocked` label that has an `issue-T` branch (local or on GitHub) is unfinished idle work: continue it (see "Resume") before anything new. A `blocked` one is parked: leave its branch alone.
 
 ## A. Tests and docs (at most 2 improvements)
@@ -46,13 +48,13 @@ Follow CLAUDE.md throughout, especially "How the work is done" and "Reports to t
 
 ## B. Refactor proposals (at most 3)
 
-1. Run the `refactor-scout` agent (`subagent_type` `refactor-scout`) with: `At most 3 proposals.` If it says NOTHING WORTH PROPOSING, note that for the report and finish.
+1. Run the `refactor-scout` agent (`subagent_type` `refactor-scout`) with: `At most 3 proposals.` Pass `model` `sonnet` on the Agent call, unless the argument is `deep`: then leave `model` out, so the agent runs on the model its file names. If it says NOTHING WORTH PROPOSING, note that for the report and finish.
 2. For each proposal, check it again yourself before filing it: `gh issue list --state all --label refactor --json number,title,state` and `gh issue list --state open --json number,title,labels`. Drop it if it repeats an existing refactor issue or plainly overlaps an open or blocked issue, and note why for the report.
 3. File each one left: write its body to a file in the scratchpad (the scout's sections as given, then a last line `Proposed by refactor-scout during idle work, <YYYY-MM-DD>. Refactors keep what the design system does the same; /next builds them only after every other Ready for dev issue.`), then `gh issue create --title "<title>" --body-file <file> --label refactor --label <size>` (create the `refactor` label first if it is missing), `scripts/board.sh add N`, `scripts/board.sh status N Drafted`.
 
 ## Report
 
-When run on its own, end with this; from /next all, it goes into the final report. Plain language, no code or jargon:
+End with this. Plain language, no code or jargon:
 - **Tests and docs**: `#T title`: what was added or fixed, and "quick smoke check of the style guide"; or blocked and what it needs; or "nothing worth doing".
 - **Refactor proposals**: one line per issue filed, `#N title (size)`; then "They are in Drafted: move the ones you want into Ready for dev; /next builds them after all other Ready for dev issues." Or "nothing worth proposing". Mention any dropped as duplicates or overlaps.
 - **Found along the way**: bugs and out-of-date CLAUDE.md lines from part A, or "nothing".

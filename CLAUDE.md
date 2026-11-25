@@ -28,6 +28,7 @@ The workflow is the handbook's (operations and decisions skills); Enamel's detai
   - Hard stops, the only reasons to stop, are the handbook's (its decisions skill), plus: copying anything of Valve's; adding, renaming or removing a token, component class, state attribute or script function the issue doesn't ask for; anything that could change, move or delete files outside the repo, or that a git revert can't undo; security; the issue and CLAUDE.md contradicting each other.
   - Design system changes are expected: everything here that uses a changed size, colour or component follows, and that is in scope. Never hardcode a size a token provides: read the token or measure the element.
 - Every change apps would notice bumps `VERSION` and adds a plain-language `CHANGELOG.md` entry, which says what apps must change for any rename or removal. Releasing and tagging: `.claude/commands/next.md`, steps 6 and 9.
+- Idle work is paused: `/next all` stops when nothing is left to build, and test-writer and refactor-scout run only through `/tidy` (refactor-scout on Sonnet, or Opus with `/tidy deep`).
 - When asked to continue or change #N, read that issue and its comments with `gh` first.
 - The phrase "#N failed: <what happened>" (several issue numbers allowed) comments the feedback on the issue and moves it to More to do, without starting the fix.
 

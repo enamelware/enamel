@@ -1,6 +1,6 @@
 ---
 name: refactor-scout
-description: Idle-work helper for Enamel, run by /tidy (and at the end of /next all). Reads the codebase and proposes the most worthwhile refactors, written as plain-language issue drafts. Changes nothing: /tidy files the drafts as Drafted issues labelled refactor.
+description: Idle-work helper for Enamel, run only by /tidy. Reads the codebase and proposes the most worthwhile refactors, written as plain-language issue drafts. Changes nothing: /tidy files the drafts as Drafted issues labelled refactor.
 model: opus
 tools: Read, Grep, Glob, Bash
 disallowedTools: Write, Edit, MultiEdit, NotebookEdit, Agent

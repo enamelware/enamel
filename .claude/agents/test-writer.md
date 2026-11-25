@@ -1,6 +1,6 @@
 ---
 name: test-writer
-description: Idle-work helper for Enamel, run by /tidy (and at the end of /next all). Adds missing automated tests for what the design system already does, and fixes docs that no longer match it. Never changes tokens, components or the style guide. Proposes first, then makes one improvement at a time on the branch it is given.
+description: Idle-work helper for Enamel, run only by /tidy. Adds missing automated tests for what the design system already does, and fixes docs that no longer match it. Never changes tokens, components or the style guide. Proposes first, then makes one improvement at a time on the branch it is given.
 model: sonnet
 tools: Read, Grep, Glob, Bash, Write, Edit
 disallowedTools: NotebookEdit, Agent
