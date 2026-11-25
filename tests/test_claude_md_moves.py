@@ -83,7 +83,9 @@ class ClaudeMdKeeps(unittest.TestCase):
     def test_enamel_s_additions_to_the_sizes(self):
         line = next(l for l in CLAUDE.splitlines() if l.startswith("- **Sizes**"))
         for words in ("handbook's operations skill", "a screen is a component or a style guide page",
-                      "tokens, the style guide launcher and `tools/serve.py`",
+                      "`tokens/enamel.css`", "the style guide launcher", "`tools/serve.py`",
+                      "`LICENSE` and `NOTICE.md`", "Enamel has no settings file",
+                      "keeps no data of its own", "copies in no files from elsewhere",
                       "the ones the build scripts write", "`series: <name>` label"):
             with self.subTest(words=words):
                 self.assertIn(words, line)

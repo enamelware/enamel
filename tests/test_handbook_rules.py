@@ -62,14 +62,22 @@ class Questions(unittest.TestCase):
 
 class SizeSLimits(unittest.TestCase):
     def test_data_formats_and_the_settings_format_make_an_s_an_m(self):
-        places = {
-            "next.md": line_with(read(*NEXT), "**Upgrades, automatic.**"),
-            "visitors": line_with(read(*VISITORS), "| S |"),
-        }
-        for where, line in places.items():
-            for words in ("data formats", "settings format"):
-                with self.subTest(where=where, words=words):
-                    self.assertIn(words, line)
+        line = line_with(read(*VISITORS), "| S |")
+        for words in ("data formats", "settings format"):
+            with self.subTest(words=words):
+                self.assertIn(words, line)
+
+    def test_next_points_to_the_handbook_for_the_limits(self):
+        # Issue #37: /next no longer lists the limits itself, so its copy can't drift.
+        line = line_with(read(*NEXT), "**Upgrades, automatic.**")
+        self.assertIn('the handbook\'s (its operations skill, "Sizes"', line)
+        self.assertIn('CLAUDE.md ("Sizes")', line)
+        for words in ("data formats", "settings format", "about 3 files", "`LICENSE`", "`tools/serve.py`"):
+            with self.subTest(words=words):
+                self.assertNotIn(words, line)
+        for words in ("`Size: S → M. Why: <one line>.`", "Sizes only go up during a build"):
+            with self.subTest(words=words):
+                self.assertIn(words, line)
 
 
 if __name__ == "__main__":

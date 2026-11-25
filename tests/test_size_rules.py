@@ -1,8 +1,8 @@
 # Copyright (c) 2026 Mario Carabotta
 # SPDX-License-Identifier: MIT
 """Issue #31: the commands, agents and CLAUDE.md follow the handbook's size table.
-Since #34, CLAUDE.md only points to the handbook and keeps Enamel's additions; the
-size rules it used to repeat are checked in next.md, where they live.
+Since #34, CLAUDE.md only points to the handbook and keeps Enamel's additions; since
+#37, next.md no longer repeats the limits either, and points to the handbook for them.
 
     scripts/test.sh unit tests.test_size_rules
 """
@@ -22,19 +22,19 @@ def line_with(text, needle):
 
 
 class WhatCountsTowardsAnS(unittest.TestCase):
-    def test_next_leaves_out_the_same_files_as_the_handbook(self):
+    def test_next_leaves_the_limits_to_the_handbook(self):
+        """#37: next.md no longer repeats the limits, so it can't leave out a different list."""
         line = line_with(read(".claude", "commands", "next.md"), "**Upgrades, automatic.**")
+        self.assertIn('the handbook\'s (its operations skill, "Sizes"', line)
         for word in NOT_COUNTED:
             with self.subTest(word=word):
-                self.assertIn(word, line)
+                self.assertNotIn(word, line)
 
     def test_claude_md_says_which_files_are_regenerated(self):
         line = line_with(read("CLAUDE.md"), "**Sizes**")
         self.assertIn("regenerated files are the ones the build scripts write", line)
 
     def test_a_new_component_or_page_makes_an_s_an_m(self):
-        self.assertRegex(line_with(read(".claude", "commands", "next.md"), "**Upgrades, automatic.**"),
-                         r"new component or style guide page")
         self.assertIn("a screen is a component or a style guide page", line_with(read("CLAUDE.md"), "**Sizes**"))
 
     def test_the_sizes_point_to_the_handbook(self):
