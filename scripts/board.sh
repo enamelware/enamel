@@ -6,7 +6,8 @@
 # single narrow permission rule covers them (see CLAUDE.md, "How the work is done").
 # The Kettle board is shared with Kettle Video; this script only ever reads,
 # moves, labels or closes cards whose issue belongs to this repo (Enamel). The
-# repo and the board are read from .claude/board.json.
+# repo and the board are read from .claude/board.json. Draft cards, which have
+# no issue behind them, are left out as well.
 #
 #   scripts/board.sh list                     this repo's cards: number, status, labels, title
 #   scripts/board.sh add N                    put issue N on the board (no-op if there)
@@ -47,22 +48,55 @@ issue_number() {
     [[ "$1" =~ ^[0-9]+$ ]] || fail "not an issue number: $1"
 }
 
+# Up to 1,000 cards: the board is shared, so it fills up with both repos' issues.
 items_json() {
-    gh project item-list "$NUMBER" --owner "$OWNER" --format json --limit 200
+    gh project item-list "$NUMBER" --owner "$OWNER" --format json --limit 1000
 }
 
-# The card ID of issue N on the board (only cards from this repo).
+# The card ID of issue N on the board (only cards from this repo). A card that
+# was just added can be missing from the board's card list for a minute or
+# more, so when the list doesn't have it, the card is looked up through the
+# issue itself, which knows its cards at once.
 item_id() {
     items_json | python3 -c '
 import json, sys
 number, repo = int(sys.argv[1]), sys.argv[2]
 for item in json.load(sys.stdin)["items"]:
-    content = item.get("content", {})
+    content = item.get("content") or {}
     if content.get("number") == number and content.get("repository") == repo:
         print(item["id"])
         sys.exit(0)
 sys.exit(1)
-' "$1" "$REPO" || fail "issue #$1 is not on the board"
+' "$1" "$REPO" || card_from_issue "$1" || fail "issue #$1 is not on the board"
+}
+
+# The card ID of issue N, asked of this repo's issue N: of the boards it is on,
+# only the Kettle board (its number and account from .claude/board.json) counts.
+card_from_issue() {
+    gh api graphql -F owner="${REPO%%/*}" -F repo="${REPO#*/}" -F issue="$1" -f query='
+query($owner: String!, $repo: String!, $issue: Int!) {
+  repository(owner: $owner, name: $repo) {
+    issue(number: $issue) {
+      projectItems(first: 100) {
+        nodes { id project { number owner { ... on User { login } ... on Organization { login } } } }
+      }
+    }
+  }
+}' 2>/dev/null | python3 -c '
+import json, sys
+number, owner = int(sys.argv[1]), sys.argv[2]
+try:
+    reply = json.load(sys.stdin)
+except ValueError:
+    sys.exit(1)  # no reply, for example when offline
+issue = ((reply.get("data") or {}).get("repository") or {}).get("issue") or {}
+for card in (issue.get("projectItems") or {}).get("nodes") or []:
+    project = card.get("project") or {}
+    if project.get("number") == number and (project.get("owner") or {}).get("login") == owner:
+        print(card["id"])
+        sys.exit(0)
+sys.exit(1)
+' "$NUMBER" "$OWNER"
 }
 
 progress_comment_id() {
@@ -76,9 +110,9 @@ case "${1:-}" in
 import json, sys
 repo = sys.argv[1]
 for item in json.load(sys.stdin)["items"]:
-    content = item.get("content", {})
-    if content.get("repository") != repo:
-        continue  # a Kettle Video card: never listed or touched from here
+    content = item.get("content") or {}
+    if content.get("repository") != repo or not content.get("number"):
+        continue  # a Kettle Video card or a draft card: never listed or touched from here
     labels = ",".join(item.get("labels") or [])
     print(content.get("number"), item.get("status"), labels, item.get("title"), sep="\t")
 ' "$REPO"
@@ -133,9 +167,9 @@ for item in json.load(sys.stdin)["items"]:
 import json, sys
 repo = sys.argv[1]
 for item in json.load(sys.stdin)["items"]:
-    content = item.get("content", {})
-    if content.get("repository") == repo and item.get("status") == "Done":
-        print(content.get("number"))
+    content = item.get("content") or {}
+    if content.get("repository") == repo and content.get("number") and item.get("status") == "Done":
+        print(content["number"])
 ' "$REPO")"
         closed=0
         for n in $done_cards; do
