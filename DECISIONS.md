@@ -4,6 +4,16 @@ A dated log of design decisions for the Enamel design system. Newest first.
 
 Kettle is the family of apps Enamel was built for; Kettle Video is the first of them and the first app built on Enamel.
 
+## 2026-11-25, where CLAUDE.md and the handbook disagreed, Enamel follows the handbook (#28)
+
+The designer chose the handbook on each disagreement listed on #28.
+
+**Hard stops are the handbook's list.** CLAUDE.md, the /next and /draft commands and the reviewer point to the handbook's decisions skill and keep only Enamel's additions: copying anything of Valve's, adding, renaming or removing a token, class, state attribute or script function nobody asked for, files outside the repo, anything a git revert can't undo, security, and the issue contradicting CLAUDE.md. A spec that can be read two ways is still decided, unless the readings would look different to the user; then it is a question.
+
+**Questions name numbered options and a recommendation**, inside /next as well as outside it.
+
+**Data formats and the settings format** count among the limits of a small issue, as in the handbook's sizes.
+
 ## 2026-11-24, the size rules follow the handbook's table (#31)
 
 **Tests and the decision log no longer count towards an S.** Like the changelog, the version file and generated pages, they are left out of its limit of about three files, as in the handbook's operations skill. A new component or style guide page makes an S an M wherever the upgrade rule is written.

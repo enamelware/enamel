@@ -21,20 +21,19 @@ Single mode runs step 0, then steps 1 to 13 once (a bundle of small issues count
 
 "The design system" means this repo's own tokens and components (CLAUDE.md, "Decide more, stop less").
 
-**Decide** yourself, without asking or stopping, when all of these are true: the choice can be undone with a git revert; you would recommend one option; none of the hard stops below applies. An unclear spec, a spec that conflicts with the code or DESIGN.md, or a choice between ways to build it is decided this way. Then:
+**Decide** yourself, without asking or stopping, when all of these are true: the choice can be undone with a git revert; you would recommend one option; none of the hard stops below applies. An unclear spec, a spec that conflicts with the code or DESIGN.md, or a choice between ways to build it is decided this way, unless the spec can be read two ways and the readings would look different to the user: that is a hard stop. Then:
 - comment on the issue, written to a file and posted with `gh issue comment N --body-file ...`: `Decided: <what>. Why: <one line>. To change it, reply on this issue.` One comment per decision; on a resume, don't post one that is already there;
 - add the label if it isn't there: `scripts/board.sh label N add decided`, so the designer can review all of these together on the board;
 - record it in `DECISIONS.md` too if it is a real design decision, as usual, and list it under "Decided" in the testing comment (step 11).
 
-**Hard stops**, the only reasons to stop:
-- a new dependency or licence question (anything copied from Valve's CSS, class names, icons, logos or fonts, or doing more to the Steam client than read it, counts);
-- anything that could change, move or delete personal media or other files outside the repo;
-- anything a git revert can't undo;
-- a product change nobody asked for that doesn't come from the issue or the design system. Renaming or removing a token, component class, state attribute, or function or event of `components/enamel-components.js` that the issue doesn't ask for counts (apps use these names), and so does adding a token or rule the issue doesn't ask for;
-- security or privacy;
+**Hard stops**, the only reasons to stop, are the handbook's (its decisions skill, "Hard stops"). Here they also cover:
+- anything copied from Valve's CSS, class names, icons, logos or fonts, or doing more to the Steam client than read it (a licence question);
+- a product change nobody asked for that doesn't come from the issue or the design system: adding, renaming or removing a token, component class, state attribute, or function or event of `components/enamel-components.js` that the issue doesn't ask for counts (apps use these names), and so does adding a rule the issue doesn't ask for;
+- anything that could change, move or delete files outside the repo, and anything a git revert can't undo;
+- security;
 - the issue and CLAUDE.md contradicting each other.
 
-For a hard stop: handle the issue as **Blocked** (see "Blocked") with one plain-language question, and move on.
+For a hard stop: handle the issue as **Blocked** (see "Blocked") with one plain-language question, with numbered options and a recommendation, and move on.
 
 **Not stops:**
 - *Design system changes are expected.* When the issue changes sizes, spacing, colours or components, everything in this repo that uses them (components, style guide pages, docs, tests) follows, and that is in scope. Never hardcode a size the design system provides: read its token or measure the element, in code and in tests. Only treat it as a problem if something stops working (can't be reached, read or used), not because it looks different, and even then fix it here if you can.
@@ -54,7 +53,7 @@ Sizes are defined in the handbook's operations skill ("Sizes"), with CLAUDE.md's
 
 Every size keeps its own branch, merging only when the checks pass, the progress comment, the testing comment and the board moves. The full check also runs before any `VERSION` bump, whatever the size, and it too runs once, by you, in step 9. test-checker never runs it. The sizes are the handbook's (its operations skill, "Sizes") with CLAUDE.md's additions.
 
-**Upgrades, automatic.** While building (steps 5 to 7, and again before step 8), compare the change with the size. An S becomes M if it touches more than about 3 files (not counting tests, `DECISIONS.md`, `CHANGELOG.md`, `VERSION` or files the build scripts regenerate), adds a new component or style guide page, or touches tokens (`tokens/enamel.css`), the style guide launcher or `tools/serve.py`, privacy or licences (`LICENSE`, `NOTICE.md`, anything copied). An M becomes L if it grows past one screen or feature (more than one component or style guide page, or across the design system). Then: `scripts/board.sh label N remove size:S` and `scripts/board.sh label N add size:M` (or M to L), one comment on the issue `Size: S → M. Why: <one line>.` (once; not again on a resume), update the progress comment's `Size:` line, and follow the new size's path from here. Sizes only go up during a build. Note every upgrade for the report.
+**Upgrades, automatic.** While building (steps 5 to 7, and again before step 8), compare the change with the size. An S becomes M if it touches more than about 3 files (not counting tests, `DECISIONS.md`, `CHANGELOG.md`, `VERSION` or files the build scripts regenerate), adds a new component or style guide page, or touches data formats, the settings format, tokens (`tokens/enamel.css`), the style guide launcher or `tools/serve.py`, privacy or licences (`LICENSE`, `NOTICE.md`, anything copied). An M becomes L if it grows past one screen or feature (more than one component or style guide page, or across the design system). Then: `scripts/board.sh label N remove size:S` and `scripts/board.sh label N add size:M` (or M to L), one comment on the issue `Size: S → M. Why: <one line>.` (once; not again on a resume), update the progress comment's `Size:` line, and follow the new size's path from here. Sizes only go up during a build. Note every upgrade for the report.
 
 **Tidy-ups.** The reviewer fixes tidy-ups itself in one commit, `WIP issue-N: reviewer tidy-ups`, and lists them; they never fail a review. Tidy-ups it couldn't make (in `tokens/`, `components/` or `docs/`) come back under "Tidy-ups left": make them before merging (step 9), re-run the build scripts if they apply and the quick suite, with no new review round. If one of them would change anything apps or the style guide show, it isn't a tidy-up: skip it and note it in the testing comment.
 
@@ -144,7 +143,7 @@ Each finding belongs to an issue N: `issue-N` branches by name, Building cards b
 Handle what you find in this order:
 
 1. **Uncommitted changes on `issue-N`**: commit them as `WIP issue-N: saved after interruption` and push. Then treat N as unfinished.
-2. **Uncommitted changes on `main` or any other branch**, or **unpushed commits on `main`** that are not explained below: the state is unclear, and no issue can be built safely on top of it. Touch nothing, start nothing new, and end the whole run with a plain-language report of what you found (which files or commits, on which branch) and one question for the designer. This is the one case where batch mode ends early: it isn't waiting on an issue, and nothing else can run until the folder is clean.
+2. **Uncommitted changes on `main` or any other branch**, or **unpushed commits on `main`** that are not explained below: the state is unclear, and no issue can be built safely on top of it. Touch nothing, start nothing new, and end the whole run with a plain-language report of what you found (which files or commits, on which branch) and one question for the designer, with numbered options and a recommendation. This is the one case where batch mode ends early: it isn't waiting on an issue, and nothing else can run until the folder is clean.
 3. **Unpushed commits on `main` that are exactly one `Refs #N:` commit**, or the `Refs #` commits of some or all the issues of one bundle, where `git diff --quiet main issue-N` shows it holds the same files as `issue-N` (for a bundle cut short, the same files as the last merged issue's `#M done` commit): the merge happened but the push didn't, or it stopped part way. Treat N as unfinished; it continues at step 8, checked against `origin/main` from `main`, and step 9 then only pushes and cleans up.
 4. **Every other unfinished issue** (a Building card, or an `issue-N` branch that is not blocked): treat N as unfinished.
 
@@ -256,7 +255,7 @@ Skip an issue whose dependency is blocked or unbuilt. Leave it in its column wit
 When an issue is blocked (a hard stop, tests that still fail, a problem past the 30-minute time limit, step 8 still failing after round 3, or unclear state found on resume; in either mode): nothing goes to `main`. Keep the work on its branch instead of throwing it away:
 - if the state is clear, commit what is there as `WIP issue-N: blocked` and push `issue-N`; if it was unclear, leave the branch exactly as it is;
 - `git switch main`, so the next issue starts clean;
-- comment on the issue, headed "Blocked", unless your latest comment already says the same. Give ONE plain-language question (at most 3 options, your recommendation and one sentence why) or, for failing tests or checks, a plain explanation of what fails and what you tried. When step 8 caused it, include the last verdict of each agent of the path word for word;
+- comment on the issue, headed "Blocked", unless your latest comment already says the same. Give ONE plain-language question (at most 3 numbered options, your recommendation and one sentence why) or, for failing tests or checks, a plain explanation of what fails and what you tried. When step 8 caused it, include the last verdict of each agent of the path word for word;
 - add the label if it isn't there: `scripts/board.sh label N add blocked`;
 - move it back to the column it came from (More to do or Ready for dev) if it isn't there already;
 - update the progress comment (`Next: blocked: <one line>`).

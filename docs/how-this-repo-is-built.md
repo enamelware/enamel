@@ -25,7 +25,7 @@ Three commands drive the work. Each is a written set of steps in [`.claude/comma
 - **/next** builds one issue: it resumes anything interrupted first, then takes the top card from More to do, or else from Ready for dev. It builds on a branch named after the issue, runs the checks the issue's size calls for, merges into `main` only when they pass, and moves the card to Ready for testing with a comment listing what to try. `/next all` works through every waiting issue in a row; `/next 3` stops after three.
 - **/tidy** is idle work for when nothing is waiting: it adds missing tests or fixes docs that no longer match the code, and proposes refactors as new Drafted issues for the designer to approve.
 
-While building, Claude Code never stops to ask. A choice that can be undone and has a clear best option is made and written on the issue as "Decided: …, Why: …", with the `decided` label, so the designer can review all of them together. Only a few things stop the work (a new dependency or licence question, anything that can't be undone, a product change nobody asked for, security or privacy): the issue then gets one plain question and the `blocked` label, and the run moves on.
+While building, Claude Code never stops to ask. A choice that can be undone and has a clear best option is made and written on the issue as "Decided: …, Why: …", with the `decided` label, so the designer can review all of them together. Only the hard stops of the Enamelware handbook stop the work, such as a new dependency or licence question, anything that can't be undone, a product change nobody asked for, a spec that can be read two ways that would look different, security or privacy: the issue then gets one plain question with numbered options and a recommendation, and the `blocked` label, and the run moves on.
 
 ## The helper agents
 
@@ -43,7 +43,7 @@ Each issue is built and checked by separate agents, so the one that wrote a chan
 
 | Size | What it is | Checks before merging |
 |---|---|---|
-| S | One small change, about three files or fewer (tests, the decision log, the changelog, the version file and generated pages don't count), no new component or style guide page, nothing in the tokens | the reviewer, and the quick checks |
+| S | One small change, about three files or fewer (tests, the decision log, the changelog, the version file and generated pages don't count), no new component or style guide page, nothing in the tokens, data formats or settings format | the reviewer, and the quick checks |
 | M | One feature, or one component or style guide page | the reviewer, and the quick checks |
 | L | Several components or pages, or a change across the design system | test-checker, then the reviewer, the quick checks, and the full checks once before merging |
 
