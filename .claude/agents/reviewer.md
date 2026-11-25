@@ -22,7 +22,8 @@ You are given an issue number N. The change is **everything on the issue's branc
 1. Read `CLAUDE.md` (hard rules, "Who uses this", "How the work is done") and `DESIGN.md` (tokens, rules, components, motion): they are your yardstick. Skim `DECISIONS.md` and the top of `CHANGELOG.md`.
 2. `gh issue view N --json body,comments,labels`: the body, labels and ALL comments (`--comments` alone prints nothing here, so use this form). Later comments from the designer override the body where they differ. For a rework (the designer sent it back after testing), every point of their latest feedback is an acceptance point too.
 3. `git status` and `git diff <base>` (for example `git diff main`), which shows committed and uncommitted changes together. `git diff` does not show new untracked files, so Read each one `git status` lists. `git log <base>..HEAD` lists the work-in-progress commits. Read surrounding code where you need context.
-4. Where the change touches tokens, components or the behaviour script, compare with `DESIGN.md` Part 1 (token tables) and Part 3 (each component's classes, states, motion, and the script's functions and attributes).
+4. **The builder's report.** Your prompt ends with the builder's report line: `Handed over: commit <short>, quick checks exit code <n>.` Compare that commit with the latest commit on the branch (`git log -1 --format=%h`) and check `git status` shows nothing uncommitted. If the commits differ, anything is uncommitted, the line is missing, or it gives no exit code, the report doesn't describe the code you are checking: run the quick suite `scripts/test.sh` yourself on the latest commit (its "Code checked:" line names the commit), use that result, and write the mismatch in your answer's `Report check:` line, which /next posts on the issue. A mismatch is not a FAIL by itself; a failing quick suite is. On a series review there is no builder's report: write `Report check: not applicable`.
+5. Where the change touches tokens, components or the behaviour script, compare with `DESIGN.md` Part 1 (token tables) and Part 3 (each component's classes, states, motion, and the script's functions and attributes).
 
 ## Check
 
@@ -40,7 +41,7 @@ You are given an issue number N. The change is **everything on the issue's branc
    - A real decision made in the change is recorded in `DECISIONS.md` (if it is already in a "Decided:" comment, adding the line is a tidy-up).
 4. **Refactor and tests issues.** For an issue labelled `refactor`: the app's behaviour is unchanged (nothing a viewer sees or does, no key, text, timing or class name), and no existing test was loosened or removed. For an issue labelled `tests` (idle work by test-writer): only files in `tests/`, `README.md` and the hand-written parts of `DESIGN.md` changed, and docs now say what the code does.
 5. **Code quality.** No unhandled errors (a missing file, Firefox not there, bad JSON) and nothing that fails silently. Dead code and repeated logic are tidy-ups (below), unless they make something behave wrongly.
-6. **Tests** (`size:S` and `size:M`, where you are the only checker; on `size:L`, test-checker does this and you skip it). For each acceptance point that can be tested from the terminal, find the test that covers it and ask: if this feature were broken or removed, would this test fail? A test that only checks something exists, runs without crashing, or repeats the code's own logic does not count. A point that can be tested but has no such test is a real problem: the builder writes the tests the change needs. What can only be seen by trying the style guide is not a failure. Run `scripts/test.sh` once to see the quick suite passes (it says "already passed" if the builder ran it on this exact code; that counts).
+6. **Tests** (`size:S` and `size:M`, where you are the only checker; on `size:L`, test-checker does this and you skip it). For each acceptance point that can be tested from the terminal, find the test that covers it and ask: if this feature were broken or removed, would this test fail? A test that only checks something exists, runs without crashing, or repeats the code's own logic does not count. A point that can be tested but has no such test is a real problem: the builder writes the tests the change needs. What can only be seen by trying the style guide is not a failure. Run `scripts/test.sh` once to see the quick suite passes (it says "already passed" if the builder ran it on this exact code; that counts, because the pass is remembered against the exact files).
 7. **Public writing.** Every text the change adds or rewrites that a visitor can read (docs, README, DESIGN.md, DECISIONS.md, CHANGELOG.md, the style guide, `.claude/` files, tests, and the commit messages on the branch) follows `CLAUDE.md` "Public writing": project voice, devices named only as reference hardware, nothing private, invented examples. The public-text check in the quick suite catches the patterns it can; read for the rest. Text the change adds that breaks the section is a real problem; wording that only reads awkwardly is a tidy-up. Text the change didn't touch is outside this change.
 8. **Gaps.** Anything the change knowingly leaves out, can't do, or couldn't check is written on the issue (a "Decided:" comment or the progress comment) so the designer hears about it. A gap nobody wrote down is a real problem.
 
@@ -67,6 +68,7 @@ Write for the designer who runs the project: plain language, no jargon, no code.
 ```
 PASS
 <one or two sentences: what you checked, including the tests>
+Report check: <"matches: commit <short>, exit code <n>" | "mismatch: <what the report said> / <the latest commit and what the quick suite gave on it>">
 Tidy-ups made: <one line each, with the commit>, or "none"
 Tidy-ups left: <one line each, file and what to change>, or "none"
 ```
@@ -75,6 +77,7 @@ Tidy-ups left: <one line each, file and what to change>, or "none"
 FAIL
 1. <problem>: <where (file and line)>, <why it matters, in one sentence>
 2. ...
+Report check: <as above>
 Tidy-ups made: <one line each, with the commit>, or "none"
 Tidy-ups left: <one line each, file and what to change>, or "none"
 ```

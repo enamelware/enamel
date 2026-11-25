@@ -28,8 +28,12 @@
 #
 # A pass of quick or full is remembered against the exact code (the commit's
 # file tree, only when nothing is uncommitted), in git's own folder, never in
-# the repo. Running the same mode again on the same code says it already
-# passed instead of running again; a full pass also counts for quick.
+# the repo. Files git ignores are not part of the code; any other edited, new
+# or deleted file means nothing is reused or remembered. Running the same mode
+# again on the same code says it already passed instead of running again; two
+# commits with the same files are the same code; a full pass also counts for
+# quick. Every quick or full run names the commit it checked ("Code checked:"),
+# so a report can quote the commit and the exit code it handed over.
 # --again runs it anyway. Nothing here changes a file in the repo. Exits
 # non-zero if anything failed. A quick or full run ends with one summary line:
 # "All checks passed." only when every step passed, otherwise "FAILED: "
@@ -46,6 +50,17 @@ code_key() {
     git rev-parse 'HEAD^{tree}'
 }
 
+# One line naming the code a run checks: the commit, and whether anything is uncommitted.
+describe_code() {
+    local commit
+    commit="$(git rev-parse --short HEAD 2>/dev/null)" || commit="no commit yet"
+    if [ -z "$(git status --porcelain)" ]; then
+        echo "Code checked: commit $commit, nothing uncommitted."
+    else
+        echo "Code checked: commit $commit plus uncommitted changes (a pass is not remembered)."
+    fi
+}
+
 # Says so and succeeds if one of the named modes already passed on this code.
 already_passed() {
     local key="$1" mode
@@ -53,6 +68,7 @@ already_passed() {
     [ -n "$key" ] || return 1
     for mode in "$@"; do
         if [ -f "$RESULTS/$mode-$key" ]; then
+            describe_code
             echo "Already passed on this exact code: $(cat "$RESULTS/$mode-$key")"
             echo "Not run again. scripts/test.sh $1 --again runs it anyway."
             return 0
@@ -110,7 +126,7 @@ checks() {
 
 # quick or full, with the result remembered; $2 is empty or --again.
 run_mode() {
-    local mode="$1" again="${2:-}" key status=0 failed=""
+    local mode="$1" again="${2:-}" key described status=0 failed=""
     if [ -n "$again" ] && [ "$again" != "--again" ]; then
         echo "usage: scripts/test.sh $mode [--again]" >&2
         return 2
@@ -123,6 +139,7 @@ run_mode() {
             already_passed "$key" full && return 0
         fi
     fi
+    described="$(describe_code)"
     unit || failed="$failed, unit tests"
     if [ "$mode" = quick ]; then
         python3 tools/check_guide.py --quick || failed="$failed, style guide check"
@@ -131,6 +148,10 @@ run_mode() {
         checks || failed="$failed, slower checks (${FAILED_CHECKS#, })"
     fi
     echo
+    echo "$described"
+    if [ "$key" != "$(code_key)" ]; then
+        echo "The code changed while the checks ran, so this run is not remembered."
+    fi
     if [ -n "$failed" ]; then
         status=1
         # The last line always names what failed; no pass is remembered.

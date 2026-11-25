@@ -1,6 +1,13 @@
 # Copyright (c) 2026 Mario Carabotta
 # SPDX-License-Identifier: MIT
-"""Issue #29: a failed step fails the checks script and is never remembered as a pass.
+"""Issues #29 and #35: the checks script's verdict and its memory of a pass.
+
+#29: a failed step fails the checks script and is never remembered as a pass.
+#35: a remembered pass follows the exact code. After a recorded pass, an edited,
+new or deleted file (committed or not) makes the checks run again instead of
+answering "already passed". Files git ignores are not part of the code, and two
+commits with the same files are the same code, so those reuse the pass. Every
+run names the commit it checked, for the builder's report.
 
 scripts/test.sh is copied into a temporary folder, never the repo, next to a
 small stand-in for the style guide check and planted tests, including a
@@ -127,6 +134,97 @@ class ChecksScript(unittest.TestCase):
         code, out = self.run_script()
         self.assertEqual(code, 0, out)
         self.assertIn("Already passed on this exact code", out)
+
+    # Issue #35: the memory of a pass follows the exact code.
+
+    def pass_once(self):
+        """Commits, runs the quick suite once and checks the pass was recorded."""
+        self.commit()
+        code, out = self.run_script()
+        self.assertEqual(code, 0, out)
+        self.assertEqual(len(self.remembered()), 1, out)
+
+    def assert_ran_again(self):
+        code, out = self.run_script()
+        self.assertEqual(code, 0, out)
+        self.assertNotIn("Already passed", out)
+        self.assertEqual(self.last_line(out), PASSED, out)
+        return out
+
+    def assert_reused(self):
+        code, out = self.run_script()
+        self.assertEqual(code, 0, out)
+        self.assertIn("Already passed on this exact code", out)
+
+    def test_an_uncommitted_edit_after_a_pass_runs_again(self):
+        self.pass_once()
+        self.write("tests/test_ok.py", PASSING_TEST + "# edited\n")
+        out = self.assert_ran_again()
+        self.assertIn("plus uncommitted changes", out)
+        # Uncommitted code is never remembered, so it keeps running.
+        self.assertEqual(len(self.remembered()), 1)
+        self.assert_ran_again()
+
+    def test_an_uncommitted_edit_that_breaks_the_code_is_caught(self):
+        self.pass_once()
+        self.write("tests/test_ok.py", FAILING_TEST)
+        code, out = self.run_script()
+        self.assertNotIn("Already passed", out)
+        self.assertNotEqual(code, 0, out)
+        self.assertTrue(self.last_line(out).startswith("FAILED:"), out)
+
+    def test_a_new_untracked_file_after_a_pass_runs_again(self):
+        self.pass_once()
+        self.write("tests/test_new.py", PASSING_TEST)
+        self.assert_ran_again()
+
+    def test_a_deleted_file_after_a_pass_runs_again(self):
+        self.write("tests/test_extra.py", PASSING_TEST)
+        self.pass_once()
+        os.remove(os.path.join(self.dir, "tests", "test_extra.py"))
+        self.assert_ran_again()
+
+    def test_a_staged_edit_after_a_pass_runs_again(self):
+        self.pass_once()
+        self.write("tests/test_ok.py", PASSING_TEST + "# staged\n")
+        self.git("add", "-A")
+        self.assert_ran_again()
+
+    def test_a_commit_with_different_files_runs_again(self):
+        self.pass_once()
+        self.write("tests/test_ok.py", PASSING_TEST + "# committed\n")
+        self.commit()
+        self.assert_ran_again()
+        self.assertEqual(len(self.remembered()), 2)
+
+    def test_a_commit_with_the_same_files_reuses_the_pass(self):
+        self.pass_once()
+        self.git("commit", "-q", "--allow-empty", "-m", "same files")
+        self.assert_reused()
+
+    def test_an_ignored_file_is_not_part_of_the_code(self):
+        self.write(".gitignore", "__pycache__/\nscratch.txt\n")
+        self.pass_once()
+        self.write("scratch.txt", "kept out of version control")
+        self.assert_reused()
+
+    def test_every_run_names_the_commit_it_checked(self):
+        self.commit()
+        head = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=self.dir, env=self.env,
+                              stdout=subprocess.PIPE, text=True, check=True).stdout.strip()
+        expected = "Code checked: commit %s, nothing uncommitted." % head
+        code, out = self.run_script()
+        self.assertEqual(code, 0, out)
+        self.assertIn(expected, out)
+        # The reused answer names the commit too, and so does a failed run.
+        code, out = self.run_script()
+        self.assertIn(expected, out)
+        self.write("tests/test_planted.py", FAILING_TEST)
+        self.commit()
+        code, out = self.run_script()
+        self.assertNotEqual(code, 0, out)
+        self.assertIn("Code checked: commit ", out)
+        self.assertNotIn(expected, out)
 
     def test_the_real_style_guide_check_does_not_claim_every_check(self):
         """It runs after the unit tests, so its own last line must not read as the whole run's."""

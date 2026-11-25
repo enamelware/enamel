@@ -4,6 +4,14 @@ A dated log of design decisions for the Enamel design system. Newest first.
 
 Kettle is the family of apps Enamel was built for; Kettle Video is the first of them and the first app built on Enamel.
 
+## 2026-11-25, the builder's report names the commit it hands over and the checks' result on it (#35)
+
+**A report can say no more than the code supports.** In #32 a builder's report said the quick checks passed, but they failed on the code it had committed. Now the builder runs the quick checks on the exact commit it hands over, after its last change, with nothing uncommitted, and its report ends with `Handed over: commit <short>, quick checks exit code <n>.` A pass on an earlier commit doesn't count. Chosen because the report is what the reviewer and the designer trust, and a commit and an exit code can be checked where a plain "passed" can't.
+
+**The reviewer compares.** It checks the handed-over commit against the latest commit on the issue's branch. If they differ, anything is uncommitted, or the exit code is missing, it runs the quick checks itself, uses that result, and names the mismatch in its answer, which /next posts on the issue headed "Report check". The reviewer posts nothing itself, so its tools stay read-only apart from its tidy-ups. The rule lives in `/next` (step 7 and the batch builder's prompt) and the reviewer's instructions, not in CLAUDE.md.
+
+**The checks' memory of a pass follows the exact files.** It was already tied to the commit's file tree and reused only when nothing is uncommitted; tests now prove it. An edited, new, deleted or staged file, or a commit with different files, makes the checks run again. Files git ignores (temporary and generated files kept out of version control) are not part of the code and don't stop a pass being reused. Two commits with exactly the same files are the same code, so a pass on one counts for the other. Every run now names the commit it checked in a "Code checked:" line, so the report can quote it.
+
 ## 2026-11-25, CLAUDE.md holds only what every Enamel session needs (#34)
 
 **CLAUDE.md is read at the start of every session, so it keeps only what a session building any Enamel issue would get wrong without it.** What the Enamelware handbook already says (the sizes and their checks, when to decide or stop, the 30-minute limit, the voice and privacy principles, installing nothing, layouts tied to no screen) is left to the handbook; Enamel's additions to it stay. Rules only one command or agent needs moved there: how commands are run, permission rules, removing files, memory notes and closing issues into `/next` step 0 and step 1; the release and tagging rules into `/next` steps 6 and 9; the full Valve rule into the reviewer's checks; the issue headings into `/draft`. No rule changed meaning, and the tests that read a moved rule now read it where it lives.
