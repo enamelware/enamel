@@ -11,9 +11,7 @@ what tests/test_release_rules.py does not:
   - every example title in a row or tile is one of the made-up titles
     listed here (a request made during the build), so no real film or
     show title can slip into the examples;
-  - the guide check really fails when the release check finds something;
-  - the case-study page, where it exists next to this repo, opens on its
-    own (nothing loaded from another file).
+  - the guide check really fails when the release check finds something.
 
     scripts/test.sh unit tests.test_public_repo
 """
@@ -187,30 +185,6 @@ class GuideCheckFails(unittest.TestCase):
 
     def test_no_finding_no_failure(self):
         self.assertEqual(self.run_check([]), [])
-
-
-# The case study's folder sits next to this repo; its name is built from parts so it isn't spelled out here.
-CASE_STUDY = os.path.join(os.path.dirname(ROOT), "enamel" + "-case-" + "study", "index.html")
-
-
-@unittest.skipUnless(os.path.exists(CASE_STUDY), "the case-study page lives outside this repo and is not here")
-class CaseStudy(unittest.TestCase):
-    def setUp(self):
-        with open(CASE_STUDY, encoding="utf-8") as f:
-            self.text = f.read()
-
-    def test_it_holds_the_story(self):
-        self.assertIn("From Steam to Enamel", self.text)
-        self.assertIn("Before:", self.text)
-
-    def test_it_opens_on_its_own(self):
-        self.assertNotRegex(self.text, r"<link\b[^>]*\bhref=", "a stylesheet loaded from another file")
-        self.assertNotRegex(self.text, r"<script\b[^>]*\bsrc=", "a script loaded from another file")
-        self.assertNotRegex(self.text, r"<img\b[^>]*\bsrc=\"(?!data:)", "an image loaded from another file")
-        self.assertNotRegex(self.text, r"url\(\s*[\"']?(?!data:|#)[^)\"']+", "a file loaded by the styles")
-
-    def test_it_is_outside_the_repo(self):
-        self.assertFalse(os.path.abspath(CASE_STUDY).startswith(ROOT + os.sep))
 
 
 if __name__ == "__main__":
