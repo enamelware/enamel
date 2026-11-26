@@ -11,9 +11,9 @@ check what can be checked before the site is live:
     (the site's server cares about upper and lower case), and loads nothing
     from any other address;
   - served under /enamel/, as the site will be, the root page and every style
-    guide page, stylesheet and script load.
-
-The README gets the site's address only after the live site is checked.
+    guide page, stylesheet and script load;
+  - the README gives the site's address (added once the live site was checked)
+    and still sends people working on Enamel to the launcher.
 
     scripts/test.sh unit tests.test_site
 """
@@ -159,6 +159,13 @@ class UnderSiteAddress(unittest.TestCase):
 
     def test_the_site_root_opens(self):
         self.assertEqual(self.status(self.base), 200)
+
+
+class Readme(unittest.TestCase):
+    def test_readme_gives_the_address_and_keeps_the_launcher(self):
+        section = read("README.md").split("## Style guide", 1)[1].split("\n## ", 1)[0]
+        self.assertIn("https://enamelware.github.io/enamel/", section)
+        self.assertIn("Enamel style guide launcher", section)
 
 
 if __name__ == "__main__":

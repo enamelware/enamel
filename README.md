@@ -49,7 +49,9 @@ Token names are version 0 and may change until Kettle Video ships, so an app che
 
 ## Style guide
 
-Open the style guide with the Enamel style guide launcher, never by double-clicking the html files.
+To browse the style guide, open the published site at https://enamelware.github.io/enamel/. It shows the same pages the launcher opens, served from `main` with GitHub Pages.
+
+To work on Enamel, open the style guide with the Enamel style guide launcher, never by double-clicking the html files.
 
 The launcher is a shortcut called "Enamel style guide". It runs `tools/serve.py`, which serves this repo to the same machine only (127.0.0.1) and opens the page in the browser. Closing the launcher's terminal window stops the server.
 
